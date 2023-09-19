@@ -1,0 +1,36 @@
+# Archivos y directorios generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Carpeta de dependencias (puedes personalizarla según tu lenguaje y entorno)
+/node_modules
+
+# Archivos de compilación o ejecución
+/build
+/dist
+
+# Entornos de desarrollo y configuración
+.env
+.env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+.env.local
+
+# Carpeta de dependencias específicas de Python
+__pycache__
+
+# Archivo de registro
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor/IDE específico
+.vscode/
+.idea/
+
+# Archivos de respaldo y temporales
+*.bak
+*.swp
+*~
