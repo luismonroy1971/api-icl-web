@@ -1,6 +1,5 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
-import { toDefaultValue } from 'sequelize/types/utils.js';
 
 export const Servicio = sequelize.define('servicios',{
     id:{
@@ -8,32 +7,43 @@ export const Servicio = sequelize.define('servicios',{
         primaryKey: true,
         autoIncrement: true
     },
-    typeservicio:{
+    tipo_servicio:{
         type: DataTypes.ENUM(['TUPA','TUSNE'])
     },
-    period:{
+    periodo_servicio:{
         type: DataTypes.INTEGER
     },
-    number:{
+    numero_servicio:{
         type: DataTypes.SMALLINT
     },
-    level2:{
+    sub_nivel_servicio:{
         type: DataTypes.SMALLINT
     },
-    flagselection:{
+    flag_seleccion:{
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },
-    denomination:{
+    denominacion_servicio:{
         type: DataTypes.STRING
     },
-    percentuit:{
+    por_uit:{
         type: DataTypes.DECIMAL
     },
-    amountsoles:{
+    monto_soles:{
         type: DataTypes.DECIMAL
     },
-    amountuit:{
+    monto_uit:{
         type: DataTypes.DECIMAL
     },
-})
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
+    },
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
+},{timestamps: false})

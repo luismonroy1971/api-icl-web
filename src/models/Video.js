@@ -1,28 +1,36 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 
-export const Noticia = sequelize.define('noticias',{
+export const Video = sequelize.define('videos',{
     id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    title:{
+    titulo_video:{
         type: DataTypes.STRING
     },
-    description:{
+    descripcion_video:{
         type: DataTypes.STRING
     },
-    date:{
-        type: DataTypes.DATE
-    },
-    idcategory:{
-        type: DataTypes.INTEGER
-    },
-    linkimage:{
+    fecha_video:{
         type: DataTypes.STRING
     },
-    linkvideo:{
+    url_imagen_video:{
         type: DataTypes.STRING
     },
-})
+    url_video:{
+        type: DataTypes.STRING
+    },
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
+    },
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
+},{timestamps: false})

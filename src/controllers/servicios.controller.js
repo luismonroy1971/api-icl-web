@@ -5,7 +5,7 @@ export const leerServicios = async (req, res) =>{
         const servicios = await Servicio.findAll();
         res.json(servicios);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 
 }
@@ -20,53 +20,54 @@ export const leerServicio = async (req, res) =>{
         })
         res.json(servicio);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 
 }
 
 export const crearServicio = async (req, res) =>{
-    const {typeservicio, period,  number, level2, flagselection, denomination, percentuit, amountsoles, amountuit } = req.body;
+    const {tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit } = req.body;
     try {
         const nuevoServicio = await Servicio.create({
-            typeservicio,
-            period,
-            number,
-            level2,
-            flagselection,
-            denomination,
-            percentuit, 
-            amountsoles,
-            amountuit
+            tipo_servicio, 
+            periodo_servicio, 
+            numero_servicio, 
+            sub_nivel_servicio, 
+            flag_seleccion, 
+            denominacion_servicio, 
+            por_uit, 
+            monto_soles, 
+            monto_uit
         })
         res.json(nuevoServicio);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 }
 
 export const actualizarServicio = async (req, res) =>{
     const { id } = req.params;
-    const { typeservicio, period,  number, level2, flagselection, denomination, percentuit, amountsoles, amountuit } = req.body;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, autorizado, autorizadoPor, activo } = req.body;
 
-    try{
-    const servicio = await Servicio.findByPk(id);
-    
-    servicio.typeservicio = typeservicio;
-    servicio.period = period;
-    servicio.number = number;
-    servicio.level2 = level2;
-    servicio.flagselection = flagselection;
-    servicio.denomination = denomination;
-    servicio.percentuit = percentuit;
-    servicio.amountsoles = amountsoles;
-    servicio.amountuit = amountuit;
-
-    await servicio.save(); 
-    res.send('Actualizando');
+    try {
+        const servicio = await Servicio.findByPk(id);
+        servicio.tipo_servicio = tipo_servicio;
+        servicio.periodo_servicio = periodo_servicio;
+        servicio.numero_servicio = numero_servicio;
+        servicio.sub_nivel_servicio = sub_nivel_servicio;
+        servicio.flag_seleccion = flag_seleccion;
+        servicio.denominacion_servicio = denominacion_servicio;
+        servicio.por_uit = por_uit;
+        servicio.monto_soles = monto_soles;
+        servicio.monto_uit = monto_uit;
+        servicio.autorizado = autorizado;
+        servicio.autorizadoPor = autorizadoPor;
+        servicio.activo = activo;
+        await servicio.save(); 
+        res.send('Servicio actualizado');
     }
     catch(error){
-         return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 }
 
@@ -81,6 +82,6 @@ export const eliminarServicio = async (req, res) =>{
         })
         res.sendStatus(204);
     } catch (error) {
-        return res.status(500).json({ message: error.message})
+        return res.status(500).json({ mensaje: error.message})
     }
 }

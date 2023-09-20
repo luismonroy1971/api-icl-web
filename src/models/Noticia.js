@@ -7,26 +7,37 @@ export const Noticia = sequelize.define('noticias',{
         primaryKey: true,
         autoIncrement: true
     },
-    title:{
+    titulo_noticia:{
         type: DataTypes.STRING
     },
-    description:{
+    descripcion_noticia:{
         type: DataTypes.STRING
     },
-    date:{
+    fecha_noticia:{
         type: DataTypes.STRING
     },
-    linkimage1:{
+    url_imagen1_noticia:{
         type: DataTypes.STRING
     },
-    linkimage2:{
+    url_imagen2_noticia:{
         type: DataTypes.STRING
     },
-    linkimage3:{
+    url_imagen3_noticia:{
         type: DataTypes.STRING
     },
-    linkimage4:{
+    url_imagen4_noticia:{
         type: DataTypes.STRING
     },
-})
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
+    },
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
+},{timestamps: false})
 

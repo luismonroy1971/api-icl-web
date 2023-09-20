@@ -5,7 +5,7 @@ export const leerCategorias = async (req, res) =>{
         const categorias = await Categoria.findAll();
         res.json(categorias);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 
 }
@@ -20,40 +20,39 @@ export const leerCategoria = async (req, res) =>{
         })
         res.json(categoria);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 
 }
 
 export const crearCategoria = async (req, res) =>{
-    const {description } = req.body;
+    const {descripcion_categoria } = req.body;
     try {
         const nuevaCategoria = await Categoria.create({
-            description
+            descripcion_categoria
         })
         res.json(nuevaCategoria);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 }
 
 export const actualizarCategoria = async (req, res) =>{
     const { id } = req.params;
-    const { description } = req.body;
+    const { descripcion_categoria, activo } = req.body;
     try {
     const categoria = await Categoria.findByPk(id);
-    console.log(categoria);
-    categoria.description = description;
+    categoria.descripcion_categoria = descripcion_categoria;
+    categoria.activo = activo;
     await categoria.save(); 
-    res.send('Actualizando');
+    res.send('Actualizando Categoría');
     }
       catch(error){
-      return res.status(500).json({ message: error.message })
+      return res.status(500).json({ mensaje: error.message })
     }
 }
 
 export const eliminarCategoria = async (req, res) =>{
-
     try {
         const { id } = req.params
         await Categoria.destroy({
@@ -63,6 +62,6 @@ export const eliminarCategoria = async (req, res) =>{
         })
         res.sendStatus(204);
     } catch (error) {
-        return res.status(500).json({ message: error.message})
+        return res.status(500).json({ mensaje: error.message})
     }
 }

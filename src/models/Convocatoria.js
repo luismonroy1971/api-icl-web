@@ -7,34 +7,45 @@ export const Convocatoria = sequelize.define('convocatorias',{
         primaryKey: true,
         autoIncrement: true
     },
-    description:{
+    descripcion_convocatoria:{
         type: DataTypes.STRING
     },
-    type:{
+    tipo_convocatoria:{
         type: DataTypes.ENUM(['CAS','PRACTICAS'])
     },
-    number:{
+    numero_convocatoria:{
         type: DataTypes.INTEGER
     },
-    period:{
+    periodo_convocatoria:{
         type: DataTypes.INTEGER
     },
-    linkcommunication:{
+    url_comunicacion:{
         type: DataTypes.STRING
     },
-    linknotification:{
+    url_aviso:{
         type: DataTypes.STRING
     },
-    linkcurricularevaluationresult:{
+    url_resultado_evaluacion_curricular:{
         type: DataTypes.STRING
     },
-    linkvirtualexamresult:{
+    url_resultado_examen_virtual:{
         type: DataTypes.STRING
     },
-    linkvirtualinterviewresult:{
+    url_resultado_entrevista_virtual:{
         type: DataTypes.STRING
     },
-    linkfinalscore:{
+    url_puntaje_final:{
         type: DataTypes.STRING
     },
-})
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
+    },
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
+},{timestamps: false})

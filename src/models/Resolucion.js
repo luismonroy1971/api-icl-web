@@ -7,25 +7,36 @@ export const Resolucion = sequelize.define('resoluciones',{
         primaryKey: true,
         autoIncrement: true
     },
-    period:{
+    periodo_resolucion:{
         type: DataTypes.INTEGER
     },
-    idarea:{
+    id_area:{
         type: DataTypes.INTEGER
     },
-    idtypedocument:{
+    id_tipo_documento:{
         type: DataTypes.INTEGER
     },
-    number:{
+    numero_resolucion:{
         type: DataTypes.SMALLINT
     },
-    aditional:{
-        type: DataTypes.INTEGER
+    adicional_resolucion:{
+        type: DataTypes.CHAR(1)
     },
-    sumilla:{
+    sumilla_resolucion:{
+        type: DataTypes.STRING(1500)
+    },
+    url_documento_resolucion:{
         type: DataTypes.STRING
     },
-    linkdocument:{
-        type: DataTypes.STRING
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
     },
-})
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
+},{timestamps: false})

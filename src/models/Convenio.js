@@ -7,16 +7,27 @@ export const Convenio = sequelize.define('convenios',{
         primaryKey: true,
         autoIncrement: true
     },
-    description:{
+    descripcion_convenio:{
         type: DataTypes.STRING
     },
-    linkDocument:{
+    url_documento_convenio:{
         type: DataTypes.STRING
     },
-    period:{
+    periodo_convenio:{
         type: DataTypes.INTEGER
     },
-    number:{
+    numero_convenio:{
         type: DataTypes.INTEGER,
     },
-})
+    autorizado:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '0'
+    },
+    autorizado_por:{
+        type: DataTypes.STRING
+    },  
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    },
+},{timestamps: false})

@@ -8,17 +8,21 @@ export const TipoDocumento = sequelize.define('tipodocumento',{
         primaryKey: true,
         autoIncrement: true
     },
-    description:{
+    descripcion_tipo_documento:{
         type: DataTypes.STRING
+    },
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
     }
-})
+},{timestamps: false})
 
 TipoDocumento.hasMany(Resolucion,{
-    foreignKey: 'idtypedocument',
+    foreignKey: 'id_tipo_documento',
     sourceKey: 'id'
 })
 
 Resolucion.belongsTo(TipoDocumento, {
-    foreignKey: 'idtypedocument',
+    foreignKey: 'id_tipo_documento',
     targetId: 'id'
 })

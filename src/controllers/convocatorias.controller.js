@@ -26,19 +26,19 @@ export const leerConvocatoria = async (req, res) =>{
 }
 
 export const crearConvocatoria = async (req, res) =>{
-    const {description, type, number, period, linkcommunication,  linknotification, linkcurricularevaluationresult, linkvirtualexamresult, linkvirtualinterviewresult, linkfinalscore } = req.body;
+    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_comunicacion, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen_virtual, url_resultado_entrevista_virtual, url_puntaje_final } = req.body;
     try {
         const nuevaConvocatoria = await Convocatoria.create({
-            description,
-            type,
-            number,
-            period,
-            linkcommunication,
-            linknotification,
-            linkcurricularevaluationresult,
-            linkvirtualexamresult,
-            linkvirtualinterviewresult,
-            linkfinalscore
+            descripcion_convocatoria, 
+            tipo_convocatoria, 
+            numero_convocatoria, 
+            periodo_convocatoria, 
+            url_comunicacion, 
+            url_aviso, 
+            url_resultado_evaluacion_curricular, 
+            url_resultado_examen_virtual, 
+            url_resultado_entrevista_virtual, 
+            url_puntaje_final
         })
         res.json(nuevaConvocatoria);
     } catch (error) {
@@ -48,27 +48,31 @@ export const crearConvocatoria = async (req, res) =>{
 
 export const actualizarConvocatoria = async (req, res) =>{
     const { id } = req.params;
-    const { description, type, number, period, linkcommunication,  linknotification, linkcurricularevaluationresult, linkvirtualexamresult, linkvirtualinterviewresult, linkfinalscore } = req.body;
+    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_comunicacion, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen_virtual, url_resultado_entrevista_virtual, url_puntaje_final, autorizado, autorizadoPor, activo } = req.body;
 
     try {
 
         const convocatoria = await Convocatoria.findByPk(id);
-        convocatoria.description = description;
-        convocatoria.type = type;
-        convocatoria.number = number;
-        convocatoria.period = period;
-        convocatoria.linkcommunication = linkcommunication;
-        convocatoria.linknotification = linknotification;
-        convocatoria.linkcurricularevaluationresult = linkcurricularevaluationresult;
-        convocatoria.linkvirtualexamresult = linkvirtualexamresult;
-        convocatoria.linkvirtualinterviewresult = linkvirtualinterviewresult;
-        convocatoria.linkfinalscore = linkfinalscore;
+        convocatoria.descripcion_convocatoria = descripcion_convocatoria;
+        convocatoria.tipo_convocatoria = tipo_convocatoria;
+        convocatoria.numero_convocatoria = numero_convocatoria;
+        convocatoria.periodo_convocatoria = periodo_convocatoria;
+        convocatoria.url_comunicacion = url_comunicacion;
+        convocatoria.url_aviso = url_aviso;
+        convocatoria.url_resultado_evaluacion_curricular = url_resultado_evaluacion_curricular;
+        convocatoria.url_resultado_examen_virtual = url_resultado_examen_virtual;
+        convocatoria.url_resultado_entrevista_virtual = url_resultado_entrevista_virtual;
+        convocatoria.url_puntaje_final = url_puntaje_final;
+        convocatoria.autorizado = autorizado;
+        convocatoria.autorizadoPor = autorizadoPor;
+        convocatoria.activo = activo;
 
         await convocatoria.save(); 
-        res.send('Actualizando');
+        
+        res.send('Convocatoria actualizada');
     }
     catch(error){
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message })
     }
 }
 

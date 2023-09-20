@@ -8,21 +8,25 @@ export const Area = sequelize.define('areas',{
         primaryKey: true,
         autoIncrement: true
     },
-    description:{
+    descripcion_area:{
         type: DataTypes.STRING
     },
-    abreviation:{
+    abreviacion_area:{
         type: DataTypes.CHAR(2)
+    }, 
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
     }
-})
+},{timestamps: false})
 
 Area.hasMany(Resolucion,{
-    foreignKey: 'idarea',
+    foreignKey: 'id_area',
     sourceKey: 'id'
 })
 
 Resolucion.belongsTo(Area, {
-    foreignKey: 'idarea',
+    foreignKey: 'id_area',
     targetId: 'id'
 })
 
