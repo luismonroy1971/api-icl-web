@@ -26,18 +26,21 @@ export const leerConvocatoria = async (req, res) =>{
 }
 
 export const crearConvocatoria = async (req, res) =>{
-    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_comunicacion, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen_virtual, url_resultado_entrevista_virtual, url_puntaje_final } = req.body;
+    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final } = req.body;
     try {
         const nuevaConvocatoria = await Convocatoria.create({
             descripcion_convocatoria, 
             tipo_convocatoria, 
             numero_convocatoria, 
             periodo_convocatoria, 
-            url_comunicacion, 
+            url_anexos, 
+            url_comunicacion1, 
+            url_comunicacion2, 
+            url_comunicacion3, 
             url_aviso, 
             url_resultado_evaluacion_curricular, 
-            url_resultado_examen_virtual, 
-            url_resultado_entrevista_virtual, 
+            url_resultado_examen, 
+            url_resultado_entrevista, 
             url_puntaje_final
         })
         res.json(nuevaConvocatoria);
@@ -48,7 +51,7 @@ export const crearConvocatoria = async (req, res) =>{
 
 export const actualizarConvocatoria = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_comunicacion, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen_virtual, url_resultado_entrevista_virtual, url_puntaje_final, autorizado, autorizadoPor, activo } = req.body;
+    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, autorizado, autorizado_por, activo } = req.body;
 
     try {
 
@@ -57,14 +60,17 @@ export const actualizarConvocatoria = async (req, res) =>{
         convocatoria.tipo_convocatoria = tipo_convocatoria;
         convocatoria.numero_convocatoria = numero_convocatoria;
         convocatoria.periodo_convocatoria = periodo_convocatoria;
-        convocatoria.url_comunicacion = url_comunicacion;
+        convocatoria.url_anexos = url_anexos;
+        convocatoria.url_comunicacion1 = url_comunicacion1;
+        convocatoria.url_comunicacion2 = url_comunicacion2;
+        convocatoria.url_comunicacion3 = url_comunicacion3;
         convocatoria.url_aviso = url_aviso;
         convocatoria.url_resultado_evaluacion_curricular = url_resultado_evaluacion_curricular;
-        convocatoria.url_resultado_examen_virtual = url_resultado_examen_virtual;
-        convocatoria.url_resultado_entrevista_virtual = url_resultado_entrevista_virtual;
+        convocatoria.url_resultado_examen = url_resultado_examen;
+        convocatoria.url_resultado_entrevista = url_resultado_entrevista;
         convocatoria.url_puntaje_final = url_puntaje_final;
         convocatoria.autorizado = autorizado;
-        convocatoria.autorizadoPor = autorizadoPor;
+        convocatoria.autorizado_por = autorizado_por;
         convocatoria.activo = activo;
 
         await convocatoria.save(); 

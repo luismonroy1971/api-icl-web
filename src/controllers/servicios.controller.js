@@ -47,7 +47,7 @@ export const crearServicio = async (req, res) =>{
 
 export const actualizarServicio = async (req, res) =>{
     const { id } = req.params;
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, autorizado, autorizadoPor, activo } = req.body;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, autorizado, autorizado_por, activo } = req.body;
 
     try {
         const servicio = await Servicio.findByPk(id);
@@ -61,7 +61,7 @@ export const actualizarServicio = async (req, res) =>{
         servicio.monto_soles = monto_soles;
         servicio.monto_uit = monto_uit;
         servicio.autorizado = autorizado;
-        servicio.autorizadoPor = autorizadoPor;
+        servicio.autorizado_por = autorizado_por;
         servicio.activo = activo;
         await servicio.save(); 
         res.send('Servicio actualizado');

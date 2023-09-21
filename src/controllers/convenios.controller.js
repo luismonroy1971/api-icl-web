@@ -42,7 +42,7 @@ export const crearConvenio = async (req, res) =>{
 
 export const actualizarConvenio = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio, autorizado, autorizadoPor, activo } = req.body;
+    const { descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio, autorizado, autorizado_por, activo } = req.body;
 
     try{
     const convenio = await Convenio.findByPk(id);
@@ -52,7 +52,7 @@ export const actualizarConvenio = async (req, res) =>{
     convenio.periodo_convenio = periodo_convenio;
     convenio.numero_convenio = numero_convenio;
     convenio.autorizado = autorizado;
-    convenio.autorizadoPor = autorizadoPor;
+    convenio.autorizado_por = autorizado_por;
     convenio.activo = activo;
     await convenio.save(); 
     res.send('Convenio actualizado');

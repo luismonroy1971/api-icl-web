@@ -20,8 +20,8 @@ export const Servicio = sequelize.define('servicios',{
         type: DataTypes.SMALLINT
     },
     flag_seleccion:{
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        type: DataTypes.CHAR(1),
+        defaultValue: '0'
     },
     denominacion_servicio:{
         type: DataTypes.STRING

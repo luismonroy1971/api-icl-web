@@ -1,5 +1,6 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
+import { ImagenNoticia } from './ImagenNoticia.js';
 
 export const Noticia = sequelize.define('noticias',{
     id:{
@@ -11,21 +12,12 @@ export const Noticia = sequelize.define('noticias',{
         type: DataTypes.STRING
     },
     descripcion_noticia:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(2000)
     },
     fecha_noticia:{
         type: DataTypes.STRING
     },
-    url_imagen1_noticia:{
-        type: DataTypes.STRING
-    },
-    url_imagen2_noticia:{
-        type: DataTypes.STRING
-    },
-    url_imagen3_noticia:{
-        type: DataTypes.STRING
-    },
-    url_imagen4_noticia:{
+    url_imagen_portada:{
         type: DataTypes.STRING
     },
     autorizado:{
@@ -41,3 +33,13 @@ export const Noticia = sequelize.define('noticias',{
     }
 },{timestamps: false})
 
+
+Noticia.hasMany(ImagenNoticia,{
+    foreignKey: 'id_noticia',
+    sourceKey: 'id'
+})
+
+ImagenNoticia.belongsTo(Noticia, {
+    foreignKey: 'id_noticia',
+    targetId: 'id'
+})

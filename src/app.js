@@ -6,8 +6,9 @@ import noticiasRoutes from './routes/noticia.routes.js'
 import conveniosRoutes from './routes/convenio.routes.js'
 import convocatoriasRoutes from './routes/convocatoria.routes.js'
 import resolucionesRoutes from './routes/resolucion.routes.js'
-
-
+import imagenesNoticias from './routes/noticiaimagen.routes.js'
+import uitsRoutes from './routes/uit.routes.js'
+import serviciosRoutes from './routes/servicio.routes.js'
 
 const app = express();
 //middlewares
@@ -19,7 +20,9 @@ app.use(tiposDocumentoRoutes);
 app.use(noticiasRoutes);
 app.use(resolucionesRoutes);
 app.use(conveniosRoutes);
-
+app.use(imagenesNoticias);
 app.use(convocatoriasRoutes);
+app.use(uitsRoutes);
+app.use(serviciosRoutes);
 
 export default app

@@ -8,10 +8,10 @@ export const Convocatoria = sequelize.define('convocatorias',{
         autoIncrement: true
     },
     descripcion_convocatoria:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(300)
     },
     tipo_convocatoria:{
-        type: DataTypes.ENUM(['CAS','PRACTICAS'])
+        type: DataTypes.ENUM(['CAS','PPP'])
     },
     numero_convocatoria:{
         type: DataTypes.INTEGER
@@ -19,7 +19,16 @@ export const Convocatoria = sequelize.define('convocatorias',{
     periodo_convocatoria:{
         type: DataTypes.INTEGER
     },
-    url_comunicacion:{
+    url_anexos:{
+        type: DataTypes.STRING
+    },
+    url_comunicacion1:{
+        type: DataTypes.STRING
+    },
+    url_comunicacion2:{
+        type: DataTypes.STRING
+    },
+    url_comunicacion3:{
         type: DataTypes.STRING
     },
     url_aviso:{
@@ -28,14 +37,17 @@ export const Convocatoria = sequelize.define('convocatorias',{
     url_resultado_evaluacion_curricular:{
         type: DataTypes.STRING
     },
-    url_resultado_examen_virtual:{
+    url_resultado_examen:{
         type: DataTypes.STRING
     },
-    url_resultado_entrevista_virtual:{
+    url_resultado_entrevista:{
         type: DataTypes.STRING
     },
     url_puntaje_final:{
         type: DataTypes.STRING
+    },
+    url_estado:{
+        type: DataTypes.ENUM(['Cancelado','Cerrado','Desierto'])
     },
     autorizado:{
         type:DataTypes.CHAR(1),

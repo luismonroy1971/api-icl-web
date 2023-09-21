@@ -45,7 +45,7 @@ export const crearResolucion = async (req, res) =>{
 
 export const actualizarResolucion = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, autorizado, autorizadoPor, activo } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, autorizado, autorizado_por, activo } = req.body;
 
     try {
         const resolucion = await Resolucion.findByPk(id);
@@ -57,7 +57,7 @@ export const actualizarResolucion = async (req, res) =>{
         resolucion.sumilla_resolucion = sumilla_resolucion;
         resolucion.url_documento_resolucion = url_documento_resolucion;
         resolucion.autorizado = autorizado;
-        resolucion.autorizadoPor = autorizadoPor;
+        resolucion.autorizado_por = autorizado_por;
         resolucion.activo = activo;
         await resolucion.save(); 
         res.send('Resolución actualizada');

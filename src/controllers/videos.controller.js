@@ -52,7 +52,7 @@ export const actualizarVideo = async (req, res) =>{
         urlVideo, 
         idCategoriaVideo,
         autorizado,
-        autorizadoPor,
+        autorizado_por,
         activo
      } = req.body;
 
@@ -66,7 +66,7 @@ export const actualizarVideo = async (req, res) =>{
     video.urlVideo = urlVideo;
     video.idCategoriaVideo = idCategoriaVideo;
     video.autorizado = autorizado;
-    video.autorizadoPor = autorizadoPor;
+    video.autorizado_por = autorizado_por;
     video.activo = activo;
     await video.save(); 
     res.send('Video actualizado');

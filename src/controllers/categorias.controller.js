@@ -45,7 +45,7 @@ export const actualizarCategoria = async (req, res) =>{
     categoria.descripcion_categoria = descripcion_categoria;
     categoria.activo = activo;
     await categoria.save(); 
-    res.send('Actualizando Categoría');
+    res.send('Categoría actualizada');
     }
       catch(error){
       return res.status(500).json({ mensaje: error.message })
