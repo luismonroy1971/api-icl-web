@@ -9,6 +9,7 @@ import resolucionesRoutes from './routes/resolucion.routes.js'
 import imagenesNoticias from './routes/noticiaimagen.routes.js'
 import uitsRoutes from './routes/uit.routes.js'
 import serviciosRoutes from './routes/servicio.routes.js'
+import directivasRoutes from './routes/directiva.routes.js'
 
 const app = express();
 //middlewares
@@ -24,5 +25,6 @@ app.use(imagenesNoticias);
 app.use(convocatoriasRoutes);
 app.use(uitsRoutes);
 app.use(serviciosRoutes);
+app.use(directivasRoutes);
 
 export default app
