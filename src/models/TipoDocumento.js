@@ -1,6 +1,7 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 import { Resolucion } from './Resolucion.js';
+import { Directiva } from './Directiva.js';
 
 export const TipoDocumento = sequelize.define('tipodocumento',{
     id:{
@@ -9,6 +10,9 @@ export const TipoDocumento = sequelize.define('tipodocumento',{
         autoIncrement: true
     },
     descripcion_tipo_documento:{
+        type: DataTypes.STRING
+    },
+    codigo_tramite_documentario:{
         type: DataTypes.STRING
     },
     activo:{
@@ -23,6 +27,16 @@ TipoDocumento.hasMany(Resolucion,{
 })
 
 Resolucion.belongsTo(TipoDocumento, {
+    foreignKey: 'id_tipo_documento',
+    targetId: 'id'
+})
+
+TipoDocumento.hasMany(Directiva,{
+    foreignKey: 'id_tipo_documento',
+    sourceKey: 'id'
+})
+
+Directiva.belongsTo(TipoDocumento, {
     foreignKey: 'id_tipo_documento',
     targetId: 'id'
 })

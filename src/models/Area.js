@@ -1,6 +1,7 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 import { Resolucion } from './Resolucion.js';
+import { Directiva } from './Directiva.js';
 
 export const Area = sequelize.define('areas',{
     id:{
@@ -30,3 +31,12 @@ Resolucion.belongsTo(Area, {
     targetId: 'id'
 })
 
+Area.hasMany(Directiva,{
+    foreignKey: 'id_area',
+    sourceKey: 'id'
+})
+
+Directiva.belongsTo(Area, {
+    foreignKey: 'id_area',
+    targetId: 'id'
+})

@@ -26,10 +26,11 @@ export const leerTipoDocumento = async (req, res) =>{
 }
 
 export const crearTipoDocumento = async (req, res) =>{
-    const { descripcion_tipo_documento } = req.body;
+    const { descripcion_tipo_documento, codigo_tramite_documentario } = req.body;
     try {
         const nuevoTipoDocumento = await TipoDocumento.create({
-            descripcion_tipo_documento
+            descripcion_tipo_documento,
+            codigo_tramite_documentario
         })
         res.json(nuevoTipoDocumento);
     } catch (error) {
@@ -39,10 +40,11 @@ export const crearTipoDocumento = async (req, res) =>{
 
 export const actualizarTipoDocumento = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_tipo_documento, activo } = req.body;
+    const { descripcion_tipo_documento, codigo_tramite_documentario, activo } = req.body;
     try {
     const tipodocumento = await TipoDocumento.findByPk(id);
     tipodocumento.descripcion_tipo_documento = descripcion_tipo_documento;
+    tipodocumento.codigo_tramite_documentario = codigo_tramite_documentario;
     tipodocumento.activo = activo;
     await tipodocumento.save(); 
     res.send('Tipo de documento actualizado');

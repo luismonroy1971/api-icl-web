@@ -26,11 +26,11 @@ export const leerImagen = async (req, res) =>{
 }
 
 export const crearImagen = async (req, res) =>{
-    const {url_noticia, id_noticia } = req.body;
+    const {url_imagen, id_noticia } = req.body;
     console.log(url_noticia, id_noticia)
     try {
         const nuevaImagen = await ImagenNoticia.create({
-            url_noticia, 
+            url_imagen, 
             id_noticia
         })
         res.json(nuevaImagen);
@@ -41,12 +41,12 @@ export const crearImagen = async (req, res) =>{
 
 export const actualizarImagen = async (req, res) =>{
     const { id } = req.params;
-    const { url_noticia, id_noticia } = req.body;
+    const { url_imagen, id_noticia } = req.body;
 
     try{
     const imagen = await ImagenNoticia.findByPk(id);
     
-    imagen.url_noticia = url_noticia;
+    imagen.url_imagen = url_imagen;
     imagen.id_noticia = id_noticia;
     
     await imagen.save(); 

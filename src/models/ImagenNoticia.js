@@ -7,7 +7,7 @@ export const ImagenNoticia = sequelize.define('imagenes',{
         primaryKey: true,
         autoIncrement: true
     },
-    url_noticia:{
+    url_imagen:{
         type: DataTypes.STRING
     },
 },{timestamps: false})

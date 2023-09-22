@@ -10,12 +10,6 @@ export const Resolucion = sequelize.define('resoluciones',{
     periodo_resolucion:{
         type: DataTypes.INTEGER
     },
-    id_area:{
-        type: DataTypes.INTEGER
-    },
-    id_tipo_documento:{
-        type: DataTypes.INTEGER
-    },
     numero_resolucion:{
         type: DataTypes.SMALLINT
     },

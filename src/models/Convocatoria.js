@@ -46,7 +46,7 @@ export const Convocatoria = sequelize.define('convocatorias',{
     url_puntaje_final:{
         type: DataTypes.STRING
     },
-    url_estado:{
+    estado_convocatoria:{
         type: DataTypes.ENUM(['Cancelado','Cerrado','Desierto'])
     },
     autorizado:{
