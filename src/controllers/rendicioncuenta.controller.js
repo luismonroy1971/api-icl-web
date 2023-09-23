@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Rendicion} from '../models/Rendicionescuenta.js';
 
 export const leerRendiciones = async (req, res) =>{
@@ -9,6 +10,33 @@ export const leerRendiciones = async (req, res) =>{
     }
 
 }
+
+export const buscarRendiciones = async (req, res) => {
+    const { periodo_rendicion, descripcion_rendicion } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (periodo_rendicion) {
+        whereClause.periodo_rendicion = periodo_rendicion;
+      }
+  
+      if (descripcion_rendicion) {
+        whereClause.descripcion_rendicion = {
+          [Sequelize.Op.like]: `%${descripcion_rendicion}%`
+        };
+      }
+  
+      const rendiciones = await Rendicion.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(rendiciones);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 export const leerRendicion = async (req, res) =>{
     const { id } = req.params;

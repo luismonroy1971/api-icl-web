@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Servicio} from '../models/Servicio.js';
 
 export const leerServicios = async (req, res) =>{
@@ -9,6 +10,45 @@ export const leerServicios = async (req, res) =>{
     }
 
 }
+
+export const buscarServicios = async (req, res) => {
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (tipo_servicio) {
+        whereClause.tipo_servicio = tipo_servicio;
+      }
+  
+      if (periodo_servicio) {
+        whereClause.periodo_servicio = periodo_servicio;
+      }
+  
+      if (numero_servicio) {
+        whereClause.numero_servicio = numero_servicio;
+      }
+  
+      if (sub_nivel_servicio) {
+        whereClause.sub_nivel_servicio = sub_nivel_servicio;
+      }
+  
+      if (denominacion_servicio) {
+        whereClause.denominacion_servicio = {
+          [Sequelize.Op.like]: `%${denominacion_servicio}%`
+        };
+      }
+  
+      const servicios = await Servicio.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(servicios);
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
 
 export const leerServicio = async (req, res) =>{
     const { id } = req.params;

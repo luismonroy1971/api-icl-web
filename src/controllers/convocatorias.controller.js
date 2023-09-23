@@ -1,4 +1,46 @@
+import { Sequelize } from 'sequelize';
 import {Convocatoria} from '../models/Convocatoria.js';
+
+export const buscarConvocatorias = async (req, res) => {
+    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (tipo_convocatoria) {
+        whereClause.tipo_convocatoria = tipo_convocatoria;
+      }
+  
+      if (numero_convocatoria) {
+        whereClause.numero_convocatoria = numero_convocatoria;
+      }
+  
+      if (periodo_convocatoria) {
+        whereClause.periodo_convocatoria = periodo_convocatoria;
+      }
+  
+      if (estado_convocatoria) {
+        whereClause.estado_convocatoria = estado_convocatoria;
+      }
+  
+      if (descripcion_convocatoria) {
+        whereClause.descripcion_convocatoria = {
+          [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
+        };
+      }
+  
+      const convocatorias = await Convocatoria.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(convocatorias);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  
+
+
 
 export const leerConvocatorias = async (req, res) =>{
     try {

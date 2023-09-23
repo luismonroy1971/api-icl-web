@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Convenio} from '../models/Convenio.js';
 
 export const leerConvenios = async (req, res) =>{
@@ -9,6 +10,37 @@ export const leerConvenios = async (req, res) =>{
     }
 
 }
+
+export const buscarConvenios = async (req, res) => {
+    const { descripcion_convenio, periodo_convenio, numero_convenio } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (descripcion_convenio) {
+        whereClause.descripcion_convenio = {
+          [Sequelize.Op.like]: `%${descripcion_convenio}%`
+        };
+      }
+  
+      if (periodo_convenio) {
+        whereClause.periodo_convenio = periodo_convenio;
+      }
+  
+      if (numero_convenio) {
+        whereClause.numero_convenio = numero_convenio;
+      }
+  
+      const convenios = await Convenio.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(convenios);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 export const leerConvenio = async (req, res) =>{
     const { id } = req.params;

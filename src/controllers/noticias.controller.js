@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import { ImagenNoticia } from '../models/ImagenNoticia.js';
 import {Noticia} from '../models/Noticia.js';
 
@@ -10,6 +11,43 @@ export const leerNoticias = async (req, res) =>{
     }
 
 }
+
+export const buscarNoticias = async (req, res) => {
+  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia } = req.query;
+
+  try {
+    const whereClause = {};
+
+    if (fecha_noticia) {
+      whereClause.fecha_noticia = fecha_noticia;
+    }
+
+    if (id_categoria_noticia) {
+      whereClause.id_categoria_noticia = id_categoria_noticia;
+    }
+
+    if (titulo_noticia) {
+      whereClause.titulo_noticia = {
+        [Sequelize.Op.like]: `%${titulo_noticia}%`
+      };
+    }
+
+    if (descripcion_noticia) {
+      whereClause.descripcion_noticia = {
+        [Sequelize.Op.like]: `%${descripcion_noticia}%`
+      };
+    }
+
+    const noticias = await Noticia.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause
+    });
+
+    res.json(noticias);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
 
 export const leerNoticia = async (req, res) =>{
     const { id } = req.params;

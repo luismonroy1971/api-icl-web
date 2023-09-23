@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { crearNoticia, actualizarNoticia, leerNoticias, leerNoticia, eliminarNoticia,leerImagenesNoticia } from '../controllers/noticias.controller.js'
+import { crearNoticia, actualizarNoticia, leerNoticias, leerNoticia, eliminarNoticia,leerImagenesNoticia, buscarNoticias } from '../controllers/noticias.controller.js'
 const router = Router();
-router.get('/noticias',leerNoticias);
+// router.get('/noticias',leerNoticias);
+router.get('/noticias',buscarNoticias);
 router.post('/noticias', crearNoticia);
 router.put('/noticias/:id',actualizarNoticia);
 router.delete('/noticias/:id',eliminarNoticia);

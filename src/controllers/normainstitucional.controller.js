@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Norma} from '../models/NormasInstitucionales.js';
 
 export const leerNormas = async (req, res) =>{
@@ -9,6 +10,33 @@ export const leerNormas = async (req, res) =>{
     }
 
 }
+
+export const buscarNormas = async (req, res) => {
+    const { tipo_norma, denominacion_norma } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (tipo_norma) {
+        whereClause.tipo_norma = tipo_norma;
+      }
+  
+      if (denominacion_norma) {
+        whereClause.denominacion_norma = {
+          [Sequelize.Op.like]: `%${denominacion_norma}%`
+        };
+      }
+  
+      const normas = await Norma.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(normas);
+    } catch (error) {
+      return res.status(500).json({ message: error.message });
+    }
+  };
+  
 
 export const leerNorma = async (req, res) =>{
     const { id } = req.params;

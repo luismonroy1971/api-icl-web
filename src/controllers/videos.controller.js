@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Video} from '../models/Video.js';
 
 export const leerVideos = async (req, res) =>{
@@ -9,6 +10,42 @@ export const leerVideos = async (req, res) =>{
     }
 
 }
+
+export const buscarVideos = async (req, res) => {
+    const { fecha_video, id_categoria_video, titulo_video, descripcion_video } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (fecha_video) {
+        whereClause.fecha_video = fecha_video;
+      }
+  
+      if (id_categoria_video) {
+        whereClause.id_categoria_video = id_categoria_video;
+      }
+  
+      if (titulo_video) {
+        whereClause.titulo_video = {
+          [Sequelize.Op.like]: `%${titulo_video}%`
+        };
+      }
+  
+      if (descripcion_video) {
+        whereClause.descripcion_video = {
+          [Sequelize.Op.like]: `%${descripcion_video}%`
+        };
+      }
+  
+      const videos = await Video.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(videos);
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
 
 export const leerVideo = async (req, res) =>{
     const { id } = req.params;
@@ -26,15 +63,15 @@ export const leerVideo = async (req, res) =>{
 }
 
 export const crearVideo = async (req, res) =>{
-    const {tituloVideo, descripcionVideo, fechaVideo, urlImagenVideo, urlVideo, idCategoriaVideo  } = req.body;
+    const {titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, id_categoria_video  } = req.body;
     try {
         const nuevoVideo = await Video.create({
-            tituloVideo, 
-            descripcionVideo, 
-            fechaVideo, 
-            urlImagenVideo, 
-            urlVideo,
-            idCategoriaVideo
+            titulo_video, 
+            descripcion_video, 
+            fecha_video, 
+            url_imagen_video, 
+            url_video,
+            id_categoria_video
         })
         res.json(nuevoVideo);
     } catch (error) {

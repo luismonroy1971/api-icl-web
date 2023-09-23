@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
 
 export const leerDirectivas = async (req, res) =>{
@@ -9,6 +10,45 @@ export const leerDirectivas = async (req, res) =>{
     }
 
 }
+
+export const buscarDirectivas = async (req, res) => {
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion } = req.query;
+  
+    try {
+      const whereClause = {};
+  
+      if (periodo_resolucion) {
+        whereClause.periodo_resolucion = periodo_resolucion;
+      }
+  
+      if (id_area) {
+        whereClause.id_area = id_area;
+      }
+  
+      if (id_tipo_documento) {
+        whereClause.id_tipo_documento = id_tipo_documento;
+      }
+  
+      if (numero_resolucion) {
+        whereClause.numero_resolucion = numero_resolucion;
+      }
+  
+      if (sumilla_resolucion) {
+        whereClause.sumilla_resolucion = {
+          [Sequelize.Op.like]: `%${sumilla_resolucion}%`
+        };
+      }
+  
+      const directivas = await Directiva.findAll({
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      });
+  
+      res.json(directivas);
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
 
 export const leerDirectiva = async (req, res) =>{
     const { id } = req.params;
