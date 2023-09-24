@@ -27,9 +27,9 @@ export const leerUit = async (req, res) =>{
 
 export const crearUit = async (req, res) =>{
     const {periodo_uit,  moneda_uit, valor_uit, base_legal } = req.body;
-    console.log(descripcion_area, abreviacion_area)
+    console.log( periodo_uit, moneda_uit, valor_uit, base_legal)
     try {
-        const nuevaUit = await Area.create({
+        const nuevaUit = await Uit.create({
             periodo_uit,  
             moneda_uit, 
             valor_uit, 
