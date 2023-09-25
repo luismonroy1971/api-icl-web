@@ -11,7 +11,7 @@ export const Video = sequelize.define('videos',{
         type: DataTypes.STRING
     },
     descripcion_video:{
-        type: DataTypes.STRING
+        type: DataTypes.STRING(500)
     },
     fecha_video:{
         type: DataTypes.STRING
