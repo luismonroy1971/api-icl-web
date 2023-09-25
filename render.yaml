@@ -1,0 +1,7 @@
+services:
+  - name: api-rest-icl
+    type: web
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    env:
+      DATABASE_URL: postgres://user:Lm03051971@localhost:4000/icl_web
