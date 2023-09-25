@@ -176,21 +176,13 @@ CREATE TABLE videos (
 -- Definir relaciones entre las tablas (claves foráneas)
 ALTER TABLE resoluciones
     ADD COLUMN id_tipo_documento SMALLINT REFERENCES tipodocumento(id);
+ALTER TABLE resoluciones
+    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
 
 ALTER TABLE directivas
     ADD COLUMN id_tipo_documento SMALLINT REFERENCES tipodocumento(id);
-
-ALTER TABLE areas
-    ADD COLUMN id_resolucion SMALLINT REFERENCES resoluciones(id);
-
-ALTER TABLE areas
-    ADD COLUMN id_directiva SMALLINT REFERENCES directivas(id);
-
-ALTER TABLE categorias
-    ADD COLUMN id_noticia SMALLINT REFERENCES noticias(id);
-
-ALTER TABLE categorias
-    ADD COLUMN id_video SMALLINT REFERENCES videos(id);
+ALTER TABLE directivas
+    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
 
 ALTER TABLE imagenes
     ADD COLUMN id_noticia SMALLINT REFERENCES noticias(id);
@@ -198,23 +190,10 @@ ALTER TABLE imagenes
 ALTER TABLE uits
     ADD COLUMN id_servicio SMALLINT REFERENCES servicios(id);
 
-ALTER TABLE convocatorias
-    ADD COLUMN id_tipo_documento SMALLINT REFERENCES tipodocumento(id);
-
-ALTER TABLE convocatorias
-    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
-
-ALTER TABLE convenios
-    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
-
-ALTER TABLE directivas
-    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
-
 ALTER TABLE noticias
     ADD COLUMN id_categoria_noticia SMALLINT REFERENCES categorias(id);
 
 ALTER TABLE videos
     ADD COLUMN id_categoria_video SMALLINT REFERENCES categorias(id);
 
-ALTER TABLE resoluciones
-    ADD COLUMN id_area SMALLSERIAL REFERENCES areas(id);
+
