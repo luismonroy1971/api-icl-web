@@ -1,0 +1,232 @@
+[
+    {
+        "id": 1,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Ica.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/1.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-ICA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 1,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Barranco.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/2.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISTRITAL-DE-BARRANCO.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 2,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Santa Rosa.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/3.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISTRITAL-DE-SANTA-ROSA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 3,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 4,
+        "descripcion_convenio": "Primera Adenda del Convenio Específico Técnico Interinstitucional con el Ministerio del Interior.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/4.-PRIMERA-ADENDA-AL-CONVENIO-ESPECIFICO-TECNICO-INTERINSTITUCIONAL-CON-EL-MINISTERIO-DEL-INTERIOR.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 4,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 5,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Dsitrital de San Miguel",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/5.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISTRITAL-DE-SAN-MIGUEL.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 5,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 6,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Santa Anita",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/6.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISTRITAL-DE-SANTA-ANITA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 6,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 7,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de San Bartolo.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/7.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISITRITAL-DE-SAN-BARTOLO.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 7,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 8,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Independencia.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/8.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISITRITAL-DE-INDEPENDENCIA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 8,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 9,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Magdalena del Mar.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/9.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISITRITAL-DE-MAGDALENA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 9,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 10,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Pacarán.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/10.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISITRITAL-DE-PACARAN.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 10,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 11,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Lurigancho.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/07/11.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISITRITAL-DE-LURIGANCHO.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 11,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 12,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de San Miguel.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/12.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-SAN-MIGUEL.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 12,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 13,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de San Pablo.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/13.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-SAN-PABLO.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 13,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 14,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de San Román.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/14.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-SAN-ROMAN.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 14,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 15,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Atalaya",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/15.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-ATALAYA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 15,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 16,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Paruro.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/16.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-PARURO.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 16,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 17,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Quispicanchi.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/17.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-QUISPICANCHI.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 17,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 18,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Distrital de Pucusana.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/18.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-DISTRITAL-DE-PUCUSANA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 18,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 19,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Rodríguez Mendoza.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/19.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-RODRIGUEZ-DE-MENDOZA.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 19,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 20,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Mariscal Cáceres.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/20.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-MARISCAL-CACERES.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 20,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 21,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Canas.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/21.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-CANAS.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 21,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 22,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Ocros.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/22.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-OCROS.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 22,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 23,
+        "descripcion_convenio": "Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Melgar.",
+        "url_documento_convenio": "https://icl.gob.pe/wp-content/uploads/2023/08/23.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-MELGAR.pdf",
+        "periodo_convenio": 2023,
+        "numero_convenio": 23,
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    }
+]

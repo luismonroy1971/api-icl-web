@@ -1,0 +1,66 @@
+[
+    {
+        "id": 1,
+        "periodo_uit": 2016,
+        "moneda_uit": "Soles",
+        "valor_uit": 3950,
+        "base_legal": "D.S. 397‐2015‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "periodo_uit": 2017,
+        "moneda_uit": "Soles",
+        "valor_uit": 4050,
+        "base_legal": "D.S. 353‐2016‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "periodo_uit": 2018,
+        "moneda_uit": "Soles",
+        "valor_uit": 4150,
+        "base_legal": "D.S. 380‐2017‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 4,
+        "periodo_uit": 2019,
+        "moneda_uit": "Soles",
+        "valor_uit": 4200,
+        "base_legal": "D.S. 298‐2018‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 5,
+        "periodo_uit": 2020,
+        "moneda_uit": "Soles",
+        "valor_uit": 4300,
+        "base_legal": "D.S. 380‐2019‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 6,
+        "periodo_uit": 2021,
+        "moneda_uit": "Soles",
+        "valor_uit": 4400,
+        "base_legal": "D.S. 392‐2020‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 7,
+        "periodo_uit": 2022,
+        "moneda_uit": "Soles",
+        "valor_uit": 4600,
+        "base_legal": "D.S. 398‐2021‐EF",
+        "activo": "1"
+    },
+    {
+        "id": 8,
+        "periodo_uit": 2023,
+        "moneda_uit": "Soles",
+        "valor_uit": 4950,
+        "base_legal": "D.S. 309‐2022‐EF",
+        "activo": "1"
+    }
+]

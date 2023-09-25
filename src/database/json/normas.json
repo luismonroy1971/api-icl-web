@@ -1,0 +1,155 @@
+[
+    {
+        "id": 1,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Medidas de Austeridad – Acuerdos de Consejo Directivo",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2023/04/Acuerdo-de-Consejo-Directivo-No-012-2023-CD.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Marco Estratégico del periodo 2020-2023",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/01/marco-estrategico-2020-2023.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Plan Operativo Institucional Multianual 2020-2022",
+        "url_norma": "http://icl.gob.pe/wp-content/uploads/2022/01/resolucion-n%C2%B0-038-2019-gg-icl.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 4,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Plan Estratégico Institucional",
+        "url_norma": "http://icl.gob.pe/wp-content/uploads/2022/01/resolucion-n%C2%B0-038-2019-gg-icl.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 5,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Plan Operativo Institucional",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/01/resolucion-n%C2%B0-007-2019-gg-icl.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 6,
+        "tipo_norma": "Planes y Política",
+        "denominacion_norma": "Plan Operativo Informático ",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/01/poi-2018-resolucion_n%C2%B0_015-2018.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 7,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Estatuto",
+        "url_norma": "http://icl.gob.pe/wp-content/uploads/2022/01/1_2_estatuto_icl.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 8,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Reglamento de Organización y Funciones - ROF",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/01/rof_2021.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 9,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Presupuesto Analítico de Personal - PAP",
+        "url_norma": "",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 10,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Escala Remunerativa",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2023/09/MODIFICA-ESCALA-SALARIAL_2015.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 11,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Organigrama",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/02/ORGANIGRAMA-ICL.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 12,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Manual de Organización y Funciones - MOF",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2023/09/MANUAL-DE-ORGANIZACION-Y-FUNCIONES.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 13,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Manual de Clasificador de Cargos - MCC",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2023/09/MANUAL-DE-CLASIFICADOR-DE-CARGOS.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 14,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Cuadro de Asignación de Personal - CAP",
+        "url_norma": "",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 15,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Texto Único de Procedimientos Administrativos - TUPA",
+        "url_norma": "",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 16,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Texto Único de Servicios No Exclusivos - TUSNE",
+        "url_norma": "",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 17,
+        "tipo_norma": "Instrumentos de Gestión",
+        "denominacion_norma": "Reglamento Interno de Trabajo - RIT",
+        "url_norma": "https://icl.gob.pe/wp-content/uploads/2022/06/RESOLUCION-017-2022-GG.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    }
+]

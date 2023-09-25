@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "descripcion_area": "Gerencia de Administración",
+        "abreviacion_area": "GA",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "descripcion_area": "Gerencia General",
+        "abreviacion_area": "GG",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "descripcion_area": "Presidencia Ejecutiva",
+        "abreviacion_area": "PE",
+        "activo": "1"
+    }
+]

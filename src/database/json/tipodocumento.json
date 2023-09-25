@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "descripcion_tipo_documento": "Resolución",
+        "codigo_tramite_documentario": null,
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "descripcion_tipo_documento": "Fe de errata de Resolución",
+        "codigo_tramite_documentario": null,
+        "activo": "1"
+    }
+]

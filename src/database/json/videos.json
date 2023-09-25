@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "titulo_video": "Uniendo esfuerzos por un mejor catastro nacional con la Municipalidad Distrital de Atalaya",
+        "descripcion_video": "El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano.\nAdemás estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostro interés en el catastro y el desarrollo de su localidad.",
+        "fecha_video": "Año 2023",
+        "url_imagen_video": "https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-marco.jpg",
+        "url_video": "https://drive.google.com/file/d/1tZw4km6weNxhiCWw9rnc7jZc86eBtBma/view?usp=sharing",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1",
+        "id_categoria_video": 1
+        },
+    {
+        "id": 2,
+        "titulo_video": "Uniendo esfuerzos por un mejor catastro nacional con la Municipalidad Distrital de Atalaya",
+        "descripcion_video": "El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano.\nAdemás estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostro interés en el catastro y el desarrollo de su localidad.",
+        "fecha_video": "Año 2023",
+        "url_imagen_video": "https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-1.jpg",
+        "url_video": "https://drive.google.com/file/d/10QVekt6UBDdUZVQbLv_uggxG3jiwV9Vc/view?usp=sharing",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1",
+        "id_categoria_video": 1
+        }
+       
+]

@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "descripcion_categoria": "Convenio",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "descripcion_categoria": "Coordinación",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "descripcion_categoria": "Responsabilidad Social",
+        "activo": "1"
+    },
+    {
+        "id": 4,
+        "descripcion_categoria": "Reunión",
+        "activo": "1"
+    },
+    {
+        "id": 5,
+        "descripcion_categoria": "Seminario",
+        "activo": "1"
+    },
+    {
+        "id": 6,
+        "descripcion_categoria": "Visita",
+        "activo": "1"
+    }
+]

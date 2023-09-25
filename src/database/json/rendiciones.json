@@ -1,0 +1,38 @@
+[
+    {
+        "id": 1,
+        "descripcion_rendicion": "Rendición de Cuentas de Titulares 2022",
+        "periodo_rendicion": 2022,
+        "url_rendicion": "https://icl.gob.pe/wp-content/uploads/2023/06/16.-RENDICION-DE-CUENTAS-TITULAR.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 2,
+        "descripcion_rendicion": "Rendición de Cuentas de Titulares 2021",
+        "periodo_rendicion": 2021,
+        "url_rendicion": "https://icl.gob.pe/wp-content/uploads/2022/05/informe_anual_rendicion_cuenta_titulares_icl_2021.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 3,
+        "descripcion_rendicion": "Rendición de Cuentas de Titulares 2020",
+        "periodo_rendicion": 2020,
+        "url_rendicion": "https://icl.gob.pe/wp-content/uploads/2022/02/informe_anual_rendicion_cuenta_titulares_icl_2020.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    },
+    {
+        "id": 4,
+        "descripcion_rendicion": "Rendición de Cuentas de Titulares 2019",
+        "periodo_rendicion": 2019,
+        "url_rendicion": "https://icl.gob.pe/wp-content/uploads/2022/02/informe_anual_rendicion_cuenta_titulares_icl_2019.pdf",
+        "autorizado": "1",
+        "autorizado_por": "Migración",
+        "activo": "1"
+    }
+]
