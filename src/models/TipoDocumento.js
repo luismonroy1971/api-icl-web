@@ -26,17 +26,7 @@ TipoDocumento.hasMany(Resolucion,{
     sourceKey: 'id'
 })
 
-Resolucion.belongsTo(TipoDocumento, {
-    foreignKey: 'id_tipo_documento',
-    targetId: 'id'
-})
-
 TipoDocumento.hasMany(Directiva,{
     foreignKey: 'id_tipo_documento',
     sourceKey: 'id'
-})
-
-Directiva.belongsTo(TipoDocumento, {
-    foreignKey: 'id_tipo_documento',
-    targetId: 'id'
 })

@@ -23,17 +23,7 @@ Categoria.hasMany(Noticia,{
     sourceKey: 'id'
 })
 
-Noticia.belongsTo(Categoria, {
-    foreignKey: 'id_categoria_noticia',
-    targetId: 'id'
-})
-
 Categoria.hasMany(Video,{
     foreignKey: 'id_categoria_video',
     sourceKey: 'id'
-})
-
-Video.belongsTo(Categoria, {
-    foreignKey: 'id_categoria_video',
-    targetId: 'id'
 })

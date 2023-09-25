@@ -26,17 +26,7 @@ Area.hasMany(Resolucion,{
     sourceKey: 'id'
 })
 
-Resolucion.belongsTo(Area, {
-    foreignKey: 'id_area',
-    targetId: 'id'
-})
-
 Area.hasMany(Directiva,{
     foreignKey: 'id_area',
     sourceKey: 'id'
-})
-
-Directiva.belongsTo(Area, {
-    foreignKey: 'id_area',
-    targetId: 'id'
 })

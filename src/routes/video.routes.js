@@ -1,12 +1,11 @@
 import { Router } from 'express';
-import { crearvideo, actualizarvideo, leervideos, leervideo, eliminarvideo,leerImagenesvideo, buscarvideos } from '../controllers/videos.controller.js'
+import {crearVideo, buscarVideos, leerVideo, eliminarVideo, actualizarVideo} from '../controllers/videos.controller.js'
 const router = Router();
 // router.get('/videos',leerVideos);
-router.get('/videos',buscarvideos);
-router.post('/videos', crearvideo);
-router.put('/videos/:id',actualizarvideo);
-router.delete('/videos/:id',eliminarvideo);
-router.get('/videos/:id', leervideo);
-router.get('/videos/:id/imagenes', leerImagenesvideo);
+router.get('/videos',buscarVideos);
+router.post('/videos', crearVideo);
+router.put('/videos/:id',actualizarVideo);
+router.delete('/videos/:id',eliminarVideo);
+router.get('/videos/:id', leerVideo);
 
 export default router

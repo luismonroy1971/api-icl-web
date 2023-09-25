@@ -38,8 +38,3 @@ Noticia.hasMany(ImagenNoticia,{
     foreignKey: 'id_noticia',
     sourceKey: 'id'
 })
-
-ImagenNoticia.belongsTo(Noticia, {
-    foreignKey: 'id_noticia',
-    targetId: 'id'
-})
