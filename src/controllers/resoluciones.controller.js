@@ -3,7 +3,11 @@ import {Resolucion} from '../models/Resolucion.js';
 
 export const leerResoluciones = async (req, res) =>{
     try {
-        const resoluciones = await Resolucion.findAll();
+        const resoluciones = await Resolucion.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(resoluciones);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

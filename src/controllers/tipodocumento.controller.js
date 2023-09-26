@@ -2,7 +2,11 @@ import {TipoDocumento} from '../models/TipoDocumento.js';
 
 export const leerTipoDocumentos = async (req, res) =>{
     try {
-        const tipodocumento = await TipoDocumento.findAll();
+        const tipodocumento = await TipoDocumento.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(tipodocumento);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

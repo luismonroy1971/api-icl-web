@@ -2,7 +2,11 @@ import {Categoria} from '../models/Categoria.js';
 
 export const leerCategorias = async (req, res) =>{
     try {
-        const categorias = await Categoria.findAll();
+        const categorias = await Categoria.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(categorias);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
@@ -65,3 +69,42 @@ export const eliminarCategoria = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarCategoria = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Categoria.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Categoría no encontrada' });
+      }
+  
+      area.activo = '1'; // Establecer activo en '1'
+      await area.save();
+  
+      res.json({ mensaje: 'Categoría activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+
+  export const desactivarCategoria = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Categoria.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Categoría no encontrada' });
+      }
+  
+      area.activo = '0'; // Establecer activo en '0'
+      await area.save();
+  
+      res.json({ mensaje: 'Categoría desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

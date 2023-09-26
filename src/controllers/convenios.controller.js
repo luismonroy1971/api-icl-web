@@ -3,7 +3,11 @@ import {Convenio} from '../models/Convenio.js';
 
 export const leerConvenios = async (req, res) =>{
     try {
-        const convenios = await Convenio.findAll();
+        const convenios = await Convenio.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(convenios);
     } catch (error) {
         return res.status(500).json({ message: error.message })
@@ -108,3 +112,42 @@ export const eliminarConvenio = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarConvenio = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Convenio.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Convenio no encontrada' });
+      }
+  
+      area.activo = '1'; // Establecer activo en '1'
+      await area.save();
+  
+      res.json({ mensaje: 'Convenio activado correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+
+  export const desactivarConvenio = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Convenio.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+      }
+  
+      area.activo = '0'; // Establecer activo en '0'
+      await area.save();
+  
+      res.json({ mensaje: 'Convenio desactivado correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

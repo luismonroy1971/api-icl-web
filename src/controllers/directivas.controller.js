@@ -3,7 +3,11 @@ import {Directiva} from '../models/Directiva.js';
 
 export const leerDirectivas = async (req, res) =>{
     try {
-        const directivas = await Directiva.findAll();
+        const directivas = await Directiva.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(directivas);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

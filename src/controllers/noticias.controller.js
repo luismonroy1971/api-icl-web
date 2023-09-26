@@ -4,7 +4,11 @@ import {Noticia} from '../models/Noticia.js';
 
 export const leerNoticias = async (req, res) =>{
     try {
-        const noticias = await Noticia.findAll();
+        const noticias = await Noticia.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(noticias);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

@@ -9,6 +9,10 @@ export const ImagenNoticia = sequelize.define('imagenes',{
     },
     url_imagen:{
         type: DataTypes.STRING
-    },
+    }, 
+    activo:{
+        type:DataTypes.CHAR(1),
+        defaultValue: '1'
+    }
 },{timestamps: false})
 

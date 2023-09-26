@@ -3,7 +3,11 @@ import {Norma} from '../models/NormasInstitucionales.js';
 
 export const leerNormas = async (req, res) =>{
     try {
-        const normas = await Norma.findAll();
+        const normas = await Norma.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(normas);
     } catch (error) {
         return res.status(500).json({ message: error.message })

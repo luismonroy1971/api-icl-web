@@ -3,7 +3,11 @@ import {Rendicion} from '../models/Rendicionescuenta.js';
 
 export const leerRendiciones = async (req, res) =>{
     try {
-        const rendiciones = await Rendicion.findAll();
+        const rendiciones = await Rendicion.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(rendiciones);
     } catch (error) {
         return res.status(500).json({ message: error.message })

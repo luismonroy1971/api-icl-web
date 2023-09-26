@@ -3,7 +3,11 @@ import {Video} from '../models/Video.js';
 
 export const leerVideos = async (req, res) =>{
     try {
-        const videos = await Video.findAll();
+        const videos = await Video.findAll({
+          where: {
+            activo: '1', 
+          },
+        });
         res.json(videos);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

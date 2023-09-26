@@ -2,8 +2,12 @@ import {Area} from '../models/Area.js';
 
 export const leerAreas = async (req, res) =>{
     try {
-        const areas = await Area.findAll();
-        res.json(areas);
+        const areas = await Area.findAll({
+            where: {
+              activo: '1', // Filtra por áreas con activo igual a '1'
+            },
+          });
+          res.json(areas);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
@@ -71,3 +75,42 @@ export const eliminarArea = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarArea = async (req, res) => {
+    try {
+      const { id } = req.params; // ID del área a activar
+  
+      const area = await Area.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Área no encontrada' });
+      }
+  
+      area.activo = '1'; // Establecer activo en '1'
+      await area.save();
+  
+      res.json({ mensaje: 'Área activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+  // Función para desactivar un área
+  export const desactivarArea = async (req, res) => {
+    try {
+      const { id } = req.params; // ID del área a desactivar
+  
+      const area = await Area.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Área no encontrada' });
+      }
+  
+      area.activo = '0'; // Establecer activo en '0'
+      await area.save();
+  
+      res.json({ mensaje: 'Área desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

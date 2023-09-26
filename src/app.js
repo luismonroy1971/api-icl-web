@@ -13,6 +13,7 @@ import directivasRoutes from './routes/directiva.routes.js'
 import normasRoutes from './routes/normainstitucional.routes.js'
 import rendicionRoutes from './routes/rendicion.routes.js'
 import videosRoutes from './routes/video.routes.js'
+import usuariosRoutes from './routes/usuario.routes.js'
 
 const app = express();
 //middlewares
@@ -32,5 +33,6 @@ app.use(directivasRoutes);
 app.use(normasRoutes);
 app.use(rendicionRoutes);
 app.use(videosRoutes);
+app.use(usuariosRoutes);
 
 export default app

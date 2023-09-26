@@ -44,13 +44,57 @@ export const buscarConvocatorias = async (req, res) => {
 
 export const leerConvocatorias = async (req, res) =>{
     try {
-        const convocatorias = await Convocatoria.findAll();
+        const convocatorias = await Convocatoria.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(convocatorias);
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 
 }
+
+export const activarConvocatoria = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Convocatoria.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
+      }
+  
+      area.activo = '1'; // Establecer activo en '1'
+      await area.save();
+  
+      res.json({ mensaje: 'Convocatoria activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+
+  export const desactivarConvocatoria = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const area = await Convocatoria.findByPk(id);
+  
+      if (!area) {
+        return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
+      }
+  
+      area.activo = '0'; // Establecer activo en '0'
+      await area.save();
+  
+      res.json({ mensaje: 'Convocatoria desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+
 
 export const leerConvocatoria = async (req, res) =>{
     const { id } = req.params;

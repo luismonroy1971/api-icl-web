@@ -3,7 +3,11 @@ import {Servicio} from '../models/Servicio.js';
 
 export const leerServicios = async (req, res) =>{
     try {
-        const servicios = await Servicio.findAll();
+        const servicios = await Servicio.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(servicios);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

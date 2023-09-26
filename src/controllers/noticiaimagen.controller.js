@@ -2,7 +2,11 @@ import {ImagenNoticia} from '../models/ImagenNoticia.js';
 
 export const leerImagenes = async (req, res) =>{
     try {
-        const imagenes = await ImagenNoticia.findAll();
+        const imagenes = await ImagenNoticia.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(imagenes);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })

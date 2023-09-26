@@ -2,7 +2,11 @@ import {Uit} from '../models/uit.js'
 
 export const leerUits = async (req, res) =>{
     try {
-        const uits = await Uit.findAll();
+        const uits = await Uit.findAll({
+            where: {
+              activo: '1', 
+            },
+          });
         res.json(uits);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
