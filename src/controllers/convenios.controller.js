@@ -62,13 +62,16 @@ export const leerConvenio = async (req, res) =>{
 }
 
 export const crearConvenio = async (req, res) =>{
-    const {descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio } = req.body;
+    const {descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio, id_departamento,id_provincia, id_distrito } = req.body;
     try {
         const nuevoConvenio = await Convenio.create({
             descripcion_convenio,
             url_documento_convenio,
             periodo_convenio,
-            numero_convenio
+            numero_convenio,
+            id_departamento,
+            id_provincia,
+            id_distrito
         })
         res.json(nuevoConvenio);
     } catch (error) {
@@ -78,7 +81,7 @@ export const crearConvenio = async (req, res) =>{
 
 export const actualizarConvenio = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio, autorizado, autorizado_por, activo } = req.body;
+    const { descripcion_convenio, url_documento_convenio, periodo_convenio, numero_convenio, id_departamento, id_provincia, id_distrito, autorizado, autorizado_por, activo } = req.body;
 
     try{
     const convenio = await Convenio.findByPk(id);
@@ -87,6 +90,10 @@ export const actualizarConvenio = async (req, res) =>{
     convenio.url_documento_convenio = url_documento_convenio;
     convenio.periodo_convenio = periodo_convenio;
     convenio.numero_convenio = numero_convenio;
+    convenio.id_departamento = id_departamento;
+    convenio.id_provincia = id_provincia;
+    convenio.id_distrito = id_distrito;
+
     convenio.autorizado = autorizado;
     convenio.autorizado_por = autorizado_por;
     convenio.activo = activo;
