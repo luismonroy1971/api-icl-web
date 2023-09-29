@@ -8,9 +8,6 @@ export const Provincia = sequelize.define('provincias',{
         primaryKey: true,
         autoIncrement: true
     },
-    departamento:{
-        type: DataTypes.STRING
-    },
     provincia:{
         type: DataTypes.STRING
     }

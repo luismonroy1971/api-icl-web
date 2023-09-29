@@ -1,6 +1,7 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 import { Convenio } from './Convenio.js';
+import { Provincia } from './Provincia.js';
 
 export const Departamento = sequelize.define('departamentos',{
     id:{
@@ -15,5 +16,10 @@ export const Departamento = sequelize.define('departamentos',{
 
 Departamento.hasMany(Convenio,{
     foreignKey: 'id_departamento',
-    sourceKey: 'id'
+    required: true
+})
+
+Departamento.hasMany(Provincia,{
+    foreignKey: 'id_departamento',
+    required: true
 })

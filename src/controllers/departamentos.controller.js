@@ -2,23 +2,44 @@ import { Sequelize } from 'sequelize';
 import {Departamento} from '../models/Departamento.js';
 import {Convenio} from '../models/Convenio.js'
 
-export const leerDepartamentos = async (req, res) => {
-  try {
-    // Realiza una consulta que incluya los departamentos que tienen convenio asociado
-    const departamentosConConvenio = await Departamento.findAll({
-        include: [{
-            model: Convenio,
-            where: {
-              id_departamento: Sequelize.col('Departamento.id') // Asocia el campo "departamento" de la tabla de convenios con el ID de la tabla de departamentos
-            }
-        }]
-    });
+export const leerDepartamentos = async (req, res) =>{
+    try {
+        const departamentos = await Departamento.findAll();
+          res.json(departamentos);
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message })
+    }
 
-    res.json(departamentosConConvenio);
-} catch (error) {
-    return res.status(500).json({ mensaje: error.message });
 }
-};
+
+export const departamentosConvenio = async (req, res) => {
+    try {
+        const countConvenios = await Convenio.count();
+
+        if (countConvenios === 0) {
+            // Manejar el caso en el que no hay convenios disponibles
+            return res.status(404).json({ mensaje: 'No hay convenios disponibles.' });
+        }
+      
+        const departamentosConConvenio = await Departamento.findAll({
+            include: [
+              {
+                model: Convenio,
+                attributes: [],
+              },
+            ],
+            attributes: [
+              'id',
+              'departamento',
+            ],
+            where: Sequelize.literal('(SELECT COUNT(*) FROM "convenios" WHERE "convenios"."id_departamento" = "departamentos"."id") > 0'),
+          });
+      
+          res.json(departamentosConConvenio);
+        } catch (error) {
+          return res.status(500).json({ mensaje: error.message });
+        }
+  };
   
 
 export const leerDepartamento = async (req, res) =>{

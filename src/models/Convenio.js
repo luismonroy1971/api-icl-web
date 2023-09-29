@@ -16,6 +16,18 @@ export const Convenio = sequelize.define('convenios',{
     periodo_convenio:{
         type: DataTypes.INTEGER
     },
+    periodo_mes: {
+        type: DataTypes.VIRTUAL, // Campo virtual
+        get() {
+          // Extraer el número de mes del campo periodo_convenio
+          const periodoConvenio = this.getDataValue('periodo_convenio');
+          if (periodoConvenio) {
+            // Extraer el número de mes (1-12)
+            return new Date(periodoConvenio).getMonth() + 1;
+          }
+          return null; // Devolver null si no hay periodo_convenio
+        },
+      },
     numero_convenio:{
         type: DataTypes.INTEGER,
     },
