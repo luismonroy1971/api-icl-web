@@ -8,13 +8,10 @@ export const Distrito = sequelize.define('distritos',{
         primaryKey: true,
         autoIncrement: true
     },
-    departamento:{
-        type: DataTypes.STRING
-    },
-    provincia:{
-        type: DataTypes.STRING
-    },
     distrito:{
+        type: DataTypes.STRING
+    },
+    ubigeo:{
         type: DataTypes.STRING
     }
 },{timestamps: false})

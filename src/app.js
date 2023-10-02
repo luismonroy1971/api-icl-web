@@ -16,6 +16,7 @@ import videosRoutes from './routes/video.routes.js'
 import usuariosRoutes from './routes/usuario.routes.js'
 import departamentosRoutes from './routes/departamento.routes.js'
 import provinciasRoutes from './routes/provincia.routes.js'
+import distritosRoutes from './routes/distrito.routes.js'
 
 const app = express();
 //middlewares
@@ -38,5 +39,6 @@ app.use(videosRoutes);
 app.use(usuariosRoutes);
 app.use(provinciasRoutes);
 app.use(departamentosRoutes);
+app.use(distritosRoutes);
 
 export default app
