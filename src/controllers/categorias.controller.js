@@ -74,14 +74,14 @@ export const activarCategoria = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Categoria.findByPk(id);
+      const categoria = await Categoria.findByPk(id);
   
-      if (!area) {
+      if (!categoria) {
         return res.status(404).json({ mensaje: 'Categoría no encontrada' });
       }
   
-      area.activo = '1'; // Establecer activo en '1'
-      await area.save();
+      categoria.activo = '1'; // Establecer activo en '1'
+      await categoria.save();
   
       res.json({ mensaje: 'Categoría activada correctamente' });
     } catch (error) {
@@ -94,14 +94,14 @@ export const activarCategoria = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Categoria.findByPk(id);
+      const categoria = await Categoria.findByPk(id);
   
-      if (!area) {
+      if (!categoria) {
         return res.status(404).json({ mensaje: 'Categoría no encontrada' });
       }
   
-      area.activo = '0'; // Establecer activo en '0'
-      await area.save();
+      categoria.activo = '0'; // Establecer activo en '0'
+      await categoria.save();
   
       res.json({ mensaje: 'Categoría desactivada correctamente' });
     } catch (error) {

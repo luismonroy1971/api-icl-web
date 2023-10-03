@@ -1,6 +1,25 @@
 import { Sequelize } from 'sequelize';
 import {Resolucion} from '../models/Resolucion.js';
 
+export const obtenerPeriodos = async (req, res) => {
+  try {
+    const aniosUnicos = await Resolucion.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('periodo_resolucion')), 'periodo_resolucion'],
+      ],
+      order: [[Sequelize.col('periodo_resolucion'), 'DESC']],
+    });
+
+    // Extraer los valores de aniosUnicos
+    const anios = aniosUnicos.map((anio) => anio.get('periodo_resolucion'));
+
+    res.json(anios);
+  } catch (error) {
+    console.error('Error al obtener años únicos de resoluciones:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 export const leerResoluciones = async (req, res) =>{
     try {
         const resoluciones = await Resolucion.findAll({
@@ -125,3 +144,42 @@ export const eliminarResolucion = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarResolucion = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const resolucion = await Resolucion.findByPk(id);
+
+    if (!resolucion) {
+      return res.status(404).json({ mensaje: 'Resolucion no encontrada' });
+    }
+
+    resolucion.activo = '1'; // Establecer activo en '1'
+    await resolucion.save();
+
+    res.json({ mensaje: 'Resolucion activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarResolucion = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const resolucion = await Resolucion.findByPk(id);
+
+    if (!resolucion) {
+      return res.status(404).json({ mensaje: 'Resolucion no encontrada' });
+    }
+
+    resolucion.activo = '0'; // Establecer activo en '0'
+    await resolucion.save();
+
+    res.json({ mensaje: 'Resolucion desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

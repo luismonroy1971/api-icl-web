@@ -1,6 +1,25 @@
 import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
 
+export const obtenerPeriodos = async (req, res) => {
+  try {
+    const aniosUnicos = await Directiva.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('periodo_resolucion')), 'periodo_resolucion'],
+      ],
+      order: [[Sequelize.col('periodo_resolucion'), 'DESC']],
+    });
+
+    // Extraer los valores de aniosUnicos
+    const anios = aniosUnicos.map((anio) => anio.get('periodo_resolucion'));
+
+    res.json(anios);
+  } catch (error) {
+    console.error('Error al obtener años únicos de resoluciones:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 export const leerDirectivas = async (req, res) =>{
     try {
         const directivas = await Directiva.findAll({
@@ -125,3 +144,42 @@ export const eliminarDirectiva = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarDirectiva = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const directiva = await Directiva.findByPk(id);
+
+    if (!directiva) {
+      return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+    }
+
+    directiva.activo = '1'; // Establecer activo en '1'
+    await directiva.save();
+
+    res.json({ mensaje: 'Directiva activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarDirectiva = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const directiva = await Directiva.findByPk(id);
+
+    if (!directiva) {
+      return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+    }
+
+    directiva.activo = '0'; // Establecer activo en '0'
+    await directiva.save();
+
+    res.json({ mensaje: 'Directiva desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

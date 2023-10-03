@@ -131,3 +131,42 @@ export const eliminarVideo = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarVideo = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const video = await Video.findByPk(id);
+
+    if (!video) {
+      return res.status(404).json({ mensaje: 'Video no encontrada' });
+    }
+
+    video.activo = '1'; // Establecer activo en '1'
+    await video.save();
+
+    res.json({ mensaje: 'Video activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarVideo = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const video = await Video.findByPk(id);
+
+    if (!video) {
+      return res.status(404).json({ mensaje: 'Video no encontrada' });
+    }
+
+    video.activo = '0'; // Establecer activo en '0'
+    await video.save();
+
+    res.json({ mensaje: 'Video desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

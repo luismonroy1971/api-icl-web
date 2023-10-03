@@ -79,3 +79,43 @@ export const eliminarUit = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarUit = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const uit = await Uit.findByPk(id);
+  
+      if (!uit) {
+        return res.status(404).json({ mensaje: 'Uit no encontrada' });
+      }
+  
+      uit.activo = '1'; // Establecer activo en '1'
+      await uit.save();
+  
+      res.json({ mensaje: 'Uit activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+  
+  export const desactivarUit = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const uit = await Uit.findByPk(id);
+  
+      if (!uit) {
+        return res.status(404).json({ mensaje: 'Uit no encontrada' });
+      }
+  
+      uit.activo = '0'; // Establecer activo en '0'
+      await uit.save();
+  
+      res.json({ mensaje: 'Uit desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  

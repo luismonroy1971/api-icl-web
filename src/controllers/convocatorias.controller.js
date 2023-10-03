@@ -1,6 +1,25 @@
 import { Sequelize } from 'sequelize';
 import {Convocatoria} from '../models/Convocatoria.js';
 
+export const obtenerPeriodos = async (req, res) => {
+  try {
+    const aniosUnicos = await Convocatoria.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('periodo_convocatoria')), 'periodo_convocatoria'],
+      ],
+      order: [[Sequelize.col('periodo_convocatoria'), 'DESC']],
+    });
+
+    // Extraer los valores de aniosUnicos
+    const anios = aniosUnicos.map((anio) => anio.get('periodo_convocatoria'));
+
+    res.json(anios);
+  } catch (error) {
+    console.error('Error al obtener años únicos de convocatorias:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 export const buscarConvocatorias = async (req, res) => {
     const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria } = req.query;
   
@@ -60,14 +79,14 @@ export const activarConvocatoria = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Convocatoria.findByPk(id);
+      const convocatoria = await Convocatoria.findByPk(id);
   
-      if (!area) {
+      if (!convocatoria) {
         return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
       }
   
-      area.activo = '1'; // Establecer activo en '1'
-      await area.save();
+      convocatoria.activo = '1'; // Establecer activo en '1'
+      await convocatoria.save();
   
       res.json({ mensaje: 'Convocatoria activada correctamente' });
     } catch (error) {
@@ -80,14 +99,14 @@ export const activarConvocatoria = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Convocatoria.findByPk(id);
+      const convocatoria = await Convocatoria.findByPk(id);
   
-      if (!area) {
+      if (!convocatoria) {
         return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
       }
   
-      area.activo = '0'; // Establecer activo en '0'
-      await area.save();
+      convocatoria.activo = '0'; // Establecer activo en '0'
+      await convocatoria.save();
   
       res.json({ mensaje: 'Convocatoria desactivada correctamente' });
     } catch (error) {
@@ -184,3 +203,4 @@ export const eliminarConvocatoria = async (req, res) =>{
         return res.status(500).json({ message: error.message})
     }
 }
+

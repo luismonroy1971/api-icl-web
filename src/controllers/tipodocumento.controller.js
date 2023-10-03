@@ -72,3 +72,42 @@ export const eliminarTipoDocumento = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarTipoDocumento = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const tipodocumento = await TipoDocumento.findByPk(id);
+  
+      if (!tipodocumento) {
+        return res.status(404).json({ mensaje: 'TipoDocumento no encontrada' });
+      }
+  
+      tipodocumento.activo = '1'; // Establecer activo en '1'
+      await tipodocumento.save();
+  
+      res.json({ mensaje: 'TipoDocumento activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+
+  export const desactivarTipoDocumento = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const tipodocumento = await TipoDocumento.findByPk(id);
+  
+      if (!tipodocumento) {
+        return res.status(404).json({ mensaje: 'TipoDocumento no encontrada' });
+      }
+  
+      tipodocumento.activo = '0'; // Establecer activo en '0'
+      await tipodocumento.save();
+  
+      res.json({ mensaje: 'TipoDocumento desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

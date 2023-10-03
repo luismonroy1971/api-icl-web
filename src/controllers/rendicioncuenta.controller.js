@@ -1,6 +1,25 @@
 import { Sequelize } from 'sequelize';
 import {Rendicion} from '../models/Rendicionescuenta.js';
 
+export const obtenerPeriodos = async (req, res) => {
+    try {
+      const aniosUnicos = await Rendicion.findAll({
+        attributes: [
+          [Sequelize.fn('DISTINCT', Sequelize.col('periodo_rendicion')), 'periodo_rendicion'],
+        ],
+        order: [[Sequelize.col('periodo_rendicion'), 'DESC']],
+      });
+  
+      // Extraer los valores de aniosUnicos
+      const anios = aniosUnicos.map((anio) => anio.get('periodo_rendicion'));
+  
+      res.json(anios);
+    } catch (error) {
+      console.error('Error al obtener años únicos de rendiciones:', error);
+      res.status(500).json({ error: 'Error interno del servidor' });
+    }
+  };
+
 export const leerRendiciones = async (req, res) =>{
     try {
         const rendiciones = await Rendicion.findAll({
@@ -106,3 +125,42 @@ export const eliminarRendicion = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarRendicion = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const rendicion = await Rendicion.findByPk(id);
+
+    if (!rendicion) {
+      return res.status(404).json({ mensaje: 'Rendicion no encontrada' });
+    }
+
+    rendicion.activo = '1'; // Establecer activo en '1'
+    await rendicion.save();
+
+    res.json({ mensaje: 'Rendicion activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarRendicion = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const rendicion = await Rendicion.findByPk(id);
+
+    if (!rendicion) {
+      return res.status(404).json({ mensaje: 'Rendicion no encontrada' });
+    }
+
+    rendicion.activo = '0'; // Establecer activo en '0'
+    await rendicion.save();
+
+    res.json({ mensaje: 'Rendicion desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

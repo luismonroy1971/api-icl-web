@@ -106,3 +106,42 @@ export const eliminarNorma = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarNorma = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const norma = await Norma.findByPk(id);
+  
+      if (!norma) {
+        return res.status(404).json({ mensaje: 'Norma no encontrada' });
+      }
+  
+      norma.activo = '1'; // Establecer activo en '1'
+      await norma.save();
+  
+      res.json({ mensaje: 'Norma activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+
+  export const desactivarNorma = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const norma = await Norma.findByPk(id);
+  
+      if (!norma) {
+        return res.status(404).json({ mensaje: 'Norma no encontrada' });
+      }
+  
+      norma.activo = '0'; // Establecer activo en '0'
+      await norma.save();
+  
+      res.json({ mensaje: 'Norma desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

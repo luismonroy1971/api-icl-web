@@ -16,7 +16,14 @@ export const Distrito = sequelize.define('distritos',{
     }
 },{timestamps: false})
 
-Distrito.hasMany(Convenio,{
+Distrito.hasMany(Convenio, {
     foreignKey: 'id_distrito',
-    sourceKey: 'id'
-})
+    sourceKey: 'id',
+    allowNull: true // Esto permite que id_distrito en Convenio sea nulo
+});
+
+// También, para que la relación funcione correctamente, debes definir la relación inversa en el modelo Convenio
+Convenio.belongsTo(Distrito, {
+    foreignKey: 'id_distrito',
+    targetKey: 'id'
+});

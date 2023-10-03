@@ -129,3 +129,42 @@ export const eliminarServicio = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message})
     }
 }
+
+export const activarServicio = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const servicio = await Servicio.findByPk(id);
+
+    if (!servicio) {
+      return res.status(404).json({ mensaje: 'Servicio no encontrada' });
+    }
+
+    servicio.activo = '1'; // Establecer activo en '1'
+    await servicio.save();
+
+    res.json({ mensaje: 'Servicio activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarServicio = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const servicio = await Servicio.findByPk(id);
+
+    if (!servicio) {
+      return res.status(404).json({ mensaje: 'Servicio no encontrada' });
+    }
+
+    servicio.activo = '0'; // Establecer activo en '0'
+    await servicio.save();
+
+    res.json({ mensaje: 'Servicio desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

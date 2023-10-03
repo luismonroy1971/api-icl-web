@@ -1,6 +1,26 @@
 import { Sequelize } from 'sequelize';
 import {Convenio} from '../models/Convenio.js';
 
+
+export const obtenerPeriodos = async (req, res) => {
+  try {
+    const aniosUnicos = await Convenio.findAll({
+      attributes: [
+        [Sequelize.fn('DISTINCT', Sequelize.col('periodo_convenio')), 'periodo_convenio'],
+      ],
+      order: [[Sequelize.col('periodo_convenio'), 'DESC']],
+    });
+
+    // Extraer los valores de aniosUnicos
+    const anios = aniosUnicos.map((anio) => anio.get('periodo_convenio'));
+
+    res.json(anios);
+  } catch (error) {
+    console.error('Error al obtener años únicos de convenios:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
 export const leerConvenios = async (req, res) =>{
     try {
         const convenios = await Convenio.findAll({
@@ -134,14 +154,14 @@ export const activarConvenio = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Convenio.findByPk(id);
+      const convenio = await Convenio.findByPk(id);
   
-      if (!area) {
+      if (!convenio) {
         return res.status(404).json({ mensaje: 'Convenio no encontrada' });
       }
   
-      area.activo = '1'; // Establecer activo en '1'
-      await area.save();
+      convenio.activo = '1'; // Establecer activo en '1'
+      await convenio.save();
   
       res.json({ mensaje: 'Convenio activado correctamente' });
     } catch (error) {
@@ -154,14 +174,14 @@ export const activarConvenio = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const area = await Convenio.findByPk(id);
+      const convenio = await Convenio.findByPk(id);
   
-      if (!area) {
+      if (!convenio) {
         return res.status(404).json({ mensaje: 'Convenio no encontrado' });
       }
   
-      area.activo = '0'; // Establecer activo en '0'
-      await area.save();
+      convenio.activo = '0'; // Establecer activo en '0'
+      await convenio.save();
   
       res.json({ mensaje: 'Convenio desactivado correctamente' });
     } catch (error) {

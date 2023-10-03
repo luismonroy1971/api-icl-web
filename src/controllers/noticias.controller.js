@@ -137,3 +137,42 @@ export const leerImagenesNoticia = async (req, res) =>{
     });
     res.json(imagenes);
 }
+
+export const activarNoticia = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const noticia = await Noticia.findByPk(id);
+
+    if (!noticia) {
+      return res.status(404).json({ mensaje: 'Noticia no encontrada' });
+    }
+
+    noticia.activo = '1'; // Establecer activo en '1'
+    await noticia.save();
+
+    res.json({ mensaje: 'Noticia activada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarNoticia = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const noticia = await Noticia.findByPk(id);
+
+    if (!noticia) {
+      return res.status(404).json({ mensaje: 'Noticia no encontrada' });
+    }
+
+    noticia.activo = '0'; // Establecer activo en '0'
+    await noticia.save();
+
+    res.json({ mensaje: 'Noticia desactivada correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};

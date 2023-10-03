@@ -14,11 +14,14 @@ export const Provincia = sequelize.define('provincias',{
     }
 },{timestamps: false})
 
-Provincia.hasMany(Convenio,{
+Provincia.hasMany(Convenio, {
+    foreignKey: 'id_provincia',
+    sourceKey: 'id',
+    allowNull: true // Esto permite que id_provincia en Convenio sea nulo
+});
+
+// Define la relación Provincia -> Distrito
+Provincia.hasMany(Distrito, {
     foreignKey: 'id_provincia',
     sourceKey: 'id'
-})
-Provincia.hasMany(Distrito,{
-    foreignKey: 'id_provincia',
-    required: true
-})
+});
