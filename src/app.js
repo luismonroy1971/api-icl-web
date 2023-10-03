@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import categoriasRoutes from './routes/categoria.routes.js'
 import areasRoutes from './routes/area.routes.js'
 import tiposDocumentoRoutes from './routes/tipodocumento.routes.js'
@@ -20,6 +21,7 @@ import distritosRoutes from './routes/distrito.routes.js'
 
 const app = express();
 //middlewares
+app.use(cors());
 app.use(express.json());
 
 app.use(categoriasRoutes);

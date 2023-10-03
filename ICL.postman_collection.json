@@ -1,0 +1,2453 @@
+{
+	"info": {
+		"_postman_id": "58b2d7fd-9387-4db1-847b-94764490f0c1",
+		"name": "ICL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4683139"
+	},
+	"item": [
+		{
+			"name": "Areas",
+			"item": [
+				{
+					"name": "Crear áreas",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Presidencia Ejecutiva\",\r\n    \"abreviacion_area\":\"PE\",\r\n    \"activo\":\"1\"\r\n}\r\n\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/areas",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer áreas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/areas",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer área",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/areas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar área",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/areas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar área",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/areas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Departamento",
+			"item": [
+				{
+					"name": "Crear departamentos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"departamento\": \"Amazonas\"\r\n    }\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/departamentos",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"departamentos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer departamentos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/departamentos",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"departamentos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer departamentos con Convenio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/departamentosconvenio",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"departamentosconvenio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Departamento",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/areas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"areas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Departamento",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/departamentos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"departamentos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar departamento",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"departamento\": \"Amazonas\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/departamentos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"departamentos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provincia",
+			"item": [
+				{
+					"name": "Crear provincias",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"provincia\": \"Chachapoyas\",\r\n        \"id_departamento\": 1\r\n    }\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/provincias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer provincias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/provincias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer provincias con Convenio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/provinciasconvenio",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provinciasconvenio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Provincia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/provincias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Provincia",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/provincias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar provincia",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"provincia\": \"Chachapoyas\",\r\n        \"id_departamento\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/provincias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Distritos",
+			"item": [
+				{
+					"name": "Crear distrito",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"distrito\": \"Chachapoyas\",\r\n        \"ubigeo\": \"10101\",\r\n        \"id_provincia\": 1,\r\n        \"id_departamento\": 1\r\n    }\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/distritos",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"distritos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer distritos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/distritos",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"distritos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer distritos con Convenio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/provincias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"provincias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Distrito",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/distritos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"distritos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Distrito",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/distritos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"distritos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar distrito",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/distritos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"distritos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Convenios",
+			"item": [
+				{
+					"name": "Crear Convenios",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_mes\": 12,\r\n        \"id\": 1,\r\n        \"descripcion_convenio\": \"Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Ica.\",\r\n        \"url_documento_convenio\": \"https://icl.gob.pe/wp-content/uploads/2023/07/1.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-ICA.pdf\",\r\n        \"periodo_convenio\": 2023,\r\n        \"numero_convenio\": 1,\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_distrito\": null,\r\n        \"id_provincia\": null,\r\n        \"id_departamento\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/convenios",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convenios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar convenios",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/convenios/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convenios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar convenios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/convenios?descripcion_convenio&periodo_convenio&numero_convenio",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"convenios"
+							],
+							"query": [
+								{
+									"key": "descripcion_convenio",
+									"value": null
+								},
+								{
+									"key": "periodo_convenio",
+									"value": null
+								},
+								{
+									"key": "numero_convenio",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar convenios",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_mes\": 12,\r\n        \"descripcion_convenio\": \"Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Ica.\",\r\n        \"url_documento_convenio\": \"https://icl.gob.pe/wp-content/uploads/2023/07/1.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-ICA.pdf\",\r\n        \"periodo_convenio\": 2023,\r\n        \"numero_convenio\": 1,\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_distrito\": null,\r\n        \"id_provincia\": null,\r\n        \"id_departamento\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/convenios/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convenios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Convenio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/convenios/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convenios",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Servicios",
+			"item": [
+				{
+					"name": "Crear Servicios",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"tipo_servicio\": \"TUSNE\",\r\n        \"periodo_servicio\": 2023,\r\n        \"numero_servicio\": 1,\r\n        \"sub_nivel_servicio\": 2,\r\n        \"flag_seleccion\": \"1\",\r\n        \"denominacion_servicio\": \"Para Construcción Mayor de 200 hasta 500 m2\",\r\n        \"por_uit\": \"0\",\r\n        \"monto_soles\": \"511.8\",\r\n        \"monto_uit\": \"0\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/servicios",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"servicios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar servicios",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/servicios/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"servicios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar servicios",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/servicios?tipo_servicio=TUSNE&periodo_servicio&numero_servicio&sub_nivel_servicio&denominacion_servicio",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"servicios"
+							],
+							"query": [
+								{
+									"key": "tipo_servicio",
+									"value": "TUSNE"
+								},
+								{
+									"key": "periodo_servicio",
+									"value": null
+								},
+								{
+									"key": "numero_servicio",
+									"value": null
+								},
+								{
+									"key": "sub_nivel_servicio",
+									"value": null
+								},
+								{
+									"key": "denominacion_servicio",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar servicio",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"tipo_servicio\": \"TUPA\",\r\n    \"periodo_servicio\": 0,\r\n    \"numero_servicio\": 1,\r\n    \"sub_nivel_servicio\": 0,\r\n    \"flag_seleccion\": \"0\",\r\n    \"denominacion_servicio\": \"PLANO CATASTRAL\",\r\n    \"por_uit\": \"0\",\r\n    \"monto_soles\": \"0\",\r\n    \"monto_uit\": \"0\",\r\n    \"autorizado\": \"1\",\r\n    \"autorizado_por\": \"Migración\",\r\n    \"activo\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/servicios/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"servicios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Servicio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/servicios/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"servicios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Convocatorias",
+			"item": [
+				{
+					"name": "Crear convocatorias",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"descripcion_convocatoria\": \"Contratación Administrativa de Servicios de: Un (01) Especialista en Personal para el Instituto Catastral de Lima\",\r\n        \"tipo_convocatoria\": \"CAS\",\r\n        \"numero_convocatoria\": 7,\r\n        \"periodo_convocatoria\": 2023,\r\n        \"url_anexos\": \"https://icl.gob.pe/wp-content/uploads/2023/03/ANEXOS-CONVOCATORIA-CAS-1.pdf\",\r\n        \"url_comunicacion1\": \"\",\r\n        \"url_comunicacion2\": \"\",\r\n        \"url_comunicacion3\": \"\",\r\n        \"url_aviso\": \"https://icl.gob.pe/wp-content/uploads/2023/03/Convocatoria-CAS-No-007-2023-GA-ICL.pdf\",\r\n        \"url_resultado_evaluacion_curricular\": \"https://icl.gob.pe/wp-content/uploads/2023/03/ANEXO-No-07-1.pdf\",\r\n        \"url_resultado_examen\": \"https://icl.gob.pe/wp-content/uploads/2023/03/FORMATO-11-EVALUACION-CONOCIMIENTOS_PUBLICACION-2.pdf\",\r\n        \"url_resultado_entrevista\": \"https://icl.gob.pe/wp-content/uploads/2023/03/ANEXO-10-EVALUACION.pdf\",\r\n        \"url_puntaje_final\": \"https://icl.gob.pe/wp-content/uploads/2023/03/FORMATO-13-EVALUACION-FINAL-1.pdf\",\r\n        \"estado_convocatoria\": \"Cerrado\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/convocatorias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convocatorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar convocatorias",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/convocatorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"convocatorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar convocatorias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/convocatorias?tipo_convocatoria=PPP&numero_convocatoria&periodo_convocatoria&estado_convocatoria&descripcion_convocatoria",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"convocatorias"
+							],
+							"query": [
+								{
+									"key": "tipo_convocatoria",
+									"value": "PPP"
+								},
+								{
+									"key": "numero_convocatoria",
+									"value": null
+								},
+								{
+									"key": "periodo_convocatoria",
+									"value": null
+								},
+								{
+									"key": "estado_convocatoria",
+									"value": null
+								},
+								{
+									"key": "descripcion_convocatoria",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar convocatorias",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"descripcion_convocatoria\": \"Contratación Administrativa de Servicios de: Un (01) Jefe/a del Área de Servicios al Administrado para el Instituto Catastral de Lima.\",\r\n        \"tipo_convocatoria\": \"CAS\",\r\n        \"numero_convocatoria\": 6,\r\n        \"periodo_convocatoria\": 2023,\r\n        \"url_anexos\": \"https://icl.gob.pe/wp-content/uploads/2023/03/ANEXOS-CONVOCATORIA-CAS-1.pdf\",\r\n        \"url_comunicacion1\": \"https://icl.gob.pe/wp-content/uploads/2023/03/COMUNICADO-CAS-No-006-2023.pdf\",\r\n        \"url_comunicacion2\": \"\",\r\n        \"url_comunicacion3\": \"\",\r\n        \"url_aviso\": \"https://icl.gob.pe/wp-content/uploads/2023/02/Convocatoria-CAS-No-006-2023-GA.pdf\",\r\n        \"url_resultado_evaluacion_curricular\": \"https://icl.gob.pe/wp-content/uploads/2023/03/FORMATO-7-EVALUACION-CURRICULAR_PUBLICACION.pdf\",\r\n        \"url_resultado_examen\": \"https://icl.gob.pe/wp-content/uploads/2023/03/FORMATO-11-EVALUACION-CONOCIMIENTOS_PUBLICACION_02.pdf\",\r\n        \"url_resultado_entrevista\": \"https://icl.gob.pe/wp-content/uploads/2023/03/ANEXO-10-EVALUACION-ENTREVISTA-PERSONAL.pdf\",\r\n        \"url_puntaje_final\": \"https://icl.gob.pe/wp-content/uploads/2023/03/FORMATO-13-EVALUACION-FINAL.pdf\",\r\n        \"estado_convocatoria\": \"Cerrado\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/convocatorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convocatorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Convocatoria",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/convocatorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"convocatorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Directivas",
+			"item": [
+				{
+					"name": "Crear directivas",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 1,\r\n        \"periodo_resolucion\": 2013,\r\n        \"numero_resolucion\": 29,\r\n        \"adicional_resolucion\": \" \",\r\n        \"sumilla_resolucion\": \"Nº 02-2013-GA-ICL/MMLDirectiva de Tratamiento Contable de los Bienes Intangibles\",\r\n        \"url_documento_resolucion\": \"https://icl.gob.pe/wp-content/uploads/2022/02/Resolucion-No-29_2013_GG_ICLMML.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_area\": 2,\r\n        \"id_tipo_documento\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/directivas",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"directivas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar directivas",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/directivas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"directivas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar directivas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/directivas?periodo_resolucion=2013&id_area&id_tipo_documento&numero_resolucion&sumilla_resolucion",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"directivas"
+							],
+							"query": [
+								{
+									"key": "periodo_resolucion",
+									"value": "2013"
+								},
+								{
+									"key": "id_area",
+									"value": null
+								},
+								{
+									"key": "id_tipo_documento",
+									"value": null
+								},
+								{
+									"key": "numero_resolucion",
+									"value": null
+								},
+								{
+									"key": "sumilla_resolucion",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Directiva",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_resolucion\": 2013,\r\n        \"numero_resolucion\": 29,\r\n        \"adicional_resolucion\": \" \",\r\n        \"sumilla_resolucion\": \"Nº 02-2013-GA-ICL/MMLDirectiva de Tratamiento Contable de los Bienes Intangibles\",\r\n        \"url_documento_resolucion\": \"https://icl.gob.pe/wp-content/uploads/2022/02/Resolucion-No-29_2013_GG_ICLMML.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_area\": 2,\r\n        \"id_tipo_documento\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/directivas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"directivas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Directiva",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/directivas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"directivas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Resoluciones",
+			"item": [
+				{
+					"name": "Crear resoluciones",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_resolucion\": 2018,\r\n        \"numero_resolucion\": 1,\r\n        \"adicional_resolucion\": \" \",\r\n        \"sumilla_resolucion\": \"REPONER, a partir de la fecha al señor Víctor Alejandro Marquina Cardenas, en el cargo de Técnico en Unidad de Desarrollo, dentro del Área de Informática de la Gerencia de Catastro.\",\r\n        \"url_documento_resolucion\": \"https://icl.gob.pe/wp-content/uploads/2022/02/resolucion-n%C2%B0-001-2018-gg-icl.pdf\",\r\n        \"id_area\": 2,\r\n        \"id_tipo_documento\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/resoluciones",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"resoluciones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar resoluciones",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/resoluciones/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"resoluciones",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar resoluciones",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/resoluciones?periodo_resolucion&id_area&id_tipo_documento&numero_resolucion&sumilla_resolucion",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"resoluciones"
+							],
+							"query": [
+								{
+									"key": "periodo_resolucion",
+									"value": null
+								},
+								{
+									"key": "id_area",
+									"value": null
+								},
+								{
+									"key": "id_tipo_documento",
+									"value": null
+								},
+								{
+									"key": "numero_resolucion",
+									"value": null
+								},
+								{
+									"key": "sumilla_resolucion",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Resoluciones",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_resolucion\": 2018,\r\n        \"numero_resolucion\": 1,\r\n        \"adicional_resolucion\": \" \",\r\n        \"sumilla_resolucion\": \"REPONER, a partir de la fecha al señor Víctor Alejandro Marquina Cardenas, en el cargo de Técnico en Unidad de Desarrollo, dentro del Área de Informática de la Gerencia de Catastro.\",\r\n        \"url_documento_resolucion\": \"https://icl.gob.pe/wp-content/uploads/2022/02/resolucion-n%C2%B0-001-2018-gg-icl.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_area\": 2,\r\n        \"id_tipo_documento\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/resoluciones/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"resoluciones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Resolución",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/resoluciones/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"resoluciones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Norma Instittucional",
+			"item": [
+				{
+					"name": "Crear Norma",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"tipo_norma\": \"Planes y Política\",\r\n        \"denominacion_norma\": \"Medidas de Austeridad – Acuerdos de Consejo Directivo\",\r\n        \"url_norma\": \"https://icl.gob.pe/wp-content/uploads/2023/04/Acuerdo-de-Consejo-Directivo-No-012-2023-CD.pdf\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/normas",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"normas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar norma",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/normas/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"normas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Normas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4000/normas?tipo_norma&denominacion_norma",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"normas"
+							],
+							"query": [
+								{
+									"key": "tipo_norma",
+									"value": null
+								},
+								{
+									"key": "denominacion_norma",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Norma",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"tipo_norma\": \"Planes y Política\",\r\n        \"denominacion_norma\": \"Medidas de Austeridad – Acuerdos de Consejo Directivo\",\r\n        \"url_norma\": \"https://icl.gob.pe/wp-content/uploads/2023/04/Acuerdo-de-Consejo-Directivo-No-012-2023-CD.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/normas",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"normas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Norma",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/normas/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"normas",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Rendiciones de cuenta",
+			"item": [
+				{
+					"name": "Crear Rendición",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"descripcion_rendicion\": \"Rendición de Cuentas de Titulares 2022\",\r\n        \"periodo_rendicion\": 2022,\r\n        \"url_rendicion\": \"https://icl.gob.pe/wp-content/uploads/2023/06/16.-RENDICION-DE-CUENTAS-TITULAR.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/rendiciones",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"rendiciones"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar rendición",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/rendiciones/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"rendiciones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Rendiciones",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/normas?periodo_rendicion&descripcion_rendicion",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"normas"
+							],
+							"query": [
+								{
+									"key": "periodo_rendicion",
+									"value": null
+								},
+								{
+									"key": "descripcion_rendicion",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Rediciones",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"descripcion_rendicion\": \"Rendición de Cuentas de Titulares 2022\",\r\n        \"periodo_rendicion\": 2022,\r\n        \"url_rendicion\": \"https://icl.gob.pe/wp-content/uploads/2023/06/16.-RENDICION-DE-CUENTAS-TITULAR.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/rendiciones/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"rendiciones",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Rendición",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/rendiciones/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"rendiciones",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tipos de Documento",
+			"item": [
+				{
+					"name": "Crear documentos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"descripcion_tipo_documento\": \"Resolución\",\r\n        \"codigo_tramite_documentario\": null,\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/documentostipo",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"documentostipo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Tipo de documento",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"descripcion_tipo_documento\": \"Resolución\",\r\n        \"codigo_tramite_documentario\": null,\r\n        \"activo\": \"1\"\r\n    }"
+						},
+						"url": {
+							"raw": "localhost:4200/documentostipo/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"documentostipo",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Tipos de Documentos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/documentostipo",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"documentostipo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Documento",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/documentostipo/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"documentostipo",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Uits",
+			"item": [
+				{
+					"name": "Crear Uit",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_uit\": 2016,\r\n        \"moneda_uit\": \"Soles\",\r\n        \"valor_uit\": 3950,\r\n        \"base_legal\": \"D.S. 397‐2015‐EF\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/uits",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"uits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar Uit",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_uit\": 2016,\r\n        \"moneda_uit\": \"Soles\",\r\n        \"valor_uit\": 3950,\r\n        \"base_legal\": \"D.S. 397‐2015‐EF\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/uits/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"uits",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer UIts",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/uits",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"uits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Uit",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/uits/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"uits",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Noticias",
+			"item": [
+				{
+					"name": "Crear Noticias",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"titulo_noticia\": \"Uniendo esfuerzos por un mejor catastro nacional con la Municipalidad Distrital de Atalaya\",\r\n    \"descripcion_noticia\": \"El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano. Además estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostro interés en el catastro y el desarrollo de su localidad.\",\r\n    \"fecha_noticia\":\"Año 2023\",\r\n    \"url_imagen_portada\": \"https://icl.gob.pe/wp-content/uploads/2023/08/DSC_0002-1024x683.jpg\",\r\n    \"activo\": \"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/noticias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"noticias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar Noticia",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"titulo_noticia\": \"Uniendo esfuerzos por un mejor catastro nacional con la Municipalidad Distrital de Atalaya\",\r\n        \"descripcion_noticia\": \"El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano.\\nAdemás estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostro interés en el catastro y el desarrollo de su localidad.\",\r\n        \"fecha_noticia\": \"Año 2023\",\r\n        \"url_imagen_portada\": \"https://icl.gob.pe/wp-content/uploads/2023/08/DSC_0002-1024x683.jpg\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_categoria_noticia\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/noticias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"noticias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar noticia",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/noticias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"noticias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Noticias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/noticias/",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"noticias",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Noticias Imagenes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/noticias/1/imagenes",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"noticias",
+								"1",
+								"imagenes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Videos",
+			"item": [
+				{
+					"name": "Crear videos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"titulo_video\": \"Qué es un convenio marco\",\r\n        \"descripcion_video\": \"El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano. Además estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostró interés en el catastro y el desarrollo de su localidad.\",\r\n        \"fecha_video\": \"Año 2023\",\r\n        \"url_imagen_video\": \"https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-marco.jpg\",\r\n        \"url_video\": \"https://drive.google.com/file/d/1tZw4km6weNxhiCWw9rnc7jZc86eBtBma/view?usp=sharing\",\r\n        \"id_categoria_video\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/videos",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Videos",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/videos/?fecha_video&id_categoria_video&titulo_video&descripcion_video",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"videos",
+								""
+							],
+							"query": [
+								{
+									"key": "fecha_video",
+									"value": null
+								},
+								{
+									"key": "id_categoria_video",
+									"value": null
+								},
+								{
+									"key": "titulo_video",
+									"value": null
+								},
+								{
+									"key": "descripcion_video",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Video",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/videos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"videos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Video",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/videos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"videos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar video",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "        {\r\n        \"titulo_video\": \"Qué es un convenio marco\",\r\n        \"descripcion_video\": \"El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano. Además estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostró interés en el catastro y el desarrollo de su localidad.\",\r\n        \"fecha_video\": \"Año 2023\",\r\n        \"url_imagen_video\": \"https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-marco.jpg\",\r\n        \"url_video\": \"https://drive.google.com/file/d/1tZw4km6weNxhiCWw9rnc7jZc86eBtBma/view?usp=sharing\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_categoria_video\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/videos/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"videos",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Categorias",
+			"item": [
+				{
+					"name": "Crear categorias",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"descripcion_categoria\": \"Convenio\",\r\n        \"activo\": \"1\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/categorias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar categoria",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/categorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"categorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Categorias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/categorias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"categorias"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Imagenes",
+			"item": [
+				{
+					"name": "Crear imagenes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"url_imagen\": \"https://icl.gob.pe/wp-content/uploads/2023/08/DSC_0047-1024x683.jpg\",\r\n        \"id_noticia\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/imagenes",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"imagenes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Modificar imágenes",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"url_imagen\": \"https://icl.gob.pe/wp-content/uploads/2023/08/DSC_0047-1024x683.jpg\",\r\n        \"id_noticia\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/imagenes/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"imagenes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar imagen",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"url_imagen\": \"https://icl.gob.pe/wp-content/uploads/2023/08/DSC_0047-1024x683.jpg\",\r\n        \"id_noticia\": 1\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/imagenes/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"imagenes",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Imagenes",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/imagenes",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"imagenes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Leer usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/users",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar sesión",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/users",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registrar Usuario",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "localhost:4200/signup",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"signup"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

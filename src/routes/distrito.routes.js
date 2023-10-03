@@ -1,11 +1,11 @@
 import { Router } from 'express';
-import { crearDepartamento,actualizarDepartamento,eliminarDepartamento,leerDepartamentos, leerDepartamento, departamentosConvenio } from '../controllers/departamentos.controller.js'
+import { crearDistrito,actualizarDistrito,eliminarDistrito,leerDistritos, leerDistrito, distritosConvenio } from '../controllers/distritos.controller.js'
 const router = Router();
-router.get('/departamentos',leerDepartamentos);
-router.get('/departamentosconvenio',departamentosConvenio);
-router.post('/departamentos', crearDepartamento);
-router.put('/departamentos/:id',actualizarDepartamento);
-router.delete('/departamentos/:id',eliminarDepartamento);
-router.get('/departamentos/:id', leerDepartamento);
+router.get('/distritos',leerDistritos);
+router.get('/distritosconvenio',distritosConvenio);
+router.post('/distritos', crearDistrito);
+router.put('/distritos/:id',actualizarDistrito);
+router.delete('/distritos/:id',eliminarDistrito);
+router.get('/distritos/:id', leerDistrito);
 
 export default router
