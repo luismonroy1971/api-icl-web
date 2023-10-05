@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "dbb4fced-c3c6-490a-b4f6-c4a9a305b456",
+		"_postman_id": "34d08237-a573-4ac9-9387-b2d5d2e22599",
 		"name": "ICL",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "4683139"
@@ -739,11 +739,11 @@
 							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:4000/convenios?descripcion_convenio&periodo_convenio&numero_convenio",
+							"raw": "localhost:4200/convenios?descripcion_convenio&periodo_convenio&numero_convenio",
 							"host": [
 								"localhost"
 							],
-							"port": "4000",
+							"port": "4200",
 							"path": [
 								"convenios"
 							],
@@ -778,27 +778,13 @@
 							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
 						},
 						"url": {
-							"raw": "localhost:4200/convenios?descripcion_convenio&periodo_convenio&numero_convenio",
+							"raw": "localhost:4200/conveniosperiodo",
 							"host": [
 								"localhost"
 							],
 							"port": "4200",
 							"path": [
-								"convenios"
-							],
-							"query": [
-								{
-									"key": "descripcion_convenio",
-									"value": null
-								},
-								{
-									"key": "periodo_convenio",
-									"value": null
-								},
-								{
-									"key": "numero_convenio",
-									"value": null
-								}
+								"conveniosperiodo"
 							]
 						}
 					},
@@ -859,7 +845,7 @@
 					"response": []
 				},
 				{
-					"name": "Desactivar Convenio Copy",
+					"name": "Desactivar Convenio",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -873,13 +859,96 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:4200/desactivarconvenio/1",
+							"raw": "localhost:4200/desactivarconvenio/12",
 							"host": [
 								"localhost"
 							],
 							"port": "4200",
 							"path": [
 								"desactivarconvenio",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activar Convenio",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/activarconvenio/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"activarconvenio",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Memorias",
+			"item": [
+				{
+					"name": "Crear Memorias",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\r\n        \"id\": 1,\r\n        \"periodo_memoria\": 2011,\r\n        \"descripcion_memoria\": \"Memoria Institucional 2011\",\r\n        \"url_memoria\": \"https://icl.gob.pe/wp-content/uploads/2022/02/memoria-anual-2011-icl-mml.pdf\",\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migraciòn\",\r\n        \"activo\": \"1\"\r\n    },",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/memorias",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"memorias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar memorias",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/memorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"memorias",
 								"1"
 							]
 						}
@@ -887,7 +956,125 @@
 					"response": []
 				},
 				{
-					"name": "Activar Convenio Copy",
+					"name": "Buscar memorias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4000/convenios?descripcion_convenio&periodo_convenio&numero_convenio",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"convenios"
+							],
+							"query": [
+								{
+									"key": "descripcion_convenio",
+									"value": ""
+								},
+								{
+									"key": "periodo_convenio",
+									"value": ""
+								},
+								{
+									"key": "numero_convenio",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar periodos memorias",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}"
+						},
+						"url": {
+							"raw": "localhost:4200/memoriasperiodo",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"memoriasperiodo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar convenios",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"periodo_mes\": 12,\r\n        \"descripcion_convenio\": \"Convenio Marco de Cooperación Técnica Interinstitucional entre el Instituto Catastral de Lima y la Municipalidad Provincial de Ica.\",\r\n        \"url_documento_convenio\": \"https://icl.gob.pe/wp-content/uploads/2023/07/1.-CONVENIO-MARCO-DE-COOPERACION-TECNICA-INTERINSTITUCIONAL-CON-LA-MUNICIPALIDAD-PROVINCIAL-DE-ICA.pdf\",\r\n        \"periodo_convenio\": 2023,\r\n        \"numero_convenio\": 1,\r\n        \"autorizado\": \"1\",\r\n        \"autorizado_por\": \"Migración\",\r\n        \"activo\": \"1\",\r\n        \"id_distrito\": null,\r\n        \"id_provincia\": null,\r\n        \"id_departamento\": null\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/memorias/1",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"memorias",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leer Convenio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "localhost:4200/memorias/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"memorias",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Desactivar Memoria",
 					"request": {
 						"method": "PUT",
 						"header": [],
@@ -901,14 +1088,42 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:4200/activarconvenio/1",
+							"raw": "localhost:4200/desactivarmemoria/1",
 							"host": [
 								"localhost"
 							],
 							"port": "4200",
 							"path": [
-								"activarconvenio",
+								"desactivarmemoria",
 								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activar Memoria",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"descripcion_area\":\"Gerencia de Administración\",\r\n    \"abreviacion_area\":\"GA\",\r\n    \"activo\":\"1\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:4200/activarmemoria/2",
+							"host": [
+								"localhost"
+							],
+							"port": "4200",
+							"path": [
+								"activarmemoria",
+								"2"
 							]
 						}
 					},
@@ -997,19 +1212,19 @@
 								},
 								{
 									"key": "periodo_servicio",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "numero_servicio",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "sub_nivel_servicio",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "denominacion_servicio",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -1209,19 +1424,19 @@
 								},
 								{
 									"key": "numero_convocatoria",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "periodo_convocatoria",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "estado_convocatoria",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "descripcion_convocatoria",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -1446,19 +1661,19 @@
 								},
 								{
 									"key": "id_area",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "id_tipo_documento",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "numero_resolucion",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "sumilla_resolucion",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -1523,7 +1738,10 @@
 					"name": "periodos directivas",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -1662,23 +1880,23 @@
 							"query": [
 								{
 									"key": "periodo_resolucion",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "id_area",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "id_tipo_documento",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "numero_resolucion",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "sumilla_resolucion",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -1874,11 +2092,11 @@
 							"query": [
 								{
 									"key": "tipo_norma",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "denominacion_norma",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -2073,11 +2291,11 @@
 							"query": [
 								{
 									"key": "periodo_rendicion",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "descripcion_rendicion",
-									"value": null
+									"value": ""
 								}
 							]
 						}
@@ -2142,7 +2360,10 @@
 					"name": "Periodos de rendición",
 					"request": {
 						"method": "GET",
-						"header": []
+						"header": [],
+						"url": {
+							"raw": ""
+						}
 					},
 					"response": []
 				},
@@ -2785,19 +3006,19 @@
 							"query": [
 								{
 									"key": "fecha_video",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "id_categoria_video",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "titulo_video",
-									"value": null
+									"value": ""
 								},
 								{
 									"key": "descripcion_video",
-									"value": null
+									"value": ""
 								}
 							]
 						}

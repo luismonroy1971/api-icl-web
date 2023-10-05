@@ -12,6 +12,18 @@ INSERT INTO areas (descripcion_area, abreviacion_area, activo) VALUES ('Presiden
 INSERT INTO tipodocumentos (descripcion_tipo_documento, activo) VALUES ('Resolución', '1');
 INSERT INTO tipodocumentos (descripcion_tipo_documento, activo) VALUES ('Fe de errata de Resolución','1');
 
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(1,2011,'Memoria Institucional 2011','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-anual-2011-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(2,2012,'Memoria Institucional 2012','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-anual-2012-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(3,2014,'Memoria Institucional 2014','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-anual-2014-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(4,2015,'Memoria Institucional 2015','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-institucional-2015-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(5,2016,'Memoria Institucional 2016','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-institucional-2016-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(6,2017,'Memoria Institucional 2017','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-institucional-2017-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(7,2018,'Memoria Institucional 2018','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-institucional-2018-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(8,2019,'Memoria Institucional 2019','https://icl.gob.pe/wp-content/uploads/2023/04/Proy.-Memoria-Institucional-2019-15Oct2020-v.2-1-2.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(9,2020,'Memoria Institucional 2020','https://icl.gob.pe/wp-content/uploads/2022/02/memoria-institucional-2020-icl-mml.pdf','1','Migraciòn','1');
+INSERT INTO memorias (id,periodo_memoria, descripcion_memoria,url_memoria,autorizado,  autorizado_por, activo) VALUES(10,2021,'Memoria Institucional 2021','https://icl.gob.pe/wp-content/uploads/2022/05/memoria-institucional-2021-icl-mml.pdf','1','Migraciòn','1');
+
+
 INSERT INTO departamentos (id, departamento) values (1,'Amazonas');
 INSERT INTO departamentos (id, departamento) values (2,'Áncash');
 INSERT INTO departamentos (id, departamento) values (3,'Apurímac');

@@ -18,6 +18,7 @@ import usuariosRoutes from './routes/usuario.routes.js'
 import departamentosRoutes from './routes/departamento.routes.js'
 import provinciasRoutes from './routes/provincia.routes.js'
 import distritosRoutes from './routes/distrito.routes.js'
+import memoriasRoutes from './routes/memoria.routes.js'
 
 const app = express();
 //middlewares
@@ -42,5 +43,6 @@ app.use(usuariosRoutes);
 app.use(provinciasRoutes);
 app.use(departamentosRoutes);
 app.use(distritosRoutes);
+app.use(memoriasRoutes);
 
 export default app
