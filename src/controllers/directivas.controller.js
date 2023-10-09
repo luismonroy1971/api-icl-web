@@ -89,7 +89,7 @@ export const leerDirectiva = async (req, res) =>{
 }
 
 export const crearDirectiva = async (req, res) =>{
-    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion } = req.body;
+    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, url_documento_resolucion } = req.body;
     try {
         const nuevaDirectiva = await Directiva.create({
             periodo_resolucion, 
@@ -98,7 +98,8 @@ export const crearDirectiva = async (req, res) =>{
             numero_resolucion, 
             adicional_resolucion, 
             sumilla_resolucion, 
-            url_documento_resolucion
+            url_documento_resolucion,
+            abreviacion_area
         })
         res.json(nuevaDirectiva);
     } catch (error) {
@@ -108,7 +109,7 @@ export const crearDirectiva = async (req, res) =>{
 
 export const actualizarDirectiva = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, autorizado, autorizado_por, activo } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo } = req.body;
 
     try {
         const directiva = await Directiva.findByPk(id);
@@ -119,6 +120,7 @@ export const actualizarDirectiva = async (req, res) =>{
         directiva.adicional_resolucion = adicional_resolucion;
         directiva.sumilla_resolucion = sumilla_resolucion;
         directiva.url_documento_resolucion = url_documento_resolucion;
+        directiva.abreviacion_area = abreviacion_area;
         directiva.autorizado = autorizado;
         directiva.autorizado_por = autorizado_por;
         directiva.activo = activo;

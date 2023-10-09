@@ -89,7 +89,7 @@ export const leerResolucion = async (req, res) =>{
 }
 
 export const crearResolucion = async (req, res) =>{
-    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion } = req.body;
+    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area } = req.body;
     try {
         const nuevaResolucion = await Resolucion.create({
             periodo_resolucion, 
@@ -98,7 +98,8 @@ export const crearResolucion = async (req, res) =>{
             numero_resolucion, 
             adicional_resolucion, 
             sumilla_resolucion, 
-            url_documento_resolucion
+            url_documento_resolucion,
+            abreviacion_area
         })
         res.json(nuevaResolucion);
     } catch (error) {
@@ -108,7 +109,7 @@ export const crearResolucion = async (req, res) =>{
 
 export const actualizarResolucion = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, autorizado, autorizado_por, activo } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo } = req.body;
 
     try {
         const resolucion = await Resolucion.findByPk(id);
@@ -119,6 +120,7 @@ export const actualizarResolucion = async (req, res) =>{
         resolucion.adicional_resolucion = adicional_resolucion;
         resolucion.sumilla_resolucion = sumilla_resolucion;
         resolucion.url_documento_resolucion = url_documento_resolucion;
+        resolucion.abreviacion_area = abreviacion_area;
         resolucion.autorizado = autorizado;
         resolucion.autorizado_por = autorizado_por;
         resolucion.activo = activo;

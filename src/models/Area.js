@@ -30,3 +30,4 @@ Area.hasMany(Directiva,{
     foreignKey: 'id_area',
     sourceKey: 'id'
 })
+

@@ -22,6 +22,9 @@ export const Directiva = sequelize.define('directivas',{
     url_documento_resolucion:{
         type: DataTypes.STRING
     },
+    abreviacion_area: {
+        type: DataTypes.CHAR(2),
+    },
     autorizado:{
         type:DataTypes.CHAR(1),
         defaultValue: '0'
