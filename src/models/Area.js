@@ -2,6 +2,8 @@ import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 import { Resolucion } from './Resolucion.js';
 import { Directiva } from './Directiva.js';
+import { Convocatoria } from './Convocatoria.js';
+
 
 export const Area = sequelize.define('areas',{
     id:{
@@ -31,3 +33,7 @@ Area.hasMany(Directiva,{
     sourceKey: 'id'
 })
 
+Area.hasMany(Convocatoria,{
+    foreignKey: 'id_area',
+    sourceKey: 'id'
+})

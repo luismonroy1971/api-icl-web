@@ -21,13 +21,17 @@ export const obtenerPeriodos = async (req, res) => {
 };
 
 export const buscarConvocatorias = async (req, res) => {
-    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria } = req.query;
+    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area } = req.query;
   
     try {
       const whereClause = {};
   
       if (tipo_convocatoria) {
         whereClause.tipo_convocatoria = tipo_convocatoria;
+      }
+      
+      if (id_area) {
+        whereClause.id_area = id_area;
       }
   
       if (numero_convocatoria) {
@@ -49,7 +53,11 @@ export const buscarConvocatorias = async (req, res) => {
       }
   
       const convocatorias = await Convocatoria.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['periodo_convocatoria', 'ASC'],
+          ['numero_convocatoria', 'ASC']
+        ]
       });
   
       res.json(convocatorias);
@@ -131,11 +139,12 @@ export const leerConvocatoria = async (req, res) =>{
 }
 
 export const crearConvocatoria = async (req, res) =>{
-    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria } = req.body;
+    const { descripcion_convocatoria, id_area, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria } = req.body;
     try {
         const nuevaConvocatoria = await Convocatoria.create({
             descripcion_convocatoria, 
             tipo_convocatoria, 
+            id_area,
             numero_convocatoria, 
             periodo_convocatoria, 
             url_anexos, 
@@ -157,12 +166,13 @@ export const crearConvocatoria = async (req, res) =>{
 
 export const actualizarConvocatoria = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_convocatoria, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria, autorizado, autorizado_por, activo } = req.body;
+    const { descripcion_convocatoria, id_area, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria, autorizado, autorizado_por, activo } = req.body;
 
     try {
 
         const convocatoria = await Convocatoria.findByPk(id);
         convocatoria.descripcion_convocatoria = descripcion_convocatoria;
+        convocatoria.id_area = id_area;
         convocatoria.tipo_convocatoria = tipo_convocatoria;
         convocatoria.numero_convocatoria = numero_convocatoria;
         convocatoria.periodo_convocatoria = periodo_convocatoria;

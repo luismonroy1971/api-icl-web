@@ -63,7 +63,12 @@ export const buscarResoluciones = async (req, res) => {
       }
   
       const resoluciones = await Resolucion.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['periodo_resolucion', 'ASC'],
+          ['id_area', 'ASC'],
+          ['numero_resolucion', 'ASC']
+        ]
       });
   
       res.json(resoluciones);
