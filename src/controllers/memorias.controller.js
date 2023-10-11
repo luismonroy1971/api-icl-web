@@ -50,6 +50,8 @@ export const buscarMemorias = async (req, res) => {
         };
       }
   
+      whereClause.activo = '1';
+      
       const memorias = await Memoria.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
       });

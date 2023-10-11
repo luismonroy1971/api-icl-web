@@ -51,6 +51,8 @@ export const buscarConvocatorias = async (req, res) => {
           [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const convocatorias = await Convocatoria.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause,

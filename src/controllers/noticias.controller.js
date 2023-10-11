@@ -42,6 +42,8 @@ export const buscarNoticias = async (req, res) => {
       };
     }
 
+    whereClause.activo = '1';
+    
     const noticias = await Noticia.findAll({
       where: Object.keys(whereClause).length === 0 ? {} : whereClause
     });

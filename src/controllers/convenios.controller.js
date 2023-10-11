@@ -67,6 +67,8 @@ export const buscarConvenios = async (req, res) => {
       whereClause.id_distrito = id_distrito;
     }
 
+    whereClause.activo = '1';
+    
     const convenios = await Convenio.findAll({
       where: whereClause
     });

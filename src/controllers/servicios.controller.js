@@ -42,6 +42,8 @@ export const buscarServicios = async (req, res) => {
           [Sequelize.Op.like]: `%${denominacion_servicio}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const servicios = await Servicio.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
@@ -166,5 +168,27 @@ export const desactivarServicio = async (req, res) => {
     res.json({ mensaje: 'Servicio desactivada correctamente' });
   } catch (error) {
     return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const obtenerValorDeServicio = async (req, res) => {
+  const { numero_servicio, metraje } = req.query;
+
+  if (!numero_servicio || !metraje) {
+    return res.status(400).json({ error: 'Se requieren los parámetros "numero_servicio" y "metraje".' });
+  }
+
+  try {
+    const valorServicio = await ServicioService.obtenerValorDeServicio(numero_servicio, metraje);
+
+    if (valorServicio !== null) {
+      return res.json({ valor_servicio: valorServicio });
+    } else {
+      return res.status(404).json({ error: 'No se encontró el servicio o no se pudo determinar el valor.' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Error en el servidor.' });
   }
 };

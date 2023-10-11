@@ -61,6 +61,8 @@ export const buscarDirectivas = async (req, res) => {
           [Sequelize.Op.like]: `%${sumilla_resolucion}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const directivas = await Directiva.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause

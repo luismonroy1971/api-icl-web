@@ -62,6 +62,8 @@ export const buscarResoluciones = async (req, res) => {
         };
       }
   
+      whereClause.activo = '1';
+      
       const resoluciones = await Resolucion.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause,
         order: [

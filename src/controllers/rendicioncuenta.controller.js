@@ -49,6 +49,8 @@ export const buscarRendiciones = async (req, res) => {
           [Sequelize.Op.like]: `%${descripcion_rendicion}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const rendiciones = await Rendicion.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause

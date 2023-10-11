@@ -40,6 +40,8 @@ export const buscarVideos = async (req, res) => {
           [Sequelize.Op.like]: `%${descripcion_video}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const videos = await Video.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause

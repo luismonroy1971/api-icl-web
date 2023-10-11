@@ -30,6 +30,8 @@ export const buscarNormas = async (req, res) => {
           [Sequelize.Op.like]: `%${denominacion_norma}%`
         };
       }
+
+      whereClause.activo = '1';
   
       const normas = await Norma.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
