@@ -14,7 +14,7 @@ export const Servicio = sequelize.define('servicios',{
         type: DataTypes.CHAR(2)
     },
     flag_calculo:{
-        type: DataTypes.CHAR(2)
+        type: DataTypes.CHAR(1)
     },
     requisitos_servicio:{
         type: DataTypes.STRING
