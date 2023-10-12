@@ -10,14 +10,17 @@ export const Servicio = sequelize.define('servicios',{
     tipo_servicio:{
         type: DataTypes.ENUM(['TUPA','TUSNE'])
     },
-    tipo_propiedad:{
-        type: DataTypes.ENUM(['Lote con Construcción','Terreno sin Construcción'])
+    flag_construccion:{
+        type: DataTypes.CHAR(2)
+    },
+    flag_calculo:{
+        type: DataTypes.CHAR(2)
     },
     requisitos_servicio:{
         type: DataTypes.STRING
     },
     flag_metraje:{
-        type: DataTypes.ENUM(['SI','NO'])
+        type: DataTypes.CHAR(2)
     },
     metraje_inicial:{
         type: DataTypes.DECIMAL
