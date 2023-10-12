@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { crearServicio, actualizarServicio, leerServicio, leerServicios, eliminarServicio, buscarServicios, activarServicio, desactivarServicio } from '../controllers/servicios.controller.js'
+import { crearServicio, actualizarServicio, obtenerValorDeServicio, leerServicio, leerServicios, eliminarServicio, buscarServicios, activarServicio, desactivarServicio } from '../controllers/servicios.controller.js'
 const router = Router();
 // router.get('/servicios',leerServicios);
 router.get('/servicios',buscarServicios);
+router.get('/calculoservicios',obtenerValorDeServicio);
 router.post('/servicios', crearServicio);
 router.put('/servicios/:id',actualizarServicio);
 router.delete('/servicios/:id',eliminarServicio);

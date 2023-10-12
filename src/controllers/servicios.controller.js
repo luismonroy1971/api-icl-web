@@ -173,22 +173,79 @@ export const desactivarServicio = async (req, res) => {
 
 
 export const obtenerValorDeServicio = async (req, res) => {
-  const { numero_servicio, metraje } = req.query;
-
-  if (!numero_servicio || !metraje) {
-    return res.status(400).json({ error: 'Se requieren los parámetros "numero_servicio" y "metraje".' });
-  }
-
   try {
-    const valorServicio = await ServicioService.obtenerValorDeServicio(numero_servicio, metraje);
+    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio } = req.query;
+
+    if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion ) {
+      return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
+    }
+
+    // Define las condiciones iniciales para la búsqueda
+    let condiciones;
+    if (sub_nivel_servicio){
+      condiciones = {
+        tipo_servicio,
+        numero_servicio,
+        sub_nivel_servicio
+      };  
+    }
+    else{
+      condiciones = {
+        tipo_servicio,
+        numero_servicio,
+        flag_calculo: '1',
+      };
+    }
+    console.log(condiciones)
+    const servicios = await Servicio.findAll({
+      where: condiciones,
+      attributes: ['flag_construccion', 'sub_nivel_servicio', 'flag_metraje', 'metraje_inicial', 'metraje_final', 'monto_soles'],
+    });
+
+    let valorServicio = null;
+
+    // Itera sobre los servicios para encontrar el valor correcto
+
+    for (const servicio of servicios) {
+      if (sub_nivel_servicio){
+          valorServicio = servicio.monto_soles;
+          break;
+      }
+      if (servicio.flag_metraje === 'NO'){
+          valorServicio = servicio.monto_soles;
+          break;
+      }
+      else
+      {
+        const metrajeInicial = parseFloat(servicio.metraje_inicial);
+        const metrajeFinal = parseFloat(servicio.metraje_final);
+        if (numero_servicio > 6 ){
+          if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
+            valorServicio = servicio.monto_soles;
+            break;
+            }
+        }
+        
+        else if (servicio.flag_construccion === flag_construccion ){
+          if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
+            valorServicio = servicio.monto_soles;
+            break;
+            }
+        }
+      
+      }
+
+    }
 
     if (valorServicio !== null) {
       return res.json({ valor_servicio: valorServicio });
-    } else {
-      return res.status(404).json({ error: 'No se encontró el servicio o no se pudo determinar el valor.' });
     }
+
+    return res.status(404).json({ error: 'No se encontró un servicio válido.' });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Error en el servidor.' });
   }
 };
+
+
