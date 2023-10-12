@@ -1,21 +1,21 @@
 import { Sequelize } from 'sequelize';
-import {Proyecto} from '../models/Proyecto.js';
+import {Curso} from '../models/Curso.js';
 
-export const leerProyectos = async (req, res) =>{
+export const leerCursos = async (req, res) =>{
     try {
-        const proyectos = await Proyecto.findAll({
+        const cursos = await Curso.findAll({
             where: {
               activo: '1', 
             },
           });
-        res.json(proyectos);
+        res.json(cursos);
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 
 }
 
-export const buscarProyectos = async (req, res) => {
+export const buscarCursos = async (req, res) => {
     const { title, content } = req.query;
   
     try {
@@ -33,76 +33,76 @@ export const buscarProyectos = async (req, res) => {
   
       whereClause.activo = '1';
       
-      const proyectos = await Proyecto.findAll({
+      const cursos = await Curso.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
       });
   
-      res.json(proyectos);
+      res.json(cursos);
     } catch (error) {
       return res.status(500).json({ message: error.message });
     }
   };
   
 
-export const leerProyecto = async (req, res) =>{
+export const leerCurso = async (req, res) =>{
     const { id } = req.params;
     try {
-        const proyecto = await Proyecto.findOne({
+        const curso = await Curso.findOne({
             where:{
                 id
             }
         })
-        res.json(proyecto);
+        res.json(curso);
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 
 }
 
-export const crearProyecto = async (req, res) =>{
+export const crearCurso = async (req, res) =>{
     const {image, video, title, content, link } = req.body;
     try {
-        const nuevoProyecto = await Proyecto.create({
+        const nuevoCurso = await Curso.create({
           image,
           video,
           title,
           content,
           link
         })
-        res.json(nuevoProyecto);
+        res.json(nuevoCurso);
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
 
-export const actualizarProyecto = async (req, res) =>{
+export const actualizarCurso = async (req, res) =>{
     const { id } = req.params;
     const { image, video, title, content, link, autorizado, autorizado_por, activo } = req.body;
 
     try{
-    const proyecto = await Proyecto.findByPk(id);
+    const curso = await Curso.findByPk(id);
     
-    proyecto.image = image;
-    proyecto.video = video;
-    proyecto.title = title;
-    proyecto.content = content;
-    proyecto.link = link
-    proyecto.autorizado = autorizado;
-    proyecto.autorizado_por = autorizado_por;
-    proyecto.activo = activo;
-    await proyecto.save(); 
-    res.send('Proyecto actualizado');
+    curso.image = image;
+    curso.video = video;
+    curso.title = title;
+    curso.content = content;
+    curso.link = link
+    curso.autorizado = autorizado;
+    curso.autorizado_por = autorizado_por;
+    curso.activo = activo;
+    await curso.save(); 
+    res.send('Curso actualizado');
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
 }
 
-export const eliminarProyecto = async (req, res) =>{
+export const eliminarCurso = async (req, res) =>{
 
     try {
         const { id } = req.params
-        await Proyecto.destroy({
+        await Curso.destroy({
             where:{
                 id,
             }
@@ -113,40 +113,40 @@ export const eliminarProyecto = async (req, res) =>{
     }
 }
 
-export const activarProyecto = async (req, res) => {
+export const activarCurso = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const proyecto = await Proyecto.findByPk(id);
+      const curso = await Curso.findByPk(id);
   
-      if (!proyecto) {
-        return res.status(404).json({ mensaje: 'Proyecto no encontrado' });
+      if (!curso) {
+        return res.status(404).json({ mensaje: 'Curso no encontrado' });
       }
   
-      proyecto.activo = '1'; // Establecer activo en '1'
-      await proyecto.save();
+      curso.activo = '1'; // Establecer activo en '1'
+      await curso.save();
   
-      res.json({ mensaje: 'Proyecto activado correctamente' });
+      res.json({ mensaje: 'Curso activado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
   };
   
 
-  export const desactivarProyecto = async (req, res) => {
+  export const desactivarCurso = async (req, res) => {
     try {
       const { id } = req.params; 
   
-      const proyecto = await Proyecto.findByPk(id);
+      const curso = await Curso.findByPk(id);
   
-      if (!proyecto) {
-        return res.status(404).json({ mensaje: 'Proyecto no encontrado' });
+      if (!curso) {
+        return res.status(404).json({ mensaje: 'Curso no encontrado' });
       }
   
-      proyecto.activo = '0'; // Establecer activo en '0'
-      await proyecto.save();
+      curso.activo = '0'; // Establecer activo en '0'
+      await curso.save();
   
-      res.json({ mensaje: 'Proyecto desactivado correctamente' });
+      res.json({ mensaje: 'Curso desactivado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }

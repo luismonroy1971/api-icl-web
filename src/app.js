@@ -20,6 +20,8 @@ import provinciasRoutes from './routes/provincia.routes.js'
 import distritosRoutes from './routes/distrito.routes.js'
 import memoriasRoutes from './routes/memoria.routes.js'
 import proyectosRoutes from './routes/proyecto.routes.js'
+import cursosRoutes from './routes/curso.routes.js'
+import funcionariosRoutes from './routes/funcionario.routes.js'
 
 const app = express();
 //middlewares
@@ -46,5 +48,7 @@ app.use(departamentosRoutes);
 app.use(distritosRoutes);
 app.use(memoriasRoutes);
 app.use(proyectosRoutes);
+app.use(funcionariosRoutes);
+app.use(cursosRoutes);
 
 export default app

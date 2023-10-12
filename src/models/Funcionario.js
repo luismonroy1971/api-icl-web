@@ -1,26 +1,23 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
 
-export const Proyecto = sequelize.define('proyectos',{
+export const Funcionario = sequelize.define('funcionarios',{
     id:{
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
+    name:{
+        type: DataTypes.STRING
+    },
+    position:{
+        type: DataTypes.STRING
+    },
     image:{
         type: DataTypes.STRING
     },
-    video:{
-        type: DataTypes.STRING
-    },
-    title:{
-        type: DataTypes.STRING
-    },
-    content:{
-        type: DataTypes.TEXT
-    },
     link:{
-        type: DataTypes.STRING
+        type: DataTypes.TEXT
     },
     autorizado:{
         type:DataTypes.CHAR(1),
