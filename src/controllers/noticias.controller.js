@@ -17,13 +17,17 @@ export const leerNoticias = async (req, res) =>{
 }
 
 export const buscarNoticias = async (req, res) => {
-  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia } = req.query;
+  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia, autorizado } = req.query;
 
   try {
     const whereClause = {};
 
     if (fecha_noticia) {
       whereClause.fecha_noticia = fecha_noticia;
+    }
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
     }
 
     if (id_categoria_noticia) {
@@ -71,14 +75,16 @@ export const leerNoticia = async (req, res) =>{
 }
 
 export const crearNoticia = async (req, res) =>{
-    const {titulo_noticia, descripcion_noticia, fecha_noticia, url_imagen_portada, id_categoria_noticia  } = req.body;
+    const {titulo_noticia, descripcion_noticia, fecha_noticia, url_imagen_portada, id_categoria_noticia, creado_por, creado_fecha  } = req.body;
     try {
         const nuevaNoticia = await Noticia.create({
             titulo_noticia, 
             descripcion_noticia, 
             fecha_noticia, 
             url_imagen_portada, 
-            id_categoria_noticia
+            id_categoria_noticia,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaNoticia);
     } catch (error) {
@@ -93,8 +99,8 @@ export const actualizarNoticia = async (req, res) =>{
         fecha_noticia, 
         url_imagen_portada, 
         id_categoria_noticia,
-        autorizado,
-        autorizado_por,
+        modificado_por, 
+        modificado_fecha,
         activo
      } = req.body;
 
@@ -106,8 +112,8 @@ export const actualizarNoticia = async (req, res) =>{
     noticia.fecha_noticia = fecha_noticia;
     noticia.url_imagen_portada = url_imagen_portada;
     noticia.id_categoria_noticia = id_categoria_noticia;
-    noticia.autorizado = autorizado;
-    noticia.autorizado_por = autorizado_por;
+    noticia.modificado_por = modificado_por;
+    noticia.modificado_fecha = modificado_fecha;
     noticia.activo = activo;
     await noticia.save(); 
     res.send('Noticia actualizada');
@@ -116,6 +122,25 @@ export const actualizarNoticia = async (req, res) =>{
          return res.status(500).json({ mensaje: error.message })
     }
 }
+
+
+export const autorizarNoticia = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try {
+  const noticia = await Noticia.findByPk(id);
+  noticia.autorizado = autorizado;
+  noticia.autorizado_por = autorizado_por;
+  noticia.autorizado_fecha = autorizado_fecha;
+  await noticia.save(); 
+  res.send('Noticia autorizada / desautorizada');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
+}
+
 
 export const eliminarNoticia = async (req, res) =>{
 

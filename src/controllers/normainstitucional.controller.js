@@ -16,7 +16,7 @@ export const leerNormas = async (req, res) =>{
 }
 
 export const buscarNormas = async (req, res) => {
-    const { tipo_norma, denominacion_norma } = req.query;
+    const { tipo_norma, denominacion_norma, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -25,6 +25,10 @@ export const buscarNormas = async (req, res) => {
         whereClause.tipo_norma = tipo_norma;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (denominacion_norma) {
         whereClause.denominacion_norma = {
           [Sequelize.Op.like]: `%${denominacion_norma}%`
@@ -60,12 +64,14 @@ export const leerNorma = async (req, res) =>{
 }
 
 export const crearNorma = async (req, res) =>{
-    const {tipo_norma, denominacion_norma, url_norma } = req.body;
+    const {tipo_norma, denominacion_norma, url_norma, creado_por, creado_fecha } = req.body;
     try {
         const nuevaNorma = await Norma.create({
             tipo_norma,
             denominacion_norma,
-            url_norma
+            url_norma,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaNorma);
     } catch (error) {
@@ -75,16 +81,15 @@ export const crearNorma = async (req, res) =>{
 
 export const actualizarNorma = async (req, res) =>{
     const { id } = req.params;
-    const { tipo_norma, denominacion_norma, url_norma, autorizado, autorizado_por, activo } = req.body;
+    const { tipo_norma, denominacion_norma, url_norma, modificado_por, modificado_fecha, activo } = req.body;
 
     try{
     const norma = await Norma.findByPk(id);
-    
     norma.tipo_norma = tipo_norma;
     norma.denominacion_norma = denominacion_norma;
     norma.url_norma = url_norma;
-    norma.autorizado = autorizado;
-    norma.autorizado_por = autorizado_por;
+    norma.modificado_por = modificado_por;
+    norma.modificado_fecha = modificado_fecha;
     norma.activo = activo;
     await norma.save(); 
     res.send('Norma actualizada');
@@ -92,6 +97,23 @@ export const actualizarNorma = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarNorma = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const norma = await Norma.findByPk(id);
+  norma.autorizado = autorizado;
+  norma.autorizado_por = autorizado_por;
+  norma.autorizado_fecha = autorizado_fecha;
+  await norma.save(); 
+  res.send('Norma autorizada / desautorizada');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarNorma = async (req, res) =>{

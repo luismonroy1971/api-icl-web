@@ -16,7 +16,7 @@ export const leerCursos = async (req, res) =>{
 }
 
 export const buscarCursos = async (req, res) => {
-    const { title, content } = req.query;
+    const { title, content, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -25,6 +25,10 @@ export const buscarCursos = async (req, res) => {
         whereClause.title = title;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (content) {
         whereClause.content = {
           [Sequelize.Op.like]: `%${content}%`
@@ -60,14 +64,16 @@ export const leerCurso = async (req, res) =>{
 }
 
 export const crearCurso = async (req, res) =>{
-    const {image, video, title, content, link } = req.body;
+    const {image, video, title, content, link, creado_por, creado_fecha } = req.body;
     try {
         const nuevoCurso = await Curso.create({
           image,
           video,
           title,
           content,
-          link
+          link, 
+          creado_por, 
+          creado_fecha
         })
         res.json(nuevoCurso);
     } catch (error) {
@@ -77,7 +83,7 @@ export const crearCurso = async (req, res) =>{
 
 export const actualizarCurso = async (req, res) =>{
     const { id } = req.params;
-    const { image, video, title, content, link, autorizado, autorizado_por, activo } = req.body;
+    const { image, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
 
     try{
     const curso = await Curso.findByPk(id);
@@ -86,9 +92,9 @@ export const actualizarCurso = async (req, res) =>{
     curso.video = video;
     curso.title = title;
     curso.content = content;
-    curso.link = link
-    curso.autorizado = autorizado;
-    curso.autorizado_por = autorizado_por;
+    curso.link = link;
+    curso.modificado_por = modificado_por;
+    curso.modificado_fecha = modificado_fecha;
     curso.activo = activo;
     await curso.save(); 
     res.send('Curso actualizado');
@@ -96,6 +102,30 @@ export const actualizarCurso = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarCurso = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const curso = await Curso.findByPk(id);
+  
+  curso.image = image;
+  curso.video = video;
+  curso.title = title;
+  curso.content = content;
+  curso.link = link;
+  curso.autorizado = autorizado;
+  curso.autorizado_por = autorizado_por;
+  curso.autorizado_fecha = autorizado_fecha;
+  curso.activo = activo;
+  await curso.save(); 
+  res.send('Curso actualizado');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarCurso = async (req, res) =>{

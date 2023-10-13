@@ -25,13 +25,28 @@ export const Resolucion = sequelize.define('resoluciones',{
     abreviacion_area: {
         type: DataTypes.CHAR(2),
     },
+    creado_por:{
+        type: DataTypes.STRING
+    },
+    creado_fecha:{
+        type: DataTypes.DATE
+    },
+    modificado_por:{
+        type: DataTypes.STRING
+    },
+    modificado_fecha:{
+        type: DataTypes.DATE
+    },
     autorizado:{
         type:DataTypes.CHAR(1),
         defaultValue: '0'
     },
     autorizado_por:{
         type: DataTypes.STRING
-    },  
+    },
+    autorizado_fecha:{
+      type: DataTypes.DATE
+    },
     activo:{
         type:DataTypes.CHAR(1),
         defaultValue: '1'

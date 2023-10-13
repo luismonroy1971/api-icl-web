@@ -1,4 +1,4 @@
-import {Uit} from '../models/uit.js'
+import {Uit} from '../models/Uit.js'
 
 export const leerUits = async (req, res) =>{
     try {

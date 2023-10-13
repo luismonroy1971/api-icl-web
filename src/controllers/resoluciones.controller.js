@@ -35,7 +35,7 @@ export const leerResoluciones = async (req, res) =>{
 }
 
 export const buscarResoluciones = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -44,6 +44,10 @@ export const buscarResoluciones = async (req, res) => {
         whereClause.periodo_resolucion = periodo_resolucion;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (id_area) {
         whereClause.id_area = id_area;
       }
@@ -96,7 +100,7 @@ export const leerResolucion = async (req, res) =>{
 }
 
 export const crearResolucion = async (req, res) =>{
-    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area } = req.body;
+    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, creado_por, creado_fecha } = req.body;
     try {
         const nuevaResolucion = await Resolucion.create({
             periodo_resolucion, 
@@ -106,7 +110,9 @@ export const crearResolucion = async (req, res) =>{
             adicional_resolucion, 
             sumilla_resolucion, 
             url_documento_resolucion,
-            abreviacion_area
+            abreviacion_area,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaResolucion);
     } catch (error) {
@@ -116,7 +122,7 @@ export const crearResolucion = async (req, res) =>{
 
 export const actualizarResolucion = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, modificado_por, modificado_fecha, activo } = req.body;
 
     try {
         const resolucion = await Resolucion.findByPk(id);
@@ -128,8 +134,8 @@ export const actualizarResolucion = async (req, res) =>{
         resolucion.sumilla_resolucion = sumilla_resolucion;
         resolucion.url_documento_resolucion = url_documento_resolucion;
         resolucion.abreviacion_area = abreviacion_area;
-        resolucion.autorizado = autorizado;
-        resolucion.autorizado_por = autorizado_por;
+        resolucion.modificado_por = modificado_por;
+        resolucion.modificado_fecha = modificado_fecha;
         resolucion.activo = activo;
         await resolucion.save(); 
         res.send('Resolución actualizada');
@@ -138,6 +144,24 @@ export const actualizarResolucion = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message })
     }
 }
+
+export const autorizarResolucion = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try {
+      const resolucion = await Resolucion.findByPk(id);
+      resolucion.autorizado = autorizado;
+      resolucion.autorizado_por = autorizado_por;
+      resolucion.autorizado_fecha = autorizado_fecha;
+      await resolucion.save(); 
+      res.send('Resolución autorizada / desautorizada');
+  }
+  catch(error){
+      return res.status(500).json({ mensaje: error.message })
+  }
+}
+
 
 export const eliminarResolucion = async (req, res) =>{
 

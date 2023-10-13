@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
 import bcrypt from 'bcrypt';
+import { OpcionesUsuario } from './OpcionesUsuario.js';
 
 export const Usuario = sequelize.define('usuarios', {
     id: {
@@ -13,6 +14,9 @@ export const Usuario = sequelize.define('usuarios', {
     },
     email: {
         type: DataTypes.STRING
+    },
+    profile:{
+        type: DataTypes.ENUM(['Administrador','Creador','Autorizador'])
     },
     password: {
         type: DataTypes.STRING, // Agregar un campo para la contraseña
@@ -33,3 +37,8 @@ export const Usuario = sequelize.define('usuarios', {
 Usuario.prototype.comparePassword = function (password) {
     return bcrypt.compareSync(password, this.password);
 };
+
+Usuario.hasMany(OpcionesUsuario,{
+    foreignKey: 'id_usuario',
+    sourceKey: 'id'
+})

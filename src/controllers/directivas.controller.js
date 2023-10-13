@@ -35,7 +35,7 @@ export const leerDirectivas = async (req, res) =>{
 }
 
 export const buscarDirectivas = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -44,6 +44,10 @@ export const buscarDirectivas = async (req, res) => {
         whereClause.periodo_resolucion = periodo_resolucion;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+      
       if (id_area) {
         whereClause.id_area = id_area;
       }
@@ -91,7 +95,7 @@ export const leerDirectiva = async (req, res) =>{
 }
 
 export const crearDirectiva = async (req, res) =>{
-    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, url_documento_resolucion } = req.body;
+    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, url_documento_resolucion, creado_por, creado_fecha } = req.body;
     try {
         const nuevaDirectiva = await Directiva.create({
             periodo_resolucion, 
@@ -101,7 +105,9 @@ export const crearDirectiva = async (req, res) =>{
             adicional_resolucion, 
             sumilla_resolucion, 
             url_documento_resolucion,
-            abreviacion_area
+            abreviacion_area, 
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaDirectiva);
     } catch (error) {
@@ -111,7 +117,7 @@ export const crearDirectiva = async (req, res) =>{
 
 export const actualizarDirectiva = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, modificado_por, modificado_fecha, activo } = req.body;
 
     try {
         const directiva = await Directiva.findByPk(id);
@@ -123,8 +129,8 @@ export const actualizarDirectiva = async (req, res) =>{
         directiva.sumilla_resolucion = sumilla_resolucion;
         directiva.url_documento_resolucion = url_documento_resolucion;
         directiva.abreviacion_area = abreviacion_area;
-        directiva.autorizado = autorizado;
-        directiva.autorizado_por = autorizado_por;
+        directiva.modificado_por = modificado_por;
+        directiva.modificado_fecha = modificado_fecha;
         directiva.activo = activo;
         await directiva.save(); 
         res.send('Directiva actualizada');
@@ -132,6 +138,23 @@ export const actualizarDirectiva = async (req, res) =>{
     catch(error){
         return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarDirectiva = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try {
+      const directiva = await Directiva.findByPk(id);
+      directiva.autorizado = autorizado;
+      directiva.autorizado_por = autorizado_por;
+      directiva.autorizado_fecha = autorizado_fecha;
+      await directiva.save(); 
+      res.send('Directiva autorizada / desautorizada');
+  }
+  catch(error){
+      return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarDirectiva = async (req, res) =>{

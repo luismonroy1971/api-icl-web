@@ -16,7 +16,7 @@ export const leerVideos = async (req, res) =>{
 }
 
 export const buscarVideos = async (req, res) => {
-    const { fecha_video, id_categoria_video, titulo_video, descripcion_video } = req.query;
+    const { fecha_video, id_categoria_video, titulo_video, descripcion_video, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -25,6 +25,10 @@ export const buscarVideos = async (req, res) => {
         whereClause.fecha_video = fecha_video;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (id_categoria_video) {
         whereClause.id_categoria_video = id_categoria_video;
       }
@@ -69,7 +73,7 @@ export const leerVideo = async (req, res) =>{
 }
 
 export const crearVideo = async (req, res) =>{
-    const {titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, id_categoria_video  } = req.body;
+    const {titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, id_categoria_video, creado_por, creado_fecha  } = req.body;
     try {
         const nuevoVideo = await Video.create({
             titulo_video, 
@@ -77,7 +81,9 @@ export const crearVideo = async (req, res) =>{
             fecha_video, 
             url_imagen_video, 
             url_video,
-            id_categoria_video
+            id_categoria_video,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevoVideo);
     } catch (error) {
@@ -94,8 +100,8 @@ export const actualizarVideo = async (req, res) =>{
         urlImagenVideo, 
         urlVideo, 
         idCategoriaVideo,
-        autorizado,
-        autorizado_por,
+        modificado_por, 
+        modificado_fecha,
         activo
      } = req.body;
 
@@ -108,8 +114,8 @@ export const actualizarVideo = async (req, res) =>{
     video.urlImagenVideo = urlImagenVideo;
     video.urlVideo = urlVideo;
     video.idCategoriaVideo = idCategoriaVideo;
-    video.autorizado = autorizado;
-    video.autorizado_por = autorizado_por;
+    video.modificado_por = modificado_por;
+    video.modificado_fecha = modificado_fecha;
     video.activo = activo;
     await video.save(); 
     res.send('Video actualizado');
@@ -117,6 +123,25 @@ export const actualizarVideo = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarVideo = async (req, res) =>{
+  const { id } = req.params;
+  const { 
+    autorizado, autorizado_por, autorizado_fecha
+   } = req.body;
+
+  try {
+  const video = await Video.findByPk(id);
+  video.autorizado = autorizado;
+  video.autorizado_por = autorizado_por;
+  video.autorizado_fecha = autorizado_fecha;
+  await video.save(); 
+  res.send('Video autorizado / desautorizado');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarVideo = async (req, res) =>{

@@ -22,6 +22,8 @@ import memoriasRoutes from './routes/memoria.routes.js'
 import proyectosRoutes from './routes/proyecto.routes.js'
 import cursosRoutes from './routes/curso.routes.js'
 import funcionariosRoutes from './routes/funcionario.routes.js'
+import menusRoutes from './routes/menu.routes.js'
+import opcionesRoutes from './routes/opcionesusuario.routes.js'
 
 const app = express();
 //middlewares
@@ -50,5 +52,7 @@ app.use(memoriasRoutes);
 app.use(proyectosRoutes);
 app.use(funcionariosRoutes);
 app.use(cursosRoutes);
+app.use(menusRoutes);
+app.use(opcionesRoutes);
 
 export default app

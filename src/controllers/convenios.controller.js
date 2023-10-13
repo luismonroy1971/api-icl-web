@@ -36,7 +36,7 @@ export const leerConvenios = async (req, res) =>{
 }
 
 export const buscarConvenios = async (req, res) => {
-  const { descripcion_convenio, periodo_convenio, periodo_mes, id_departamento, id_provincia, id_distrito } = req.query;
+  const { descripcion_convenio, periodo_convenio, periodo_mes, id_departamento, id_provincia, id_distrito, autorizado } = req.query;
 
   try {
     const whereClause = {};
@@ -45,6 +45,10 @@ export const buscarConvenios = async (req, res) => {
       whereClause.descripcion_convenio = {
         [Sequelize.Op.like]: `%${descripcion_convenio}%`
       };
+    }
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
     }
 
     if (periodo_convenio) {
@@ -96,7 +100,7 @@ export const leerConvenio = async (req, res) =>{
 }
 
 export const crearConvenio = async (req, res) =>{
-    const {descripcion_convenio, url_documento_convenio, fecha_convenio, id_departamento,id_provincia, id_distrito } = req.body;
+    const {descripcion_convenio, url_documento_convenio, fecha_convenio, creado_por, creado_fecha, id_departamento,id_provincia, id_distrito } = req.body;
     try {
         const nuevoConvenio = await Convenio.create({
             descripcion_convenio,
@@ -104,7 +108,9 @@ export const crearConvenio = async (req, res) =>{
             fecha_convenio,
             id_departamento,
             id_provincia,
-            id_distrito
+            id_distrito,
+            creado_por,
+            creado_fecha
         })
         res.json(nuevoConvenio);
     } catch (error) {
@@ -114,7 +120,7 @@ export const crearConvenio = async (req, res) =>{
 
 export const actualizarConvenio = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_convenio, url_documento_convenio, id_departamento, id_provincia, id_distrito, autorizado, autorizado_por, activo } = req.body;
+    const { descripcion_convenio, url_documento_convenio, id_departamento, id_provincia, id_distrito, modificado_por,modificado_fecha, activo } = req.body;
 
     try{
     const convenio = await Convenio.findByPk(id);
@@ -125,9 +131,8 @@ export const actualizarConvenio = async (req, res) =>{
     convenio.id_departamento = id_departamento;
     convenio.id_provincia = id_provincia;
     convenio.id_distrito = id_distrito;
-
-    convenio.autorizado = autorizado;
-    convenio.autorizado_por = autorizado_por;
+    convenio.modificado_por = modificado_por
+    convenio.modificado_fecha = modificado_fecha
     convenio.activo = activo;
     await convenio.save(); 
     res.send('Convenio actualizado');
@@ -136,6 +141,25 @@ export const actualizarConvenio = async (req, res) =>{
          return res.status(500).json({ mensaje: error.message })
     }
 }
+
+export const autorizarConvenio = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const convenio = await Convenio.findByPk(id);
+  
+  convenio.autorizado = autorizado;
+  convenio.autorizado_por = autorizado_por;
+  convenio.autorizado_fecha = autorizado_fecha;
+  await convenio.save(); 
+  res.send('Convenio autorizado/desautorizado');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
+}
+
 
 export const eliminarConvenio = async (req, res) =>{
 

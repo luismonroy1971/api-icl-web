@@ -59,7 +59,10 @@ export const Servicio = sequelize.define('servicios',{
     },
     autorizado_por:{
         type: DataTypes.STRING
-    },  
+    },
+    autorizado_fecha:{
+      type: DataTypes.DATE
+    },
     activo:{
         type:DataTypes.CHAR(1),
         defaultValue: '1'

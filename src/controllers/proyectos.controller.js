@@ -16,7 +16,7 @@ export const leerProyectos = async (req, res) =>{
 }
 
 export const buscarProyectos = async (req, res) => {
-    const { title, content } = req.query;
+    const { title, content, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -25,6 +25,10 @@ export const buscarProyectos = async (req, res) => {
         whereClause.title = title;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (content) {
         whereClause.content = {
           [Sequelize.Op.like]: `%${content}%`
@@ -67,7 +71,9 @@ export const crearProyecto = async (req, res) =>{
           video,
           title,
           content,
-          link
+          link,
+          creado_por, 
+          creado_fecha
         })
         res.json(nuevoProyecto);
     } catch (error) {
@@ -77,7 +83,7 @@ export const crearProyecto = async (req, res) =>{
 
 export const actualizarProyecto = async (req, res) =>{
     const { id } = req.params;
-    const { image, video, title, content, link, autorizado, autorizado_por, activo } = req.body;
+    const { image, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
 
     try{
     const proyecto = await Proyecto.findByPk(id);
@@ -87,8 +93,8 @@ export const actualizarProyecto = async (req, res) =>{
     proyecto.title = title;
     proyecto.content = content;
     proyecto.link = link
-    proyecto.autorizado = autorizado;
-    proyecto.autorizado_por = autorizado_por;
+    proyecto.modificado_por = modificado_por;
+    proyecto.modificado_fecha = modificado_fecha;
     proyecto.activo = activo;
     await proyecto.save(); 
     res.send('Proyecto actualizado');
@@ -96,6 +102,24 @@ export const actualizarProyecto = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarProyecto = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const proyecto = await Proyecto.findByPk(id);
+  
+  proyecto.autorizado = autorizado;
+  proyecto.autorizado_por = autorizado_por;
+  proyecto.autorizado_fecha = autorizado_fecha;
+  await proyecto.save(); 
+  res.send('autorizada / desautorizada');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarProyecto = async (req, res) =>{

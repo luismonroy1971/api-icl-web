@@ -16,11 +16,15 @@ export const leerFuncionarios = async (req, res) =>{
 }
 
 export const buscarFuncionarios = async (req, res) => {
-    const { name, position } = req.query;
+    const { name, position, autorizado } = req.query;
   
     try {
       const whereClause = {};
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (name) {
         whereClause.name = name;
       }
@@ -60,13 +64,15 @@ export const leerFuncionario = async (req, res) =>{
 }
 
 export const crearFuncionario = async (req, res) =>{
-    const {name, position, image, link } = req.body;
+    const {name, position, image, link, creado_por, creado_fecha } = req.body;
     try {
         const nuevoFuncionario = await Funcionario.create({
           name,
           position,
           image,
-          link
+          link,
+          creado_por, 
+          creado_fecha
         })
         res.json(nuevoFuncionario);
     } catch (error) {
@@ -76,7 +82,7 @@ export const crearFuncionario = async (req, res) =>{
 
 export const actualizarFuncionario = async (req, res) =>{
     const { id } = req.params;
-    const { name, position, image, link, autorizado, autorizado_por, activo } = req.body;
+    const { name, position, image, link, modificado_por, modificado_fecha, activo } = req.body;
 
     try{
     const funcionario = await Funcionario.findByPk(id);
@@ -85,8 +91,8 @@ export const actualizarFuncionario = async (req, res) =>{
     funcionario.position = position;
     funcionario.image = image;
     funcionario.link = link;
-    funcionario.autorizado = autorizado;
-    funcionario.autorizado_por = autorizado_por;
+    funcionario.modificado_por = modificado_por;
+    funcionario.modificado_fecha = modificado_fecha;
     funcionario.activo = activo;
     await funcionario.save(); 
     res.send('Funcionario actualizado');
@@ -94,6 +100,23 @@ export const actualizarFuncionario = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarFuncionario = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const funcionario = await Funcionario.findByPk(id);
+  funcionario.autorizado = autorizado;
+  funcionario.autorizado_por = autorizado_por;
+  funcionario.autorizado_fecha = autorizado_fecha;
+  await funcionario.save(); 
+  res.send('Funcionario autorizado / desautorizado');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarFuncionario = async (req, res) =>{

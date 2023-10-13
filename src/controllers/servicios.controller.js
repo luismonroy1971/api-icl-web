@@ -16,13 +16,17 @@ export const leerServicios = async (req, res) =>{
 }
 
 export const buscarServicios = async (req, res) => {
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio } = req.query;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado } = req.query;
   
     try {
       const whereClause = {};
   
       if (tipo_servicio) {
         whereClause.tipo_servicio = tipo_servicio;
+      }
+
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
       }
   
       if (periodo_servicio) {
@@ -72,7 +76,7 @@ export const leerServicio = async (req, res) =>{
 }
 
 export const crearServicio = async (req, res) =>{
-    const {tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit } = req.body;
+    const {tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, creado_por, creado_fecha } = req.body;
     try {
         const nuevoServicio = await Servicio.create({
             tipo_servicio, 
@@ -83,7 +87,9 @@ export const crearServicio = async (req, res) =>{
             denominacion_servicio, 
             por_uit, 
             monto_soles, 
-            monto_uit
+            monto_uit,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevoServicio);
     } catch (error) {
@@ -93,7 +99,7 @@ export const crearServicio = async (req, res) =>{
 
 export const actualizarServicio = async (req, res) =>{
     const { id } = req.params;
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, autorizado, autorizado_por, activo } = req.body;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, modificado_por, modificado_fecha, activo } = req.body;
 
     try {
         const servicio = await Servicio.findByPk(id);
@@ -106,8 +112,8 @@ export const actualizarServicio = async (req, res) =>{
         servicio.por_uit = por_uit;
         servicio.monto_soles = monto_soles;
         servicio.monto_uit = monto_uit;
-        servicio.autorizado = autorizado;
-        servicio.autorizado_por = autorizado_por;
+        servicio.modificado_por = modificado_por;
+        servicio.modificado_fecha = modificado_fecha;
         servicio.activo = activo;
         await servicio.save(); 
         res.send('Servicio actualizado');
@@ -116,6 +122,24 @@ export const actualizarServicio = async (req, res) =>{
         return res.status(500).json({ mensaje: error.message })
     }
 }
+
+export const autorizarServicio = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try {
+      const servicio = await Servicio.findByPk(id);
+      servicio.autorizado = autorizado;
+      servicio.autorizado_por = autorizado_por;
+      servicio.autorizado_por = autorizado_fecha;
+      await servicio.save(); 
+      res.send('Servicio autorizado / desautorizado');
+  }
+  catch(error){
+      return res.status(500).json({ mensaje: error.message })
+  }
+}
+
 
 export const eliminarServicio = async (req, res) =>{
 

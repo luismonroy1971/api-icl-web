@@ -81,7 +81,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
 export const actualizarUsuario = async (req, res) => {
     try {
       const usuarioId = req.params.id; // ID del usuario a actualizar
-      const { name, email, password } = req.body; // Nuevos datos del usuario
+      const { name, profile, email, password } = req.body; // Nuevos datos del usuario
   
       // Busca el usuario en la base de datos por su ID
       const usuario = await Usuario.findByPk(usuarioId);
@@ -93,6 +93,7 @@ export const actualizarUsuario = async (req, res) => {
       // Actualiza los datos del usuario
       usuario.name = name;
       usuario.email = email;
+      usuario.profile = profile;
   
       if (password) {
         const saltRounds = 10;

@@ -35,7 +35,7 @@ export const leerRendiciones = async (req, res) =>{
 }
 
 export const buscarRendiciones = async (req, res) => {
-    const { periodo_rendicion, descripcion_rendicion } = req.query;
+    const { periodo_rendicion, descripcion_rendicion, autorizado } = req.query;
   
     try {
       const whereClause = {};
@@ -44,6 +44,10 @@ export const buscarRendiciones = async (req, res) => {
         whereClause.periodo_rendicion = periodo_rendicion;
       }
   
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
+      }
+
       if (descripcion_rendicion) {
         whereClause.descripcion_rendicion = {
           [Sequelize.Op.like]: `%${descripcion_rendicion}%`
@@ -79,12 +83,14 @@ export const leerRendicion = async (req, res) =>{
 }
 
 export const crearRendicion = async (req, res) =>{
-    const {descripcion_rendicion, periodo_rendicion, url_rendicion } = req.body;
+    const {descripcion_rendicion, periodo_rendicion, url_rendicion, creado_por, creado_fecha } = req.body;
     try {
         const nuevaRendicion = await Rendicion.create({
             descripcion_rendicion,
             periodo_rendicion,
-            url_rendicion
+            url_rendicion,
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaRendicion);
     } catch (error) {
@@ -94,7 +100,7 @@ export const crearRendicion = async (req, res) =>{
 
 export const actualizarRendicion = async (req, res) =>{
     const { id } = req.params;
-    const { descripcion_rendicion, periodo_rendicion, url_rendicion, autorizado, autorizado_por, activo } = req.body;
+    const { descripcion_rendicion, periodo_rendicion, url_rendicion, modificado_por, modificado_fecha, activo } = req.body;
 
     try{
     const rendicion = await Rendicion.findByPk(id);
@@ -102,8 +108,8 @@ export const actualizarRendicion = async (req, res) =>{
     rendicion.descripcion_rendicion = descripcion_rendicion;
     rendicion.periodo_rendicion = periodo_rendicion;
     rendicion.url_rendicion = url_rendicion;
-    rendicion.autorizado = autorizado;
-    rendicion.autorizado_por = autorizado_por;
+    rendicion.modificado_por = modificado_por;
+    rendicion.modificado_fecha = modificado_fecha;
     rendicion.activo = activo;
     await rendicion.save(); 
     res.send('Rendición actualizada');
@@ -111,6 +117,23 @@ export const actualizarRendicion = async (req, res) =>{
     catch(error){
          return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarRendicion = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+
+  try{
+  const rendicion = await Rendicion.findByPk(id);
+  rendicion.autorizado = autorizado;
+  rendicion.autorizado_por = autorizado_por;
+  rendicion.autorizado_fecha = autorizado_fecha;
+  await rendicion.save(); 
+  res.send('Rendición autorizada / desautorizada');
+  }
+  catch(error){
+       return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarRendicion = async (req, res) =>{

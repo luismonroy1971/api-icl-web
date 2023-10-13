@@ -1,5 +1,5 @@
 import { Sequelize } from 'sequelize';
-import {Memoria} from '../models/memorias.js';
+import {Memoria} from '../models/Memorias.js';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -35,13 +35,17 @@ export const leerMemorias = async (req, res) =>{
 }
 
 export const buscarMemorias = async (req, res) => {
-    const { periodo_memoria, descripcion_memoria } = req.query;
+    const { periodo_memoria, descripcion_memoria, autorizado } = req.query;
   
     try {
       const whereClause = {};
   
       if (periodo_memoria) {
         whereClause.periodo_memoria = periodo_memoria;
+      }
+
+      if (autorizado) {
+        whereClause.autorizado = autorizado;
       }
 
       if (descripcion_memoria) {
@@ -79,11 +83,13 @@ export const leerMemoria = async (req, res) =>{
 }
 
 export const crearMemoria = async (req, res) =>{
-    const { periodo_memoria, descripcion_memoria } = req.body;
+    const { periodo_memoria, descripcion_memoria, creado_por, creado_fecha } = req.body;
     try {
         const nuevaMemoria = await Memoria.create({
             periodo_memoria, 
             descripcion_memoria, 
+            creado_por, 
+            creado_fecha
         })
         res.json(nuevaMemoria);
     } catch (error) {
@@ -93,14 +99,14 @@ export const crearMemoria = async (req, res) =>{
 
 export const actualizarMemoria = async (req, res) =>{
     const { id } = req.params;
-    const { periodo_memoria, descripcion_memoria, autorizado, autorizado_por, activo } = req.body;
+    const { periodo_memoria, descripcion_memoria, modificado_por, modificado_fecha, activo } = req.body;
 
     try {
         const memoria = await Memoria.findByPk(id);
         memoria.periodo_memoria = periodo_memoria;
         memoria.descripcion_memoria = descripcion_memoria;
-        memoria.autorizado = autorizado;
-        memoria.autorizado_por = autorizado_por;
+        memoria.modificado_por = modificado_por;
+        memoria.modificado_fecha = modificado_fecha;
         memoria.activo = activo;
         await memoria.save(); 
         res.send('Memoria actualizado');
@@ -108,6 +114,23 @@ export const actualizarMemoria = async (req, res) =>{
     catch(error){
         return res.status(500).json({ mensaje: error.message })
     }
+}
+
+export const autorizarMemoria = async (req, res) =>{
+  const { id } = req.params;
+  const { autorizado, autorizado_por, autorizado_fecha} = req.body;
+
+  try {
+      const memoria = await Memoria.findByPk(id);
+      memoria.autorizado = autorizado;
+      memoria.autorizado_por = autorizado_por;
+      memoria.autorizado_fecha = autorizado_fecha;
+      await memoria.save(); 
+      res.send('Memoria autorizada / desautorizada');
+  }
+  catch(error){
+      return res.status(500).json({ mensaje: error.message })
+  }
 }
 
 export const eliminarMemoria = async (req, res) =>{
