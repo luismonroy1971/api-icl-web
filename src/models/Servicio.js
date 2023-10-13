@@ -53,6 +53,18 @@ export const Servicio = sequelize.define('servicios',{
     monto_uit:{
         type: DataTypes.DECIMAL
     },
+    creado_por:{
+        type: DataTypes.STRING
+    },
+    creado_fecha:{
+        type: DataTypes.DATE
+    },
+    modificado_por:{
+        type: DataTypes.STRING
+    },
+    modificado_fecha:{
+        type: DataTypes.DATE
+    },
     autorizado:{
         type:DataTypes.CHAR(1),
         defaultValue: '0'

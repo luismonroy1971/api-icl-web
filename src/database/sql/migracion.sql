@@ -3090,3 +3090,17 @@ INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, desc
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','11','Resoluciones','Resoluciones','Administrador de Resoluciones','/Resoluciones');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','12','Servicios','Servicios','Administrador de Servicios','/Servicios');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','13','Videos','Videos','Administrador de Videos','/Videos');
+
+UPDATE CONVENIOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE CONVOCATORIAS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE CURSOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE DIRECTIVAS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE FUNCIONARIOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE MEMORIAS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE NORMASINSTITUCIONALES SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE NOTICIAS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE PROYECTOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE RENDICIONES SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE RESOLUCIONES SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE SERVICIOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
+UPDATE VIDEOS SET creado_por = 'Migración', creado_fecha = CURRENT_TIMESTAMP, modificado_por = 'Migración', modificado_fecha = CURRENT_TIMESTAMP, autorizado_fecha = CURRENT_TIMESTAMP;
