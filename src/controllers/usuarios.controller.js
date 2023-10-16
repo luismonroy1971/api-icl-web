@@ -43,7 +43,7 @@ export const iniciarSesion = async (req, res) => {
   
       const token = generarTokenJWT(usuario);
   
-      res.status(200).json({ token });
+      res.status(200).json({ token, usuario });
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
       res.status(500).json({ message: 'Error en el servidor' });

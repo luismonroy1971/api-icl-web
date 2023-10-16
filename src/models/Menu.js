@@ -28,7 +28,11 @@ export const Menu = sequelize.define('menus',{
     }
 },{timestamps: false})
 
-Menu.hasMany(OpcionesUsuario,{
+const init = async () => {
+  const { OpcionesUsuario } = await import('./OpcionesUsuario.js');
+
+  Menu.hasMany(OpcionesUsuario, {
     foreignKey: 'id_menu',
-    sourceKey: 'id'
-})
+    sourceKey: 'id',
+  });
+};
