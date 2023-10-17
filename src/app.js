@@ -24,6 +24,7 @@ import cursosRoutes from './routes/curso.routes.js'
 import funcionariosRoutes from './routes/funcionario.routes.js'
 import menusRoutes from './routes/menu.routes.js'
 import opcionesRoutes from './routes/opcionesusuario.routes.js'
+import campostablaRoutes from './routes/campostablas.routes.js'
 
 const app = express();
 //middlewares
@@ -54,5 +55,6 @@ app.use(funcionariosRoutes);
 app.use(cursosRoutes);
 app.use(menusRoutes);
 app.use(opcionesRoutes);
+app.use(campostablaRoutes);
 
 export default app

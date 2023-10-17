@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import {OpcionesUsuario} from '../models/OpcionesUsuario.js';
 import { Menu } from '../models/Menu.js';
+import { CamposTablas } from '../models/CamposTablas.js';
 
 export const buscarOpcionesUsuarios = async (req, res) => {
     const { id_usuario } = req.query;
@@ -15,11 +16,17 @@ export const buscarOpcionesUsuarios = async (req, res) => {
       const opcionesusuarios = await OpcionesUsuario.findAll({
           where: Object.keys(whereClause).length === 0 ? {} : whereClause,
           include: [
-        {
-          model: Menu,
-          required: true, // Cambia esto según tus necesidades, si quieres un inner join
-        },
-      ],
+            {
+                    model: Menu,
+                    required: true, // Cambia esto según tus necesidades, si quieres un inner join
+                    include: [
+                        {
+                            model: CamposTablas,
+                            required: false, // Puedes configurar esto según tus necesidades
+                        },
+                    ],
+                },
+            ],
       });
   
       res.json(opcionesusuarios);

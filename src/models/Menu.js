@@ -36,3 +36,4 @@ const init = async () => {
     sourceKey: 'id',
   });
 };
+

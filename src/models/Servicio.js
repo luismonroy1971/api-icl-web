@@ -79,4 +79,10 @@ export const Servicio = sequelize.define('servicios',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+}, { timestamps: false })
+
+Servicio.beforeSave(async (servicio, options) => {
+  if (servicio.tipo_servicio === 'TUPA') {
+    servicio.monto_soles = servicio.por_uit * servicio.monto_uit;
+  }
+});
