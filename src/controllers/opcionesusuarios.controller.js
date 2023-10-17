@@ -19,12 +19,7 @@ export const buscarOpcionesUsuarios = async (req, res) => {
             {
                     model: Menu,
                     required: true, // Cambia esto según tus necesidades, si quieres un inner join
-                    include: [
-                        {
-                            model: CamposTablas,
-                            required: false, // Puedes configurar esto según tus necesidades
-                        },
-                    ],
+                    
                 },
             ],
       });
