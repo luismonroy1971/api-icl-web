@@ -5,7 +5,7 @@ import { Usuario } from '../models/Usuario.js'; // Ajusta la importación según
 // Función para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
     try {
-      const { name, email, password } = req.body;
+      const { name, email, password, profile } = req.body;
   
       const usuarioExistente = await Usuario.findOne({ where: { email } });
       if (usuarioExistente) {
@@ -13,7 +13,7 @@ export const registrarUsuario = async (req, res) => {
       }
   
       // No es necesario encriptar la contraseña aquí, ya que se hace en el modelo
-      const nuevoUsuario = await Usuario.create({ name, email, password });
+      const nuevoUsuario = await Usuario.create({ name, email, password, profile });
   
       const token = generarTokenJWT(nuevoUsuario);
   
