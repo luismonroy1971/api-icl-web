@@ -207,11 +207,20 @@ export const obtenerValorDeServicio = async (req, res) => {
     // Define las condiciones iniciales para la búsqueda
     let condiciones;
     if (sub_nivel_servicio){
-      condiciones = {
-        tipo_servicio,
-        numero_servicio,
-        sub_nivel_servicio
-      };  
+      if (numero_servicio === '1'){
+          condiciones = {
+            tipo_servicio,
+            numero_servicio,
+            flag_calculo: '1',
+          };
+      }else{
+        condiciones = {
+          tipo_servicio,
+          numero_servicio,
+          sub_nivel_servicio
+        };  
+      }
+      
     }
     else{
       condiciones = {
@@ -229,13 +238,13 @@ export const obtenerValorDeServicio = async (req, res) => {
     let valorServicio = null;
 
     // Itera sobre los servicios para encontrar el valor correcto
-
+    console.log(sub_nivel_servicio, numero_servicio)
     for (const servicio of servicios) {
-      if (sub_nivel_servicio){
+      if (sub_nivel_servicio === '0' && numero_servicio !== '1'){
           valorServicio = servicio.monto_soles;
           break;
       }
-      if (servicio.flag_metraje === 'NO'){
+      if (servicio.flag_metraje === 'NO' && numero_servicio !== '1'){
           valorServicio = servicio.monto_soles;
           break;
       }
