@@ -220,7 +220,6 @@ export const obtenerValorDeServicio = async (req, res) => {
         };  
       }
     
-    console.log(condiciones);
     const servicios = await Servicio.findAll({
       where: condiciones,
       attributes: ['flag_construccion', 'sub_nivel_servicio', 'flag_metraje', 'metraje_inicial', 'metraje_final', 'monto_soles'],
