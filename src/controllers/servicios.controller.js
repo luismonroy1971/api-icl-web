@@ -198,7 +198,7 @@ export const desactivarServicio = async (req, res) => {
 
 export const obtenerValorDeServicio = async (req, res) => {
   try {
-    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio } = req.query;
+    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio,periodo_servicio } = req.query;
 
     if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion ) {
       return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
@@ -206,8 +206,7 @@ export const obtenerValorDeServicio = async (req, res) => {
 
     // Define las condiciones iniciales para la búsqueda
     let condiciones;
-    if (sub_nivel_servicio){
-      if (numero_servicio === '1'){
+    if (sub_nivel_servicio && periodo_servicio === '0'){
           condiciones = {
             tipo_servicio,
             numero_servicio,
@@ -220,16 +219,8 @@ export const obtenerValorDeServicio = async (req, res) => {
           sub_nivel_servicio
         };  
       }
-      
-    }
-    else{
-      condiciones = {
-        tipo_servicio,
-        numero_servicio,
-        flag_calculo: '1',
-      };
-    }
-    console.log(condiciones)
+    
+    console.log(condiciones);
     const servicios = await Servicio.findAll({
       where: condiciones,
       attributes: ['flag_construccion', 'sub_nivel_servicio', 'flag_metraje', 'metraje_inicial', 'metraje_final', 'monto_soles'],
@@ -238,13 +229,13 @@ export const obtenerValorDeServicio = async (req, res) => {
     let valorServicio = null;
 
     // Itera sobre los servicios para encontrar el valor correcto
-    console.log(sub_nivel_servicio, numero_servicio)
+  
     for (const servicio of servicios) {
-      if (sub_nivel_servicio === '0' && numero_servicio !== '1'){
+      if (sub_nivel_servicio === '0' && periodo_servicio !=='0'){
           valorServicio = servicio.monto_soles;
           break;
       }
-      if (servicio.flag_metraje === 'NO' && numero_servicio !== '1'){
+      if (servicio.flag_metraje === 'NO' && periodo_servicio !=='0'){
           valorServicio = servicio.monto_soles;
           break;
       }
