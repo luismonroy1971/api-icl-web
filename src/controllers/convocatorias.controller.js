@@ -159,12 +159,22 @@ export const crearConvocatoria = async (req, res) => {
         creado_por,
         creado_fecha,
         // Campos de archivos
+        anexos,
+        comunicacion1,
+        comunicacion2,
+        comunicacion3,
+        aviso,
+        evaluacioncurricular,
+        resultado_examen,
+        resultado_entrevista,
+        puntaje_final,
+        // Campos de archivos
         anexosFile,
         comunicacion1File,
         comunicacion2File,
-        resultado_examenFile,
+        comunicacion3File,
         avisoFile,
-        resultado_examenFile,
+        resultado_evaluacion_curricularFile,
         resultado_examenFile,
         resultado_entrevistaFile,
         puntaje_finalFile
@@ -177,6 +187,15 @@ export const crearConvocatoria = async (req, res) => {
             tipo_convocatoria,
             numero_convocatoria,
             periodo_convocatoria,
+            anexos,
+            comunicacion1,
+            comunicacion2,
+            comunicacion3,
+            aviso,
+            evaluacioncurricular,
+            resultado_examen,
+            resultado_entrevista,
+            puntaje_final,
             estado_convocatoria,
             creado_por,
             creado_fecha,
@@ -222,6 +241,15 @@ export const actualizarConvocatoria = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
+        anexos,
+        comunicacion1,
+        comunicacion2,
+        comunicacion3,
+        aviso,
+        evaluacioncurricular,
+        resultado_examen,
+        resultado_entrevista,
+        puntaje_final,
         // Campos de archivos
         anexosFile,
         comunicacion1File,
@@ -249,7 +277,16 @@ export const actualizarConvocatoria = async (req, res) => {
         convocatoria.estado_convocatoria = estado_convocatoria;
         convocatoria.modificado_por = modificado_por;
         convocatoria.modificado_fecha = modificado_fecha;
-        convocatoria.activo = activo;
+      convocatoria.activo = activo;
+        convocatoria.anexos = anexos;
+        convocatoria.comunicacion1 = comunicacion1 ;
+        convocatoria.comunicacion2 = comunicacion2;
+        convocatoria.comunicacion3 = comunicacion3 ;
+        convocatoria.aviso = aviso;
+        convocatoria.evaluacioncurricular = evaluacioncurricular;
+        convocatoria.resultado_examen = resultado_examen;
+        convocatoria.resultado_entrevista = resultado_entrevista;
+        convocatoria.puntaje_final = puntaje_final;
 
         // Actualiza los campos BLOB si se proporcionan nuevos archivos
         if (anexosFile) {
@@ -281,9 +318,6 @@ export const actualizarConvocatoria = async (req, res) => {
             convocatoria.contenido_resultado_evaluacion_curricular = fs.readFileSync(resultado_evaluacion_curricularFile.path);
             fs.unlinkSync(resultado_evaluacion_curricularFile.path);
          }
-      
-            contenido_resultado_entrevista: fs.readFileSync(resultado_entrevistaFile.path),
-            contenido_puntaje_final: fs.readFileSync(puntaje_finalFile.path)
       
         if (resultado_examenFile) {
             convocatoria.contenido_resultado_examen = fs.readFileSync(resultado_examenFile.path);
