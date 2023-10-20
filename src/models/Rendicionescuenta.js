@@ -1,45 +1,49 @@
-import {DataTypes} from 'sequelize';
-import {sequelize} from '../database/database.js';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database/database.js';
 
-export const Rendicion = sequelize.define('rendiciones',{
-    id:{
+export const Rendicion = sequelize.define('rendiciones', {
+    id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
-    descripcion_rendicion:{
-        type: DataTypes.STRING
+    descripcion_rendicion: {
+        type: DataTypes.STRING,
     },
-    periodo_rendicion:{
-        type: DataTypes.INTEGER
+    periodo_rendicion: {
+        type: DataTypes.INTEGER,
     },
-    url_rendicion:{
-        type: DataTypes.STRING
+    url_rendicion: {
+        type: DataTypes.STRING,
     },
-    creado_por:{
-        type: DataTypes.STRING
+    // Campo BLOB para el PDF
+    contenido_rendicion: {
+        type: DataTypes.BLOB('long'),
     },
-    creado_fecha:{
-        type: DataTypes.DATE
+    creado_por: {
+        type: DataTypes.STRING,
     },
-    modificado_por:{
-        type: DataTypes.STRING
+    creado_fecha: {
+        type: DataTypes.DATE,
     },
-    modificado_fecha:{
-        type: DataTypes.DATE
+    modificado_por: {
+        type: DataTypes.STRING,
     },
-    autorizado:{
-        type:DataTypes.CHAR(1),
-        defaultValue: '0'
+    modificado_fecha: {
+        type: DataTypes.DATE,
     },
-    autorizado_por:{
-        type: DataTypes.STRING
+    autorizado: {
+        type: DataTypes.CHAR(1),
+        defaultValue: '0',
     },
-    autorizado_fecha:{
-      type: DataTypes.DATE
+    autorizado_por: {
+        type: DataTypes.STRING,
     },
-    activo:{
-        type:DataTypes.CHAR(1),
-        defaultValue: '1'
+    autorizado_fecha: {
+        type: DataTypes.DATE,
     },
-},{timestamps: false})
+    activo: {
+        type: DataTypes.CHAR(1),
+        defaultValue: '1',
+    },
+}, { timestamps: false });

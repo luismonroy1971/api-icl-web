@@ -82,39 +82,76 @@ export const leerMemoria = async (req, res) =>{
 
 }
 
-export const crearMemoria = async (req, res) =>{
-    const { periodo_memoria, descripcion_memoria, creado_por, creado_fecha } = req.body;
+import fs from 'fs';
+
+export const crearMemoria = async (req, res) => {
+    const {
+        periodo_memoria,
+        descripcion_memoria,
+        creado_por,
+        creado_fecha,
+    } = req.body;
+
+    const memoriaFile = req.file; // Acceder al archivo cargado
+
     try {
         const nuevaMemoria = await Memoria.create({
-            periodo_memoria, 
-            descripcion_memoria, 
-            creado_por, 
-            creado_fecha
-        })
+            periodo_memoria,
+            descripcion_memoria,
+            creado_por,
+            creado_fecha,
+            url_memoria: memoriaFile.originalname, // Almacena el nombre del archivo, si es necesario
+            contenido_memoria: fs.readFileSync(memoriaFile.path),
+        });
+
+        // Elimina el archivo temporal creado por Multer
+        fs.unlinkSync(memoriaFile.path);
+
         res.json(nuevaMemoria);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
+        return res.status(500).json({ mensaje: error.message });
     }
-}
+};
 
-export const actualizarMemoria = async (req, res) =>{
+export const actualizarMemoria = async (req, res) => {
     const { id } = req.params;
-    const { periodo_memoria, descripcion_memoria, modificado_por, modificado_fecha, activo } = req.body;
+    const {
+        periodo_memoria,
+        descripcion_memoria,
+        modificado_por,
+        modificado_fecha,
+        activo,
+    } = req.body;
+
+    const memoriaFile = req.file; // Acceder al archivo cargado
 
     try {
         const memoria = await Memoria.findByPk(id);
+
+        if (!memoria) {
+            return res.status(404).json({ mensaje: 'Memoria no encontrada' });
+        }
+
         memoria.periodo_memoria = periodo_memoria;
         memoria.descripcion_memoria = descripcion_memoria;
         memoria.modificado_por = modificado_por;
         memoria.modificado_fecha = modificado_fecha;
         memoria.activo = activo;
-        await memoria.save(); 
-        res.send('Memoria actualizado');
+
+        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (memoriaFile) {
+            memoria.url_memoria = memoriaFile.originalname; // Almacena el nombre del archivo, si es necesario
+            memoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
+            fs.unlinkSync(memoriaFile.path);
+        }
+
+        await memoria.save();
+        res.send('Memoria actualizada');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-        return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarMemoria = async (req, res) =>{
   const { id } = req.params;

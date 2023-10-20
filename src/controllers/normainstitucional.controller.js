@@ -63,41 +63,79 @@ export const leerNorma = async (req, res) =>{
 
 }
 
-export const crearNorma = async (req, res) =>{
-    const {tipo_norma, denominacion_norma, url_norma, creado_por, creado_fecha } = req.body;
+import fs from 'fs';
+
+export const crearNorma = async (req, res) => {
+    const {
+        tipo_norma,
+        denominacion_norma,
+        url_norma,
+        creado_por,
+        creado_fecha,
+    } = req.body;
+
+    const normaFile = req.file; // Acceder al archivo cargado
+
     try {
         const nuevaNorma = await Norma.create({
             tipo_norma,
             denominacion_norma,
             url_norma,
-            creado_por, 
-            creado_fecha
-        })
+            creado_por,
+            creado_fecha,
+            contenido_norma: fs.readFileSync(normaFile.path),
+        });
+
+        // Elimina el archivo temporal creado por Multer
+        fs.unlinkSync(normaFile.path);
+
         res.json(nuevaNorma);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message });
     }
-}
+};
 
-export const actualizarNorma = async (req, res) =>{
+
+export const actualizarNorma = async (req, res) => {
     const { id } = req.params;
-    const { tipo_norma, denominacion_norma, url_norma, modificado_por, modificado_fecha, activo } = req.body;
+    const {
+        tipo_norma,
+        denominacion_norma,
+        url_norma,
+        modificado_por,
+        modificado_fecha,
+        activo,
+    } = req.body;
 
-    try{
-    const norma = await Norma.findByPk(id);
-    norma.tipo_norma = tipo_norma;
-    norma.denominacion_norma = denominacion_norma;
-    norma.url_norma = url_norma;
-    norma.modificado_por = modificado_por;
-    norma.modificado_fecha = modificado_fecha;
-    norma.activo = activo;
-    await norma.save(); 
-    res.send('Norma actualizada');
+    const normaFile = req.file; // Acceder al archivo cargado
+
+    try {
+        const norma = await Norma.findByPk(id);
+
+        if (!norma) {
+            return res.status(404).json({ mensaje: 'Norma no encontrada' });
+        }
+
+        norma.tipo_norma = tipo_norma;
+        norma.denominacion_norma = denominacion_norma;
+        norma.url_norma = url_norma;
+        norma.modificado_por = modificado_por;
+        norma.modificado_fecha = modificado_fecha;
+        norma.activo = activo;
+
+        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (normaFile) {
+            norma.contenido_norma = fs.readFileSync(normaFile.path);
+            fs.unlinkSync(normaFile.path);
+        }
+
+        await norma.save();
+        res.send('Norma actualizada');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-         return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarNorma = async (req, res) =>{
   const { id } = req.params;

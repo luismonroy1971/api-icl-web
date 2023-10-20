@@ -94,51 +94,96 @@ export const leerDirectiva = async (req, res) =>{
 
 }
 
-export const crearDirectiva = async (req, res) =>{
-    const {periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, url_documento_resolucion, creado_por, creado_fecha } = req.body;
+import fs from 'fs';
+
+export const crearDirectiva = async (req, res) => {
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        creado_por,
+        creado_fecha,
+    } = req.body;
+
+    const documentoResolucionFile = req.file; // Acceder al archivo cargado
+
     try {
         const nuevaDirectiva = await Directiva.create({
-            periodo_resolucion, 
-            id_area, 
-            id_tipo_documento,  
-            numero_resolucion, 
-            adicional_resolucion, 
-            sumilla_resolucion, 
-            url_documento_resolucion,
-            abreviacion_area, 
-            creado_por, 
-            creado_fecha
-        })
+            periodo_resolucion,
+            id_area,
+            id_tipo_documento,
+            numero_resolucion,
+            adicional_resolucion,
+            sumilla_resolucion,
+            abreviacion_area,
+            creado_por,
+            creado_fecha,
+            // Campo BLOB
+            contenido_documento_resolucion: fs.readFileSync(documentoResolucionFile.path),
+        });
+
+        // Elimina el archivo temporal creado por Multer
+        fs.unlinkSync(documentoResolucionFile.path);
+
         res.json(nuevaDirectiva);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
+        return res.status(500).json({ mensaje: error.message });
     }
-}
+};
 
-export const actualizarDirectiva = async (req, res) =>{
+
+export const actualizarDirectiva = async (req, res) => {
     const { id } = req.params;
-    const { periodo_resolucion, id_area, id_tipo_documento,  numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, modificado_por, modificado_fecha, activo } = req.body;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        modificado_por,
+        modificado_fecha,
+        activo,
+    } = req.body;
+
+    const documentoResolucionFile = req.file; // Acceder al archivo cargado
 
     try {
         const directiva = await Directiva.findByPk(id);
+
+        if (!directiva) {
+            return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+        }
+
         directiva.periodo_resolucion = periodo_resolucion;
         directiva.id_area = id_area;
         directiva.id_tipo_documento = id_tipo_documento;
         directiva.numero_resolucion = numero_resolucion;
         directiva.adicional_resolucion = adicional_resolucion;
         directiva.sumilla_resolucion = sumilla_resolucion;
-        directiva.url_documento_resolucion = url_documento_resolucion;
         directiva.abreviacion_area = abreviacion_area;
         directiva.modificado_por = modificado_por;
         directiva.modificado_fecha = modificado_fecha;
         directiva.activo = activo;
-        await directiva.save(); 
+
+        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (documentoResolucionFile) {
+            directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+            fs.unlinkSync(documentoResolucionFile.path);
+        }
+
+        await directiva.save();
         res.send('Directiva actualizada');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-        return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarDirectiva = async (req, res) =>{
   const { id } = req.params;

@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize';
 import {Convenio} from '../models/Convenio.js';
+import fs from 'fs';
+import multer from 'multer';
 
 
 export const obtenerPeriodos = async (req, res) => {
@@ -99,48 +101,89 @@ export const leerConvenio = async (req, res) =>{
 
 }
 
-export const crearConvenio = async (req, res) =>{
-    const {descripcion_convenio, url_documento_convenio, fecha_convenio, creado_por, creado_fecha, id_departamento,id_provincia, id_distrito } = req.body;
+export const crearConvenio = async (req, res) => {
+    const {
+        descripcion_convenio,
+        url_documento_convenio,
+        fecha_convenio,
+        creado_por,
+        creado_fecha,
+        id_departamento,
+        id_provincia,
+        id_distrito
+    } = req.body;
+
+    const pdfFile = req.file; // Acceder al archivo cargado
+
     try {
         const nuevoConvenio = await Convenio.create({
             descripcion_convenio,
             url_documento_convenio,
             fecha_convenio,
+            creado_por,
+            creado_fecha,
             id_departamento,
             id_provincia,
             id_distrito,
-            creado_por,
-            creado_fecha
-        })
+            content: fs.readFileSync(pdfFile.path) // Lee el contenido binario del archivo PDF
+        });
+
+        // Elimina el archivo temporal creado por multer
+        fs.unlinkSync(pdfFile.path);
+
         res.json(nuevoConvenio);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
 
-export const actualizarConvenio = async (req, res) =>{
+
+export const actualizarConvenio = async (req, res) => {
     const { id } = req.params;
-    const { descripcion_convenio, url_documento_convenio, id_departamento, id_provincia, id_distrito, modificado_por,modificado_fecha, activo } = req.body;
+    const {
+        descripcion_convenio,
+        url_documento_convenio,
+        fecha_convenio,
+        id_departamento,
+        id_provincia,
+        id_distrito,
+        modificado_por,
+        modificado_fecha,
+        activo
+    } = req.body;
 
-    try{
-    const convenio = await Convenio.findByPk(id);
-    
-    convenio.descripcion_convenio = descripcion_convenio;
-    convenio.url_documento_convenio = url_documento_convenio;
-    convenio.fecha_convenio = fecha_convenio;
-    convenio.id_departamento = id_departamento;
-    convenio.id_provincia = id_provincia;
-    convenio.id_distrito = id_distrito;
-    convenio.modificado_por = modificado_por
-    convenio.modificado_fecha = modificado_fecha
-    convenio.activo = activo;
-    await convenio.save(); 
-    res.send('Convenio actualizado');
+    const pdfFile = req.file; // Acceder al archivo cargado
+  
+    try {
+        const convenio = await Convenio.findByPk(id);
+
+        if (!convenio) {
+            return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+        }
+
+        convenio.descripcion_convenio = descripcion_convenio;
+        convenio.url_documento_convenio = url_documento_convenio;
+        convenio.fecha_convenio = fecha_convenio;
+        convenio.id_departamento = id_departamento;
+        convenio.id_provincia = id_provincia;
+        convenio.id_distrito = id_distrito;
+        convenio.modificado_por = modificado_por;
+        convenio.modificado_fecha = modificado_fecha;
+        convenio.activo = activo;
+
+        // Actualiza el contenido binario del PDF si se proporciona uno nuevo
+        if (pdfFile) {
+            convenio.content = fs.readFileSync(pdfFile.path);
+            fs.unlinkSync(pdfFile.path); // Elimina el archivo temporal
+        }
+
+        await convenio.save();
+        res.send('Convenio actualizado');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-         return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarConvenio = async (req, res) =>{
   const { id } = req.params;

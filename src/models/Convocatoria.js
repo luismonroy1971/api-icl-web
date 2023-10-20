@@ -1,78 +1,106 @@
-import {DataTypes} from 'sequelize';
-import {sequelize} from '../database/database.js';
+import { DataTypes } from 'sequelize';
+import { sequelize } from '../database/database.js';
 
-export const Convocatoria = sequelize.define('convocatorias',{
-    id:{
+export const Convocatoria = sequelize.define('convocatorias', {
+    id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
-        autoIncrement: true
+        autoIncrement: true,
     },
-    descripcion_convocatoria:{
-        type: DataTypes.STRING(300)
+    descripcion_convocatoria: {
+        type: DataTypes.STRING(300),
     },
-    tipo_convocatoria:{
-        type: DataTypes.ENUM(['CAS','PPP'])
+    tipo_convocatoria: {
+        type: DataTypes.ENUM(['CAS', 'PPP']),
     },
-    numero_convocatoria:{
-        type: DataTypes.INTEGER
+    numero_convocatoria: {
+        type: DataTypes.INTEGER,
     },
-    periodo_convocatoria:{
-        type: DataTypes.INTEGER
+    periodo_convocatoria: {
+        type: DataTypes.INTEGER,
     },
-    url_anexos:{
-        type: DataTypes.STRING
+    url_anexos: {
+        type: DataTypes.STRING,
     },
-    url_comunicacion1:{
-        type: DataTypes.STRING
+    url_comunicacion1: {
+        type: DataTypes.STRING,
     },
-    url_comunicacion2:{
-        type: DataTypes.STRING
+    url_comunicacion2: {
+        type: DataTypes.STRING,
     },
-    url_comunicacion3:{
-        type: DataTypes.STRING
+    url_comunicacion3: {
+        type: DataTypes.STRING,
     },
-    url_aviso:{
-        type: DataTypes.STRING
+    url_aviso: {
+        type: DataTypes.STRING,
     },
-    url_resultado_evaluacion_curricular:{
-        type: DataTypes.STRING
+    url_resultado_evaluacion_curricular: {
+        type: DataTypes.STRING,
     },
-    url_resultado_examen:{
-        type: DataTypes.STRING
+    url_resultado_examen: {
+        type: DataTypes.STRING,
     },
-    url_resultado_entrevista:{
-        type: DataTypes.STRING
+    url_resultado_entrevista: {
+        type: DataTypes.STRING,
     },
-    url_puntaje_final:{
-        type: DataTypes.STRING
+    url_puntaje_final: {
+        type: DataTypes.STRING,
     },
-    estado_convocatoria:{
-        type: DataTypes.ENUM(['Cancelado','Cerrado','Desierto'])
+    // Nuevos campos con tipo BLOB
+    contenido_anexos: {
+        type: DataTypes.BLOB('long'),
     },
-    creado_por:{
-        type: DataTypes.STRING
+    contenido_comunicacion1: {
+        type: DataTypes.BLOB('long'),
     },
-    creado_fecha:{
-        type: DataTypes.DATE
+    contenido_comunicacion2: {
+        type: DataTypes.BLOB('long'),
     },
-    modificado_por:{
-        type: DataTypes.STRING
+    contenido_comunicacion3: {
+        type: DataTypes.BLOB('long'),
     },
-    modificado_fecha:{
-        type: DataTypes.DATE
+    contenido_aviso: {
+        type: DataTypes.BLOB('long'),
     },
-    autorizado:{
-        type:DataTypes.CHAR(1),
-        defaultValue: '0'
+    contenido_resultado_evaluacion_curricular: {
+        type: DataTypes.BLOB('long'),
     },
-    autorizado_por:{
-        type: DataTypes.STRING
+    contenido_resultado_examen: {
+        type: DataTypes.BLOB('long'),
     },
-    autorizado_fecha:{
-      type: DataTypes.DATE
+    contenido_resultado_entrevista: {
+        type: DataTypes.BLOB('long'),
     },
-    activo:{
-        type:DataTypes.CHAR(1),
-        defaultValue: '1'
+    contenido_puntaje_final: {
+        type: DataTypes.BLOB('long'),
+    },
+    estado_convocatoria: {
+        type: DataTypes.ENUM(['Cancelado', 'Cerrado', 'Desierto']),
+    },
+    creado_por: {
+        type: DataTypes.STRING,
+    },
+    creado_fecha: {
+        type: DataTypes.DATE,
+    },
+    modificado_por: {
+        type: DataTypes.STRING,
+    },
+    modificado_fecha: {
+        type: DataTypes.DATE,
+    },
+    autorizado: {
+        type: DataTypes.CHAR(1),
+        defaultValue: '0',
+    },
+    autorizado_por: {
+        type: DataTypes.STRING,
+    },
+    autorizado_fecha: {
+        type: DataTypes.DATE,
+    },
+    activo: {
+        type: DataTypes.CHAR(1),
+        defaultValue: '1',
     }
-},{timestamps: false})
+}, { timestamps: false });

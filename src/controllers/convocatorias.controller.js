@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize';
 import {Convocatoria} from '../models/Convocatoria.js';
+import fs from 'fs';
+import multer from 'multer';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -144,68 +146,131 @@ export const leerConvocatoria = async (req, res) =>{
 
 }
 
-export const crearConvocatoria = async (req, res) =>{
-    const { descripcion_convocatoria, id_area, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria, creado_por, creado_fecha } = req.body;
+
+
+export const crearConvocatoria = async (req, res) => {
+    const {
+        descripcion_convocatoria,
+        id_area,
+        tipo_convocatoria,
+        numero_convocatoria,
+        periodo_convocatoria,
+        estado_convocatoria,
+        creado_por,
+        creado_fecha,
+        // Campos de archivos
+        anexosFile,
+        comunicacion1File,
+        comunicacion2File,
+        comunicacion3File,
+        avisoFile,
+        resultado_evaluacion_curricularFile,
+        resultado_examenFile,
+        resultado_entrevistaFile,
+        puntaje_finalFile
+    } = req.body;
+
     try {
         const nuevaConvocatoria = await Convocatoria.create({
-            descripcion_convocatoria, 
-            tipo_convocatoria, 
+            descripcion_convocatoria,
             id_area,
-            numero_convocatoria, 
-            periodo_convocatoria, 
-            url_anexos, 
-            url_comunicacion1, 
-            url_comunicacion2, 
-            url_comunicacion3, 
-            url_aviso, 
-            url_resultado_evaluacion_curricular, 
-            url_resultado_examen, 
-            url_resultado_entrevista, 
-            url_puntaje_final,
+            tipo_convocatoria,
+            numero_convocatoria,
+            periodo_convocatoria,
             estado_convocatoria,
-            creado_por, 
-            creado_fecha
-        })
+            creado_por,
+            creado_fecha,
+            // Campos BLOB
+            contenido_anexos: fs.readFileSync(anexosFile.path),
+            contenido_comunicacion1: fs.readFileSync(comunicacion1File.path),
+            contenido_comunicacion2: fs.readFileSync(comunicacion2File.path),
+            contenido_comunicacion3: fs.readFileSync(comunicacion3File.path),
+            contenido_aviso: fs.readFileSync(avisoFile.path),
+            contenido_resultado_evaluacion_curricular: fs.readFileSync(resultado_evaluacion_curricularFile.path),
+            contenido_resultado_examen: fs.readFileSync(resultado_examenFile.path),
+            contenido_resultado_entrevista: fs.readFileSync(resultado_entrevistaFile.path),
+            contenido_puntaje_final: fs.readFileSync(puntaje_finalFile.path)
+        });
+
+        // Elimina los archivos temporales creados por Multer
+        fs.unlinkSync(anexosFile.path);
+        fs.unlinkSync(comunicacion1File.path);
+        fs.unlinkSync(comunicacion2File.path);
+        fs.unlinkSync(comunicacion3File.path);
+        fs.unlinkSync(avisoFile.path);
+        fs.unlinkSync(resultado_evaluacion_curricularFile.path);
+        fs.unlinkSync(resultado_examenFile.path);
+        fs.unlinkSync(resultado_entrevistaFile.path);
+        fs.unlinkSync(puntaje_finalFile.path);
+
         res.json(nuevaConvocatoria);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
 
-export const actualizarConvocatoria = async (req, res) =>{
+
+export const actualizarConvocatoria = async (req, res) => {
     const { id } = req.params;
-    const { descripcion_convocatoria, id_area, tipo_convocatoria, numero_convocatoria, periodo_convocatoria, url_anexos, url_comunicacion1, url_comunicacion2, url_comunicacion3, url_aviso, url_resultado_evaluacion_curricular, url_resultado_examen, url_resultado_entrevista, url_puntaje_final, estado_convocatoria, modificado_por, modificado_fecha, activo } = req.body;
+    const {
+        descripcion_convocatoria,
+        id_area,
+        tipo_convocatoria,
+        numero_convocatoria,
+        periodo_convocatoria,
+        estado_convocatoria,
+        modificado_por,
+        modificado_fecha,
+        activo,
+        // Campos de archivos
+        anexosFile,
+        comunicacion1File,
+        comunicacion2File,
+        comunicacion3File,
+        avisoFile,
+        resultado_evaluacion_curricularFile,
+        resultado_examenFile,
+        resultado_entrevistaFile,
+        puntaje_finalFile
+    } = req.body;
 
     try {
-
         const convocatoria = await Convocatoria.findByPk(id);
+
+        if (!convocatoria) {
+            return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
+        }
+
         convocatoria.descripcion_convocatoria = descripcion_convocatoria;
         convocatoria.id_area = id_area;
         convocatoria.tipo_convocatoria = tipo_convocatoria;
         convocatoria.numero_convocatoria = numero_convocatoria;
         convocatoria.periodo_convocatoria = periodo_convocatoria;
-        convocatoria.url_anexos = url_anexos;
-        convocatoria.url_comunicacion1 = url_comunicacion1;
-        convocatoria.url_comunicacion2 = url_comunicacion2;
-        convocatoria.url_comunicacion3 = url_comunicacion3;
-        convocatoria.url_aviso = url_aviso;
-        convocatoria.url_resultado_evaluacion_curricular = url_resultado_evaluacion_curricular;
-        convocatoria.url_resultado_examen = url_resultado_examen;
-        convocatoria.url_resultado_entrevista = url_resultado_entrevista;
-        convocatoria.url_puntaje_final = url_puntaje_final;
         convocatoria.estado_convocatoria = estado_convocatoria;
         convocatoria.modificado_por = modificado_por;
         convocatoria.modificado_fecha = modificado_fecha;
         convocatoria.activo = activo;
 
-        await convocatoria.save(); 
-        
+        // Actualiza los campos BLOB si se proporcionan nuevos archivos
+        if (anexosFile) {
+            convocatoria.contenido_anexos = fs.readFileSync(anexosFile.path);
+            fs.unlinkSync(anexosFile.path);
+        }
+
+        if (comunicacion1File) {
+            convocatoria.contenido_comunicacion1 = fs.readFileSync(comunicacion1File.path);
+            fs.unlinkSync(comunicacion1File.path);
+        }
+
+        // Repite el proceso para los otros campos BLOB...
+
+        await convocatoria.save();
         res.send('Convocatoria actualizada');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-        return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarConvocatoria = async (req, res) =>{
   const { id } = req.params;

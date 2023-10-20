@@ -82,42 +82,80 @@ export const leerRendicion = async (req, res) =>{
 
 }
 
-export const crearRendicion = async (req, res) =>{
-    const {descripcion_rendicion, periodo_rendicion, url_rendicion, creado_por, creado_fecha } = req.body;
+import fs from 'fs';
+
+export const crearRendicion = async (req, res) => {
+    const {
+        descripcion_rendicion,
+        periodo_rendicion,
+        creado_por,
+        creado_fecha,
+    } = req.body;
+
+    const rendicionFile = req.file; // Acceder al archivo cargado
+
     try {
         const nuevaRendicion = await Rendicion.create({
             descripcion_rendicion,
             periodo_rendicion,
-            url_rendicion,
-            creado_por, 
-            creado_fecha
-        })
+            url_rendicion: rendicionFile.originalname, // Almacena el nombre del archivo, si es necesario
+            creado_por,
+            creado_fecha,
+            contenido_rendicion: fs.readFileSync(rendicionFile.path),
+        });
+
+        // Elimina el archivo temporal creado por Multer
+        fs.unlinkSync(rendicionFile.path);
+
         res.json(nuevaRendicion);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ mensaje: error.message });
     }
-}
+};
 
-export const actualizarRendicion = async (req, res) =>{
+
+export const actualizarRendicion = async (req, res) => {
     const { id } = req.params;
-    const { descripcion_rendicion, periodo_rendicion, url_rendicion, modificado_por, modificado_fecha, activo } = req.body;
+    const {
+        descripcion_rendicion,
+        periodo_rendicion,
+        url_rendicion,
+        modificado_por,
+        modificado_fecha,
+        activo,
+    } = req.body;
 
-    try{
-    const rendicion = await Rendicion.findByPk(id);
-    
-    rendicion.descripcion_rendicion = descripcion_rendicion;
-    rendicion.periodo_rendicion = periodo_rendicion;
-    rendicion.url_rendicion = url_rendicion;
-    rendicion.modificado_por = modificado_por;
-    rendicion.modificado_fecha = modificado_fecha;
-    rendicion.activo = activo;
-    await rendicion.save(); 
-    res.send('Rendición actualizada');
+    const rendicionFile = req.file; // Acceder al archivo cargado
+
+    try {
+        const rendicion = await Rendicion.findByPk(id);
+
+        if (!rendicion) {
+            return res.status(404).json({ mensaje: 'Rendición no encontrada' });
+        }
+
+        rendicion.descripcion_rendicion = descripcion_rendicion;
+        rendicion.periodo_rendicion = periodo_rendicion;
+        rendicion.url_rendicion = url_rendicion;
+
+        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (rendicionFile) {
+            rendicion.url_rendicion = rendicionFile.originalname; // Almacena el nombre del archivo, si es necesario
+            rendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path);
+            fs.unlinkSync(rendicionFile.path);
+        }
+
+        rendicion.modificado_por = modificado_por;
+        rendicion.modificado_fecha = modificado_fecha;
+        rendicion.activo = activo;
+
+        await rendicion.save();
+        res.send('Rendición actualizada');
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-         return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
+
 
 export const autorizarRendicion = async (req, res) =>{
   const { id } = req.params;
