@@ -13,7 +13,7 @@ export const Convenio = sequelize.define('convenios', {
     url_documento_convenio: {
       type: DataTypes.STRING,
     },
-    content: {
+    contenido_documento_convenio: {
     type: DataTypes.BLOB('long'), // Almacena datos binarios (PDF) de longitud variable
     },
     fecha_convenio: {

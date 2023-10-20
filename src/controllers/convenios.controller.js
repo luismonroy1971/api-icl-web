@@ -125,7 +125,7 @@ export const crearConvenio = async (req, res) => {
             id_departamento,
             id_provincia,
             id_distrito,
-            content: fs.readFileSync(pdfFile.path) // Lee el contenido binario del archivo PDF
+            contenido_documento_convenio: fs.readFileSync(pdfFile.path) // Lee el contenido binario del archivo PDF
         });
 
         // Elimina el archivo temporal creado por multer
@@ -173,7 +173,7 @@ export const actualizarConvenio = async (req, res) => {
 
         // Actualiza el contenido binario del PDF si se proporciona uno nuevo
         if (pdfFile) {
-            convenio.content = fs.readFileSync(pdfFile.path);
+            convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
             fs.unlinkSync(pdfFile.path); // Elimina el archivo temporal
         }
 

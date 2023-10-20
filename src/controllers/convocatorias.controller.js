@@ -162,9 +162,9 @@ export const crearConvocatoria = async (req, res) => {
         anexosFile,
         comunicacion1File,
         comunicacion2File,
-        comunicacion3File,
+        resultado_examenFile,
         avisoFile,
-        resultado_evaluacion_curricularFile,
+        resultado_examenFile,
         resultado_examenFile,
         resultado_entrevistaFile,
         puntaje_finalFile
@@ -262,7 +262,42 @@ export const actualizarConvocatoria = async (req, res) => {
             fs.unlinkSync(comunicacion1File.path);
         }
 
-        // Repite el proceso para los otros campos BLOB...
+        if (comunicacion2File) {
+              convocatoria.contenido_comunicacion2 = fs.readFileSync(comunicacion2File.path);
+              fs.unlinkSync(comunicacion2File.path);
+        }
+        
+        if (comunicacion3File) {
+            convocatoria.contenido_comunicacion3 = fs.readFileSync(comunicacion3File.path);
+            fs.unlinkSync(comunicacion3File.path);
+        }
+      
+        if (avisoFile) {
+            convocatoria.contenido_aviso = fs.readFileSync(avisoFile.path);
+            fs.unlinkSync(avisoFile.path);
+        }
+
+        if (resultado_evaluacion_curricularFile) {
+            convocatoria.contenido_resultado_evaluacion_curricular = fs.readFileSync(resultado_evaluacion_curricularFile.path);
+            fs.unlinkSync(resultado_evaluacion_curricularFile.path);
+         }
+      
+            contenido_resultado_entrevista: fs.readFileSync(resultado_entrevistaFile.path),
+            contenido_puntaje_final: fs.readFileSync(puntaje_finalFile.path)
+      
+        if (resultado_examenFile) {
+            convocatoria.contenido_resultado_examen = fs.readFileSync(resultado_examenFile.path);
+            fs.unlinkSync(resultado_examenFile.path);
+        }
+      
+        if (resultado_entrevistaFile) {
+              convocatoria.contenido_resultado_entrevista = fs.readFileSync(resultado_entrevistaFile.path);
+              fs.unlinkSync(resultado_entrevistaFile.path);
+        }
+        if (puntaje_finalFile) {
+              convocatoria.contenido_puntaje_final = fs.readFileSync(puntaje_finalFile.path);
+              fs.unlinkSync(puntaje_finalFile.path);
+        }
 
         await convocatoria.save();
         res.send('Convocatoria actualizada');
