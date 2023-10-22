@@ -107,6 +107,7 @@ export const crearDirectiva = async (req, res) => {
         abreviacion_area,
         creado_por,
         creado_fecha,
+        flag_adjunto, // Nuevo campo
     } = req.body;
 
     const documentoResolucionFile = req.file; // Acceder al archivo cargado
@@ -121,15 +122,21 @@ export const crearDirectiva = async (req, res) => {
             sumilla_resolucion,
             abreviacion_area,
             creado_por,
-            creado_fecha,
-            // Campo BLOB
-            contenido_documento_resolucion: fs.readFileSync(documentoResolucionFile.path),
+            creado_fecha
         });
+
+
+        if (flag_adjunto === 'BIN') {
+            nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+        } else if (flag_adjunto === 'URL') {
+            nuevaDirectiva.url_documento_resolucion = `\\directivas\\${documentoResolucionFile.filename}`;
+        }
 
         // Elimina el archivo temporal creado por Multer
         fs.unlinkSync(documentoResolucionFile.path);
 
-        res.json(nuevaDirectiva);
+        await nuevaDirectiva.save();
+
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
@@ -149,6 +156,7 @@ export const actualizarDirectiva = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
+         flag_adjunto, // Nuevo campo
     } = req.body;
 
     const documentoResolucionFile = req.file; // Acceder al archivo cargado
@@ -171,9 +179,18 @@ export const actualizarDirectiva = async (req, res) => {
         directiva.modificado_fecha = modificado_fecha;
         directiva.activo = activo;
 
-        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (flag_adjunto === 'BIN') {
+            if (documentoResolucionFile) {
+                directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+            }
+        } else if (flag_adjunto === 'URL') {
+            if (documentoResolucionFile) {
+                directiva.url_documento_resolucion = `\\directivas\\${documentoResolucionFile.filename}`;
+            }
+        }
+
+        // Actualiza el campo BLOB si se proporciona un nuevo archivo
         if (documentoResolucionFile) {
-            directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
             fs.unlinkSync(documentoResolucionFile.path);
         }
 

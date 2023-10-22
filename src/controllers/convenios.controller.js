@@ -1,8 +1,7 @@
 import { Sequelize } from 'sequelize';
 import {Convenio} from '../models/Convenio.js';
 import fs from 'fs';
-import multer from 'multer';
-
+import path from 'path';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -101,68 +100,83 @@ export const leerConvenio = async (req, res) =>{
 
 }
 
+
 export const crearConvenio = async (req, res) => {
     const {
         descripcion_convenio,
-        url_documento_convenio,
         fecha_convenio,
         creado_por,
         creado_fecha,
         id_departamento,
         id_provincia,
-        id_distrito
+        id_distrito,
+        flag_adjunto
     } = req.body;
 
     const pdfFile = req.file; // Acceder al archivo cargado
 
     try {
+        let url_documento_convenio = null;
+        let contenido_documento_convenio = null;
+
+        if (flag_adjunto === 'URL' && pdfFile) {
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            url_documento_convenio = `\\convenios\\${fileName}`;
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            contenido_documento_convenio = fs.readFileSync(pdfFile.path);
+
+            // Mueve el archivo cargado a la carpeta \convenios\
+            const destinationPath = path.join(__dirname, '..\\convenios', fileName);
+            fs.renameSync(pdfFile.path, destinationPath);
+        }
+
         const nuevoConvenio = await Convenio.create({
             descripcion_convenio,
-            url_documento_convenio,
             fecha_convenio,
             creado_por,
             creado_fecha,
             id_departamento,
             id_provincia,
             id_distrito,
-            contenido_documento_convenio: fs.readFileSync(pdfFile.path) // Lee el contenido binario del archivo PDF
+            flag_adjunto,
+            url_documento_convenio,
+            contenido_documento_convenio
         });
 
-        // Elimina el archivo temporal creado por multer
-        fs.unlinkSync(pdfFile.path);
-
-        res.json(nuevoConvenio);
+        res.status(201).json(nuevoConvenio);
     } catch (error) {
-        return res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Error al crear el convenio' });
     }
 };
-
 
 export const actualizarConvenio = async (req, res) => {
     const { id } = req.params;
     const {
         descripcion_convenio,
-        url_documento_convenio,
         fecha_convenio,
         id_departamento,
         id_provincia,
         id_distrito,
         modificado_por,
         modificado_fecha,
-        activo
+        activo,
+        flag_adjunto
     } = req.body;
 
     const pdfFile = req.file; // Acceder al archivo cargado
-  
+
     try {
         const convenio = await Convenio.findByPk(id);
 
         if (!convenio) {
-            return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+            return res.status(404).json({ message: 'Convenio no encontrado' });
         }
 
         convenio.descripcion_convenio = descripcion_convenio;
-        convenio.url_documento_convenio = url_documento_convenio;
         convenio.fecha_convenio = fecha_convenio;
         convenio.id_departamento = id_departamento;
         convenio.id_provincia = id_provincia;
@@ -171,16 +185,23 @@ export const actualizarConvenio = async (req, res) => {
         convenio.modificado_fecha = modificado_fecha;
         convenio.activo = activo;
 
-        // Actualiza el contenido binario del PDF si se proporciona uno nuevo
-        if (pdfFile) {
+        if (flag_adjunto === 'URL' && pdfFile) {
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            convenio.url_documento_convenio = `\\convenios\\${fileName}`;
+            convenio.contenido_documento_convenio = null; // Elimina el contenido binario
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            convenio.url_documento_convenio = null; // Elimina la URL del documento
             convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
-            fs.unlinkSync(pdfFile.path); // Elimina el archivo temporal
         }
 
         await convenio.save();
-        res.send('Convenio actualizado');
+        res.json({ message: 'Convenio actualizado' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        console.error(error);
+        res.status(500).json({ message: 'Error al actualizar el convenio' });
     }
 };
 

@@ -8,8 +8,11 @@ export const Convenio = sequelize.define('convenios', {
       autoIncrement: true,
     },
     descripcion_convenio: {
-      type: DataTypes.STRING,
+    type: DataTypes.STRING,
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },    
     url_documento_convenio: {
       type: DataTypes.STRING,
     },

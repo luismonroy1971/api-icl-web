@@ -51,11 +51,10 @@ export const leerCamposTabla = async (req, res) =>{
 }
 
 export const crearCamposTabla = async (req, res) =>{
-    const {id_menu, tabla, nombre_campo, tipo, backend, ancho, valores } = req.body;
-    console.log(descripcion_campostabla, abreviacion_campostabla)
+    const {id_menu, tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores } = req.body;
     try {
         const nuevaCamposTabla = await CamposTablas.create({
-            id_menu, tabla, nombre_campo, tipo, backend, ancho, valores
+            id_menu, tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores
         })
         res.json(nuevaCamposTabla);
     } catch (error) {
@@ -65,13 +64,14 @@ export const crearCamposTabla = async (req, res) =>{
 
 export const actualizarCamposTabla = async (req, res) =>{
     const { id } = req.params;
-    const { id_menu, tabla, nombre_campo, tipo, backend, ancho, valores } = req.body;
+    const { id_menu, tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores } = req.body;
 
     try{
     const campostabla = await CamposTablas.findByPk(id);
     campostabla.id_menu = id_menu;
     campostabla.tabla = tabla;
     campostabla.nombre_campo = nombre_campo;
+    campostabla.titulo_campo = titulo_campo;
     campostabla.tipo = tipo;
     campostabla.backend = backend;
     campostabla.ancho = ancho;

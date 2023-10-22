@@ -19,6 +19,9 @@ export const Convocatoria = sequelize.define('convocatorias', {
     periodo_convocatoria: {
         type: DataTypes.INTEGER,
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },   
     url_anexos: {
         type: DataTypes.STRING,
     },
@@ -29,6 +32,9 @@ export const Convocatoria = sequelize.define('convocatorias', {
         type: DataTypes.STRING,
     },
     url_comunicacion3: {
+        type: DataTypes.STRING,
+    },
+    url_comunicaciones: {
         type: DataTypes.STRING,
     },
     url_aviso: {
@@ -57,6 +63,9 @@ export const Convocatoria = sequelize.define('convocatorias', {
         type: DataTypes.BLOB('long'),
     },
     contenido_comunicacion3: {
+        type: DataTypes.BLOB('long'),
+    },
+    contenido_comunicaciones: {
         type: DataTypes.BLOB('long'),
     },
     contenido_aviso: {

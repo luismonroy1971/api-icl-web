@@ -19,6 +19,9 @@ export const Directiva = sequelize.define('directivas', {
     sumilla_resolucion: {
         type: DataTypes.STRING(1500),
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },
     url_documento_resolucion: {
         type: DataTypes.STRING,
     },

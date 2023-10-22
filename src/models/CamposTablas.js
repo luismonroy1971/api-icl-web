@@ -17,6 +17,9 @@ export const CamposTablas = sequelize.define('campostablas',{
     tipo:{
         type: DataTypes.STRING(15)
     },
+    titulo_campo: {
+        type: DataTypes.STRING(50)
+    },
     backend:{
         type: DataTypes.STRING(50)
     },

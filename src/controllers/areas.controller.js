@@ -30,7 +30,7 @@ export const leerArea = async (req, res) =>{
 }
 
 export const crearArea = async (req, res) =>{
-    const {descripcion_area, abreviacion_area } = req.body;
+    const {descripcion_area, abreviacion_area} = req.body;
     console.log(descripcion_area, abreviacion_area)
     try {
         const nuevaArea = await Area.create({

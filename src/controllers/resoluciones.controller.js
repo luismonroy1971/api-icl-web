@@ -100,9 +100,10 @@ export const leerResolucion = async (req, res) =>{
 }
 
 export const crearResolucion = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, creado_por, creado_fecha } = req.body;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, creado_por, creado_fecha,  flag_adjunto } = req.body;
 
-    try {
+   
+  try {
         const nuevaResolucion = await Resolucion.create({
             periodo_resolucion,
             id_area,
@@ -110,17 +111,24 @@ export const crearResolucion = async (req, res) => {
             numero_resolucion,
             adicional_resolucion,
             sumilla_resolucion,
-            url_documento_resolucion: req.body.url_documento_resolucion, // Usar el valor del campo url_documento_resolucion
             abreviacion_area,
             creado_por,
             creado_fecha,
-            contenido_resolucion: req.file.buffer, // Agregar el contenido del PDF como BLOB
         });
+
+        if (flag_adjunto === 'BIN') {
+            nuevaResolucion.contenido_documento_resolucion = req.file.buffer;
+        } else if (flag_adjunto === 'URL') {
+            nuevaResolucion.url_documento_resolucion = req.body.url_documento_resolucion;
+        }
+
+        await nuevaResolucion.save();
 
         res.json(nuevaResolucion);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
-    }
+    } 
+
 }
 
 
@@ -141,6 +149,9 @@ export const actualizarResolucion = async (req, res) => {
 
     try {
         const resolucion = await Resolucion.findByPk(id);
+        if (!resolucion) {
+            return res.status(404).json({ mensaje: 'Resolución no encontrada' });
+        }
         resolucion.periodo_resolucion = periodo_resolucion;
         resolucion.id_area = id_area;
         resolucion.id_tipo_documento = id_tipo_documento;
@@ -152,8 +163,12 @@ export const actualizarResolucion = async (req, res) => {
         resolucion.modificado_fecha = modificado_fecha;
         resolucion.activo = activo;
 
-        if (req.file) {
-            resolucion.contenido_resolucion = req.file.buffer; // Actualizar el contenido del PDF si se proporciona un nuevo archivo
+        if (flag_adjunto === 'BIN') {
+            if (req.file) {
+                resolucion.contenido_documento_resolucion = req.file.buffer;
+            }
+        } else if (flag_adjunto === 'URL') {
+            resolucion.url_documento_resolucion = req.body.url_documento_resolucion;
         }
 
         await resolucion.save();

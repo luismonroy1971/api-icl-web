@@ -19,8 +19,15 @@ export const Resolucion = sequelize.define('resoluciones',{
     sumilla_resolucion:{
         type: DataTypes.STRING(1500)
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },
     url_documento_resolucion:{
         type: DataTypes.STRING
+    },
+    // Campos para almacenar PDF en formato binario
+    contenido_documento_resolucion: {
+        type: DataTypes.BLOB('long'),
     },
     abreviacion_area: {
         type: DataTypes.CHAR(2),
