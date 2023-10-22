@@ -1,5 +1,6 @@
 import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
+import fs from 'fs';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -94,7 +95,6 @@ export const leerDirectiva = async (req, res) =>{
 
 }
 
-import fs from 'fs';
 
 export const crearDirectiva = async (req, res) => {
     const {
@@ -107,7 +107,7 @@ export const crearDirectiva = async (req, res) => {
         abreviacion_area,
         creado_por,
         creado_fecha,
-        flag_adjunto, // Nuevo campo
+        flag_adjunto,
     } = req.body;
 
     const documentoResolucionFile = req.file; // Acceder al archivo cargado
@@ -125,11 +125,16 @@ export const crearDirectiva = async (req, res) => {
             creado_fecha
         });
 
-
         if (flag_adjunto === 'BIN') {
-            nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+            if (documentoResolucionFile) {
+                nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+            }
         } else if (flag_adjunto === 'URL') {
-            nuevaDirectiva.url_documento_resolucion = `\\directivas\\${documentoResolucionFile.filename}`;
+            if (documentoResolucionFile) {
+                const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
+                nuevaDirectiva.url_documento_resolucion = `\\directivas\\${fileName}`;
+            }
         }
 
         // Elimina el archivo temporal creado por Multer
@@ -141,6 +146,7 @@ export const crearDirectiva = async (req, res) => {
         return res.status(500).json({ mensaje: error.message });
     }
 };
+
 
 
 export const actualizarDirectiva = async (req, res) => {
@@ -156,7 +162,7 @@ export const actualizarDirectiva = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
-         flag_adjunto, // Nuevo campo
+        flag_adjunto,
     } = req.body;
 
     const documentoResolucionFile = req.file; // Acceder al archivo cargado
@@ -181,11 +187,15 @@ export const actualizarDirectiva = async (req, res) => {
 
         if (flag_adjunto === 'BIN') {
             if (documentoResolucionFile) {
+                directiva.url_documento_resolucion = null; // Elimina la URL del documento
                 directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
             }
         } else if (flag_adjunto === 'URL') {
             if (documentoResolucionFile) {
-                directiva.url_documento_resolucion = `\\directivas\\${documentoResolucionFile.filename}`;
+                const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
+                directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
+                directiva.url_documento_resolucion = `\\directivas\\${fileName}`;
             }
         }
 

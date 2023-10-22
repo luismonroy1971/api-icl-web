@@ -121,16 +121,12 @@ export const crearConvenio = async (req, res) => {
 
         if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
             url_documento_convenio = `\\convenios\\${fileName}`;
         } else if (flag_adjunto === 'BIN' && pdfFile) {
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            // Mantén el nombre original del archivo al subirlo en formato binario
+            url_documento_convenio = null;
             contenido_documento_convenio = fs.readFileSync(pdfFile.path);
-
-            // Mueve el archivo cargado a la carpeta \convenios\
-            const destinationPath = path.join(__dirname, '..\\convenios', fileName);
-            fs.renameSync(pdfFile.path, destinationPath);
         }
 
         const nuevoConvenio = await Convenio.create({
@@ -152,6 +148,7 @@ export const crearConvenio = async (req, res) => {
         res.status(500).json({ message: 'Error al crear el convenio' });
     }
 };
+
 
 export const actualizarConvenio = async (req, res) => {
     const { id } = req.params;
@@ -187,13 +184,12 @@ export const actualizarConvenio = async (req, res) => {
 
         if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
             convenio.url_documento_convenio = `\\convenios\\${fileName}`;
             convenio.contenido_documento_convenio = null; // Elimina el contenido binario
         } else if (flag_adjunto === 'BIN' && pdfFile) {
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${pdfFile.originalname}-${uniqueSuffix}`;
-            convenio.url_documento_convenio = null; // Elimina la URL del documento
+            // Mantén el nombre original del archivo al subirlo en formato binario
+            convenio.url_documento_convenio = null;
             convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
         }
 
@@ -204,6 +200,7 @@ export const actualizarConvenio = async (req, res) => {
         res.status(500).json({ message: 'Error al actualizar el convenio' });
     }
 };
+
 
 
 export const autorizarConvenio = async (req, res) =>{

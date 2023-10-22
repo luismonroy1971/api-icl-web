@@ -160,7 +160,7 @@ export const crearConvocatoria = async (req, res) => {
     } = req.body;
 
     const {
-        anexosUrl,  
+        anexosUrl,
         comunicacion1Url,
         comunicacion2Url,
         comunicacion3Url,
@@ -180,57 +180,39 @@ export const crearConvocatoria = async (req, res) => {
         resultado_examenFile,
         resultado_entrevistaFile,
         puntaje_finalFile
-    } = req.files; // Acceder a los archivos cargados
+    } = req.files;
+
+    const generarNombreUnico = (archivo) => {
+        const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+        const nombreArchivo = archivo.originalname.replace(/\s+/g, '_');
+        return `${nombreArchivo}_${uniqueSuffix}`;
+    };
+
+    const urls = {};
+
+    if (flag_adjunto === 'URL') {
+        const camposUrl = ['anexosUrl', 'comunicacion1Url', 'comunicacion2Url', 'comunicacion3Url', 'comunicacionesUrl', 'avisoUrl', 'resultado_evaluacion_curricularUrl', 'resultado_examenUrl', 'resultado_entrevistaUrl', 'puntaje_finalUrl'];
+
+        camposUrl.forEach((campo) => {
+            if (req.files[campo]) {
+                urls[campo] = `\\convocatorias\\${generarNombreUnico(req.files[campo][0])}`;
+            }
+        });
+    }
+
+    const contenidoBinario = {};
+
+    if (flag_adjunto === 'BIN') {
+        const camposBinarios = ['anexosFile', 'comunicacion1File', 'comunicacion2File', 'comunicacion3File', 'comunicacionesFile', 'avisoFile', 'resultado_evaluacion_curricularFile', 'resultado_examenFile', 'resultado_entrevistaFile', 'puntaje_finalFile'];
+
+        camposBinarios.forEach((campo) => {
+            if (req.files[campo]) {
+                contenidoBinario[campo] = fs.readFileSync(req.files[campo][0].path);
+            }
+        });
+    }
 
     try {
-        let url_anexos = null;
-        let url_comunicacion1 = null;
-        let url_comunicacion2 = null;
-        let url_comunicacion3 = null;
-        let url_comunicaciones = null;
-        let url_aviso = null;
-        let url_resultado_evaluacion_curricular = null;
-        let url_resultado_examen = null;
-        let url_resultado_entrevista = null;
-        let url_puntaje_final = null;
-
-        let contenido_anexos = null;
-        let contenido_comunicacion1 = null;
-        let contenido_comunicacion2 = null;
-        let contenido_comunicacion3 = null;
-        let contenido_comunicaciones = null;
-        let contenido_aviso = null;
-        let contenido_resultado_evaluacion_curricular = null;
-        let contenido_resultado_examen = null;
-        let contenido_resultado_entrevista = null;
-        let contenido_puntaje_final = null;
-
-        if (flag_adjunto === 'URL') {
-            // Asignar las URLs desde los archivos
-            url_anexos = anexosUrl ? `\\convenios\\${anexosUrl[0].filename}` : null;
-            url_comunicacion1 = comunicacion1Url ? `\\convenios\\${comunicacion1Url[0].filename}` : null;
-            url_comunicacion2 = comunicacion2Url ? `\\convenios\\${comunicacion2Url[0].filename}` : null;
-            url_comunicacion3 = comunicacion3Url ? `\\convenios\\${comunicacion3Url[0].filename}` : null;
-            url_comunicaciones = comunicacionesUrl ? `\\convenios\\${comunicacionesUrl[0].filename}` : null;
-            url_aviso = avisoUrl ? `\\convenios\\${avisoUrl[0].filename}` : null;
-            url_resultado_evaluacion_curricular = resultado_evaluacion_curricularUrl ? `\\convenios\\${resultado_evaluacion_curricularUrl[0].filename}` : null;
-            url_resultado_examen = resultado_examenUrl ? `\\convenios\\${resultado_examenUrl[0].filename}` : null;
-            url_resultado_entrevista = resultado_entrevistaUrl ? `\\convenios\\${resultado_entrevistaUrl[0].filename}` : null;
-            url_puntaje_final = puntaje_finalUrl ? `\\convenios\\${puntaje_finalUrl[0].filename}` : null;
-        } else if (flag_adjunto === 'BIN') {
-            // Asignar el contenido binario desde los archivos
-            contenido_anexos = anexosFile ? fs.readFileSync(anexosFile[0].path) : null;
-            contenido_comunicacion1 = comunicacion1File ? fs.readFileSync(comunicacion1File[0].path) : null;
-            contenido_comunicacion2 = comunicacion2File ? fs.readFileSync(comunicacion2File[0].path) : null;
-            contenido_comunicacion3 = comunicacion3File ? fs.readFileSync(comunicacion3File[0].path) : null;
-            contenido_comunicaciones = comunicacionesFile ? fs.readFileSync(comunicacionesFile[0].path) : null;
-            contenido_aviso = avisoFile ? fs.readFileSync(avisoFile[0].path) : null;
-            contenido_resultado_evaluacion_curricular = resultado_evaluacion_curricularFile ? fs.readFileSync(resultado_evaluacion_curricularFile[0].path) : null;
-            contenido_resultado_examen = resultado_examenFile ? fs.readFileSync(resultado_examenFile[0].path) : null;
-            contenido_resultado_entrevista = resultado_entrevistaFile ? fs.readFileSync(resultado_entrevistaFile[0].path) : null;
-            contenido_puntaje_final = puntaje_finalFile ? fs.readFileSync(puntaje_finalFile[0].path) : null;
-        }
-
         const nuevaConvocatoria = await Convocatoria.create({
             descripcion_convocatoria,
             id_area,
@@ -240,41 +222,35 @@ export const crearConvocatoria = async (req, res) => {
             estado_convocatoria,
             creado_por,
             creado_fecha,
-            url_anexos,
-            url_comunicacion1,
-            url_comunicacion2,
-            url_comunicacion3,
-            url_comunicaciones,
-            url_aviso,
-            url_resultado_evaluacion_curricular,
-            url_resultado_examen,
-            url_resultado_entrevista,
-            url_puntaje_final,
-            contenido_anexos,
-            contenido_comunicacion1,
-            contenido_comunicacion2,
-            contenido_comunicacion3,
-            contenido_comunicaciones,
-            contenido_aviso,
-            contenido_resultado_evaluacion_curricular,
-            contenido_resultado_examen,
-            contenido_resultado_entrevista,
-            contenido_puntaje_final
+            url_anexos: urls.anexosUrl || null,
+            url_comunicacion1: urls.comunicacion1Url || null,
+            url_comunicacion2: urls.comunicacion2Url || null,
+            url_comunicacion3: urls.comunicacion3Url || null,
+            url_comunicaciones: urls.comunicacionesUrl || null,
+            url_aviso: urls.avisoUrl || null,
+            url_resultado_evaluacion_curricular: urls.resultado_evaluacion_curricularUrl || null,
+            url_resultado_examen: urls.resultado_examenUrl || null,
+            url_resultado_entrevista: urls.resultado_entrevistaUrl || null,
+            url_puntaje_final: urls.puntaje_finalUrl || null,
+            contenido_anexos: contenidoBinario.anexosFile || null,
+            contenido_comunicacion1: contenidoBinario.comunicacion1File || null,
+            contenido_comunicacion2: contenidoBinario.comunicacion2File || null,
+            contenido_comunicacion3: contenidoBinario.comunicacion3File || null,
+            contenido_comunicaciones: contenidoBinario.comunicacionesFile || null,
+            contenido_aviso: contenidoBinario.avisoFile || null,
+            contenido_resultado_evaluacion_curricular: contenidoBinario.resultado_evaluacion_curricularFile || null,
+            contenido_resultado_examen: contenidoBinario.resultado_examenFile || null,
+            contenido_resultado_entrevista: contenidoBinario.resultado_entrevistaFile || null,
+            contenido_puntaje_final: contenidoBinario.puntaje_finalFile || null,
         });
 
-        // Elimina los archivos temporales creados por Multer
-        if (flag_adjunto === 'URL') {
-            anexosFile && fs.unlinkSync(anexosFile[0].path);
-            comunicacion1File && fs.unlinkSync(comunicacion1File[0].path);
-            comunicacion2File && fs.unlinkSync(comunicacion2File[0].path);
-            comunicacion3File && fs.unlinkSync(comunicacion3File[0].path);
-            comunicacionesFile && fs.unlinkSync(comunicacionesFile[0].path);
-            avisoFile && fs.unlinkSync(avisoFile[0].path);
-            resultado_evaluacion_curricularFile && fs.unlinkSync(resultado_evaluacion_curricularFile[0].path);
-            resultado_examenFile && fs.unlinkSync(resultado_examenFile[0].path);
-            resultado_entrevistaFile && fs.unlinkSync(resultado_entrevistaFile[0].path);
-            puntaje_finalFile && fs.unlinkSync(puntaje_finalFile[0].path);
-        }
+        const archivosTemporales = ['anexosFile', 'comunicacion1File', 'comunicacion2File', 'comunicacion3File', 'comunicacionesFile', 'avisoFile', 'resultado_evaluacion_curricularFile', 'resultado_examenFile', 'resultado_entrevistaFile', 'puntaje_finalFile'];
+
+        archivosTemporales.forEach((campo) => {
+            if (req.files[campo] && req.files[campo].length > 0) {
+                fs.unlinkSync(req.files[campo][0].path);
+            }
+        });
 
         res.status(201).json(nuevaConvocatoria);
     } catch (error) {
@@ -282,6 +258,7 @@ export const crearConvocatoria = async (req, res) => {
         res.status(500).json({ message: 'Error al crear la convocatoria' });
     }
 };
+
 
 export const actualizarConvocatoria = async (req, res) => {
     const { id } = req.params;
@@ -298,7 +275,7 @@ export const actualizarConvocatoria = async (req, res) => {
         flag_adjunto
     } = req.body;
 
-  const {
+    const {
         anexosUrl,
         comunicacion1Url,
         comunicacion2Url,
@@ -320,7 +297,37 @@ export const actualizarConvocatoria = async (req, res) => {
         resultado_examenFile,
         resultado_entrevistaFile,
         puntaje_finalFile
-    } = req.files; // Acceder a los archivos cargados
+    } = req.files;
+
+    const generarNombreUnico = (archivo) => {
+        const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+        const nombreArchivo = archivo.originalname.replace(/\s+/g, '_');
+        return `${nombreArchivo}_${uniqueSuffix}`;
+    };
+
+    const urls = {};
+
+    if (flag_adjunto === 'URL') {
+        const camposUrl = ['anexosUrl', 'comunicacion1Url', 'comunicacion2Url', 'comunicacion3Url', 'comunicacionesUrl', 'avisoUrl', 'resultado_evaluacion_curricularUrl', 'resultado_examenUrl', 'resultado_entrevistaUrl', 'puntaje_finalUrl'];
+
+        camposUrl.forEach((campo) => {
+            if (req.files[campo]) {
+                urls[campo] = `\\convocatorias\\${generarNombreUnico(req.files[campo][0])}`;
+            }
+        });
+    }
+
+    const contenidoBinario = {};
+
+    if (flag_adjunto === 'BIN') {
+        const camposBinarios = ['anexosFile', 'comunicacion1File', 'comunicacion2File', 'comunicacion3File', 'comunicacionesFile', 'avisoFile', 'resultado_evaluacion_curricularFile', 'resultado_examenFile', 'resultado_entrevistaFile', 'puntaje_finalFile'];
+
+        camposBinarios.forEach((campo) => {
+            if (req.files[campo]) {
+                contenidoBinario[campo] = fs.readFileSync(req.files[campo][0].path);
+            }
+        });
+    }
 
     try {
         const convocatoria = await Convocatoria.findByPk(id);
@@ -341,51 +348,47 @@ export const actualizarConvocatoria = async (req, res) => {
 
         if (flag_adjunto === 'URL') {
             // Actualiza las URLs desde los archivos
-            convocatoria.url_anexos = anexosUrl ? `\\convenios\\${anexosUrl[0].filename}` : null;
-            convocatoria.url_comunicacion1 = comunicacion1Url ? `\\convenios\\${comunicacion1Url[0].filename}` : null;
-            convocatoria.url_comunicacion2 = comunicacion2Url ? `\\convenios\\${comunicacion2Url[0].filename}` : null;
-            convocatoria.url_comunicacion3 = comunicacion3Url ? `\\convenios\\${comunicacion3Url[0].filename}` : null;
-            convocatoria.url_comunicaciones = comunicacionesUrl ? `\\convenios\\${comunicacionesUrl[0].filename}` : null;
-            convocatoria.url_aviso = avisoUrl ? `\\convenios\\${avisoUrl[0].filename}` : null;
-            convocatoria.url_resultado_evaluacion_curricular = resultado_evaluacion_curricularUrl ? `\\convenios\\${resultado_evaluacion_curricularUrl[0].filename}` : null;
-            convocatoria.url_resultado_examen = resultado_examenUrl ? `\\convenios\\${resultado_examenUrl[0].filename}` : null;
-            convocatoria.url_resultado_entrevista = resultado_entrevistaUrl ? `\\convenios\\${resultado_entrevistaUrl[0].filename}` : null;
-            convocatoria.url_puntaje_final = puntaje_finalUrl ? `\\convenios\\${puntaje_finalUrl[0].filename}` : null;
+            convocatoria.url_anexos = urls.anexosUrl || null;
+            convocatoria.url_comunicacion1 = urls.comunicacion1Url || null;
+            convocatoria.url_comunicacion2 = urls.comunicacion2Url || null;
+            convocatoria.url_comunicacion3 = urls.comunicacion3Url || null;
+            convocatoria.url_comunicaciones = urls.comunicacionesUrl || null;
+            convocatoria.url_aviso = urls.avisoUrl || null;
+            convocatoria.url_resultado_evaluacion_curricular = urls.resultado_evaluacion_curricularUrl || null;
+            convocatoria.url_resultado_examen = urls.resultado_examenUrl || null;
+            convocatoria.url_resultado_entrevista = urls.resultado_entrevistaUrl || null;
+            convocatoria.url_puntaje_final = urls.puntaje_finalUrl || null;
         } else if (flag_adjunto === 'BIN') {
             // Actualiza el contenido binario desde los archivos
-            convocatoria.contenido_anexos = anexosFile ? fs.readFileSync(anexosFile[0].path) : null;
-            convocatoria.contenido_comunicacion1 = comunicacion1File ? fs.readFileSync(comunicacion1File[0].path) : null;
-            convocatoria.contenido_comunicacion2 = comunicacion2File ? fs.readFileSync(comunicacion2File[0].path) : null;
-            convocatoria.contenido_comunicacion3 = comunicacion3File ? fs.readFileSync(comunicacion3File[0].path) : null;
-            convocatoria.contenido_comunicaciones = comunicacionesFile ? fs.readFileSync(comunicacionesFile[0].path) : null;
-            convocatoria.contenido_aviso = avisoFile ? fs.readFileSync(avisoFile[0].path) : null;
-            convocatoria.contenido_resultado_evaluacion_curricular = resultado_evaluacion_curricularFile ? fs.readFileSync(resultado_evaluacion_curricularFile[0].path) : null;
-            convocatoria.contenido_resultado_examen = resultado_examenFile ? fs.readFileSync(resultado_examenFile[0].path) : null;
-            convocatoria.contenido_resultado_entrevista = resultado_entrevistaFile ? fs.readFileSync(resultado_entrevistaFile[0].path) : null;
-            convocatoria.contenido_puntaje_final = puntaje_finalFile ? fs.readFileSync(puntaje_finalFile[0].path) : null;
+            convocatoria.contenido_anexos = contenidoBinario.anexosFile || null;
+            convocatoria.contenido_comunicacion1 = contenidoBinario.comunicacion1File || null;
+            convocatoria.contenido_comunicacion2 = contenidoBinario.comunicacion2File || null;
+            convocatoria.contenido_comunicacion3 = contenidoBinario.comunicacion3File || null;
+            convocatoria.contenido_comunicaciones = contenidoBinario.comunicacionesFile || null;
+            convocatoria.contenido_aviso = contenidoBinario.avisoFile || null;
+            convocatoria.contenido_resultado_evaluacion_curricular = contenidoBinario.resultado_evaluacion_curricularFile || null;
+            convocatoria.contenido_resultado_examen = contenidoBinario.resultado_examenFile || null;
+            convocatoria.contenido_resultado_entrevista = contenidoBinario.resultado_entrevistaFile || null;
+            convocatoria.contenido_puntaje_final = contenidoBinario.puntaje_finalFile || null;
         }
 
         await convocatoria.save();
 
         // Elimina los archivos temporales creados por Multer
-        if (flag_adjunto === 'URL') {
-            anexosFile && fs.unlinkSync(anexosFile[0].path);
-            comunicacion1File && fs.unlinkSync(comunicacion1File[0].path);
-            comunicacion2File && fs.unlinkSync(comunicacion2File[0].path);
-            comunicacion3File && fs.unlinkSync(comunicacion3File[0].path);
-            comunicacionesFile && fs.unlinkSync(comunicacionesFile[0].path);
-            avisoFile && fs.unlinkSync(avisoFile[0].path);
-            resultado_evaluacion_curricularFile && fs.unlinkSync(resultado_evaluacion_curricularFile[0].path);
-            resultado_examenFile && fs.unlinkSync(resultado_examenFile[0].path);
-            resultado_entrevistaFile && fs.unlinkSync(resultado_entrevistaFile[0].path);
-            puntaje_finalFile && fs.unlinkSync(puntaje_finalFile[0].path);
-        }
+        const archivosTemporales = ['anexosFile', 'comunicacion1File', 'comunicacion2File', 'comunicacion3File', 'comunicacionesFile', 'avisoFile', 'resultado_evaluacion_curricularFile', 'resultado_examenFile', 'resultado_entrevistaFile', 'puntaje_finalFile'];
+
+        archivosTemporales.forEach((campo) => {
+            if (req.files[campo] && req.files[campo].length > 0) {
+                fs.unlinkSync(req.files[campo][0].path);
+            }
+        });
 
         res.send('Convocatoria actualizada');
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
+
 
 
 export const autorizarConvocatoria = async (req, res) =>{
