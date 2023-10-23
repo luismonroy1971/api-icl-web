@@ -13,6 +13,9 @@ export const Rendicion = sequelize.define('rendiciones', {
     periodo_rendicion: {
         type: DataTypes.INTEGER,
     },
+     flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },   
     url_rendicion: {
         type: DataTypes.STRING,
     },

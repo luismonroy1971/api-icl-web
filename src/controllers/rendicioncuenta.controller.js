@@ -88,6 +88,7 @@ export const crearRendicion = async (req, res) => {
     const {
         descripcion_rendicion,
         periodo_rendicion,
+        flag_adjunto,
         creado_por,
         creado_fecha,
     } = req.body;
@@ -98,21 +99,32 @@ export const crearRendicion = async (req, res) => {
         const nuevaRendicion = await Rendicion.create({
             descripcion_rendicion,
             periodo_rendicion,
-            url_rendicion: rendicionFile.originalname, // Almacena el nombre del archivo, si es necesario
             creado_por,
-            creado_fecha,
-            contenido_rendicion: fs.readFileSync(rendicionFile.path),
+            creado_fecha
         });
 
-        // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(rendicionFile.path);
+        if (flag_adjunto === 'BIN' && rendicionFile) {
+            nuevaRendicion.url_rendicion = null; // Establece url_rendicion en null
+            nuevaRendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path); // Llena el campo contenido_rendicion con el archivo en binario
+        } else if (flag_adjunto === 'URL' && rendicionFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${rendicionFile.originalname}-${uniqueSuffix}`;
+            nuevaRendicion.url_rendicion = `\\rendiciones\\${fileName}`;
+            nuevaRendicion.contenido_rendicion = null; // Elimina el contenido binario
+        }
 
+        // Elimina el archivo temporal creado por Multer
+        if (rendicionFile) {
+            fs.unlinkSync(rendicionFile.path);
+        }
+
+        await nuevaRendicion.save();
         res.json(nuevaRendicion);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
-
 
 export const actualizarRendicion = async (req, res) => {
     const { id } = req.params;
@@ -123,6 +135,7 @@ export const actualizarRendicion = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
+        flag_adjunto, // Nuevo campo
     } = req.body;
 
     const rendicionFile = req.file; // Acceder al archivo cargado
@@ -136,12 +149,20 @@ export const actualizarRendicion = async (req, res) => {
 
         rendicion.descripcion_rendicion = descripcion_rendicion;
         rendicion.periodo_rendicion = periodo_rendicion;
-        rendicion.url_rendicion = url_rendicion;
+
+        if (flag_adjunto === 'BIN' && rendicionFile) {
+            rendicion.url_rendicion = null; // Establece url_rendicion en null
+            rendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path); // Llena el campo contenido_rendicion con el archivo en binario
+        } else if (flag_adjunto === 'URL' && rendicionFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${rendicionFile.originalname}-${uniqueSuffix}`;
+            rendicion.url_rendicion = `\\rendiciones\\${fileName}`;
+            rendicion.contenido_rendicion = null; // Elimina el contenido binario
+        }
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo
         if (rendicionFile) {
-            rendicion.url_rendicion = rendicionFile.originalname; // Almacena el nombre del archivo, si es necesario
-            rendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path);
             fs.unlinkSync(rendicionFile.path);
         }
 
@@ -155,7 +176,6 @@ export const actualizarRendicion = async (req, res) => {
         return res.status(500).json({ mensaje: error.message });
     }
 };
-
 
 export const autorizarRendicion = async (req, res) =>{
   const { id } = req.params;

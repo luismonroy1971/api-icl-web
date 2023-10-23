@@ -13,6 +13,9 @@ export const Norma = sequelize.define('normasinstitucionales', {
     denominacion_norma: {
         type: DataTypes.STRING,
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },    
     url_norma: {
         type: DataTypes.STRING,
     },

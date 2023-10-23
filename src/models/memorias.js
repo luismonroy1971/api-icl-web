@@ -13,6 +13,9 @@ export const Memoria = sequelize.define('memorias', {
     descripcion_memoria: {
         type: DataTypes.STRING,
     },
+    flag_adjunto:{
+      type: DataTypes.ENUM(['URL', 'BIN']),
+    },    
     url_memoria: {
         type: DataTypes.STRING,
     },

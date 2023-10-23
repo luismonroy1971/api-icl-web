@@ -100,10 +100,20 @@ export const leerResolucion = async (req, res) =>{
 }
 
 export const crearResolucion = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, adicional_resolucion, sumilla_resolucion, abreviacion_area, creado_por, creado_fecha,  flag_adjunto } = req.body;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        creado_por,
+        creado_fecha,
+        flag_adjunto, // Nuevo campo
+    } = req.body;
 
-   
-  try {
+    try {
         const nuevaResolucion = await Resolucion.create({
             periodo_resolucion,
             id_area,
@@ -117,9 +127,13 @@ export const crearResolucion = async (req, res) => {
         });
 
         if (flag_adjunto === 'BIN') {
-            nuevaResolucion.contenido_documento_resolucion = req.file.buffer;
+            nuevaResolucion.contenido_documento_resolucion = req.file.buffer; // Usa req.file.buffer para obtener el contenido en formato binario
+            nuevaResolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
         } else if (flag_adjunto === 'URL') {
-            nuevaResolucion.url_documento_resolucion = req.body.url_documento_resolucion;
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${req.file.originalname}-${uniqueSuffix}`;
+            nuevaResolucion.url_documento_resolucion = `\\resoluciones\\${fileName}`;
+            nuevaResolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
         }
 
         await nuevaResolucion.save();
@@ -127,9 +141,8 @@ export const crearResolucion = async (req, res) => {
         res.json(nuevaResolucion);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
-    } 
-
-}
+    }
+};
 
 
 export const actualizarResolucion = async (req, res) => {
@@ -145,6 +158,7 @@ export const actualizarResolucion = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
+        flag_adjunto, // Nuevo campo
     } = req.body;
 
     try {
@@ -152,6 +166,7 @@ export const actualizarResolucion = async (req, res) => {
         if (!resolucion) {
             return res.status(404).json({ mensaje: 'Resolución no encontrada' });
         }
+
         resolucion.periodo_resolucion = periodo_resolucion;
         resolucion.id_area = id_area;
         resolucion.id_tipo_documento = id_tipo_documento;
@@ -165,10 +180,14 @@ export const actualizarResolucion = async (req, res) => {
 
         if (flag_adjunto === 'BIN') {
             if (req.file) {
-                resolucion.contenido_documento_resolucion = req.file.buffer;
+                resolucion.contenido_documento_resolucion = req.file.buffer; // Usa req.file.buffer para obtener el contenido en formato binario
+                resolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
             }
         } else if (flag_adjunto === 'URL') {
-            resolucion.url_documento_resolucion = req.body.url_documento_resolucion;
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${req.file.originalname}-${uniqueSuffix}`;
+            resolucion.url_documento_resolucion = `\\resoluciones\\${fileName}`;
+            resolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
         }
 
         await resolucion.save();
@@ -177,7 +196,6 @@ export const actualizarResolucion = async (req, res) => {
         return res.status(500).json({ mensaje: error.message });
     }
 }
-
 
 export const autorizarResolucion = async (req, res) =>{
   const { id } = req.params;

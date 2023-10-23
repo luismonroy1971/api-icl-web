@@ -88,6 +88,7 @@ export const crearMemoria = async (req, res) => {
     const {
         periodo_memoria,
         descripcion_memoria,
+        flag_adjunto,
         creado_por,
         creado_fecha,
     } = req.body;
@@ -100,18 +101,27 @@ export const crearMemoria = async (req, res) => {
             descripcion_memoria,
             creado_por,
             creado_fecha,
-            url_memoria: memoriaFile.originalname, // Almacena el nombre del archivo, si es necesario
-            contenido_memoria: fs.readFileSync(memoriaFile.path),
         });
+
+        if (flag_adjunto === 'URL' && memoriaFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${memoriaFile.originalname}-${uniqueSuffix}`;
+            nuevaMemoria.url_memoria = `\\memorias\\${fileName}`;
+        } else if (flag_adjunto === 'BIN' && memoriaFile) {
+            nuevaMemoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
+        }
 
         // Elimina el archivo temporal creado por Multer
         fs.unlinkSync(memoriaFile.path);
 
+        await nuevaMemoria.save();
         res.json(nuevaMemoria);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
+
 
 export const actualizarMemoria = async (req, res) => {
     const { id } = req.params;
@@ -121,6 +131,7 @@ export const actualizarMemoria = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
+        flag_adjunto, // Nuevo campo
     } = req.body;
 
     const memoriaFile = req.file; // Acceder al archivo cargado
@@ -138,10 +149,19 @@ export const actualizarMemoria = async (req, res) => {
         memoria.modificado_fecha = modificado_fecha;
         memoria.activo = activo;
 
-        // Actualizar el campo BLOB si se proporciona un nuevo archivo
-        if (memoriaFile) {
+        if (flag_adjunto === 'URL' && memoriaFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${memoriaFile.originalname}-${uniqueSuffix}`;
+            memoria.url_memoria = `\\memorias\\${fileName}`;
+            memoria.contenido_memoria = null; // Elimina el contenido binario
+        } else if (flag_adjunto === 'BIN' && memoriaFile) {
             memoria.url_memoria = memoriaFile.originalname; // Almacena el nombre del archivo, si es necesario
             memoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
+        }
+
+        // Actualizar el campo BLOB si se proporciona un nuevo archivo
+        if (memoriaFile) {
             fs.unlinkSync(memoriaFile.path);
         }
 

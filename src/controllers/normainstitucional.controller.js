@@ -69,7 +69,7 @@ export const crearNorma = async (req, res) => {
     const {
         tipo_norma,
         denominacion_norma,
-        url_norma,
+        flag_adjunto,
         creado_por,
         creado_fecha,
     } = req.body;
@@ -80,15 +80,25 @@ export const crearNorma = async (req, res) => {
         const nuevaNorma = await Norma.create({
             tipo_norma,
             denominacion_norma,
-            url_norma,
             creado_por,
-            creado_fecha,
-            contenido_norma: fs.readFileSync(normaFile.path),
+            creado_fecha
         });
+
+        if (flag_adjunto === 'URL' && normaFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${normaFile.originalname}-${uniqueSuffix}`;
+            nuevaNorma.url_norma = `\\normas\\${fileName}`;
+            nuevaNorma.contenido_norma = null; // Elimina el contenido binario
+        } else if (flag_adjunto === 'BIN' && normaFile) {
+            nuevaNorma.url_norma = normaFile.originalname; // Almacena el nombre del archivo, si es necesario
+            nuevaNorma.contenido_norma = fs.readFileSync(normaFile.path);
+        }
 
         // Elimina el archivo temporal creado por Multer
         fs.unlinkSync(normaFile.path);
 
+        await nuevaNorma.save();
         res.json(nuevaNorma);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
@@ -101,6 +111,7 @@ export const actualizarNorma = async (req, res) => {
     const {
         tipo_norma,
         denominacion_norma,
+        flag_adjunto,
         url_norma,
         modificado_por,
         modificado_fecha,
@@ -118,14 +129,24 @@ export const actualizarNorma = async (req, res) => {
 
         norma.tipo_norma = tipo_norma;
         norma.denominacion_norma = denominacion_norma;
-        norma.url_norma = url_norma;
+
+        if (flag_adjunto === 'URL' && normaFile) {
+            // Generar un nombre de archivo único
+            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            const fileName = `${normaFile.originalname}-${uniqueSuffix}`;
+            norma.url_norma = `\\normas\\${fileName}`;
+            norma.contenido_norma = null; // Elimina el contenido binario
+        } else if (flag_adjunto === 'BIN' && normaFile) {
+            norma.url_norma = null; // Establece url_norma en null
+            norma.contenido_norma = fs.readFileSync(normaFile.path); // Llena el campo contenido_norma con el archivo en binario
+        }
+
         norma.modificado_por = modificado_por;
         norma.modificado_fecha = modificado_fecha;
         norma.activo = activo;
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo
         if (normaFile) {
-            norma.contenido_norma = fs.readFileSync(normaFile.path);
             fs.unlinkSync(normaFile.path);
         }
 
