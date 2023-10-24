@@ -8,7 +8,7 @@ router.post('/servicios', crearServicio);
 router.put('/servicios/:id',actualizarServicio);
 router.delete('/servicios/:id',eliminarServicio);
 router.get('/servicios/:id', leerServicio);
-router.put('/autorizarservicio/:id',autorizarServicio);
-router.put('/activarservicio/:id',activarServicio);
-router.put('/desactivarservicio/:id',desactivarServicio);
+router.put('/autorizarservicios/:id',autorizarServicio);
+router.put('/activarservicios/:id',activarServicio);
+router.put('/desactivarservicios/:id',desactivarServicio);
 export default router

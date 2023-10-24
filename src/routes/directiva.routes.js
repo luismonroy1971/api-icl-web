@@ -8,7 +8,7 @@ router.put('/directivas/:id',actualizarDirectiva);
 router.delete('/directivas/:id',eliminarDirectiva);
 router.get('/directivas/:id', leerDirectiva);
 router.get('/directivasperiodo', obtenerPeriodos);
-router.put('/autorizardirectiva/:id',autorizarDirectiva);
-router.put('/activardirectiva/:id',activarDirectiva);
-router.put('/desactivardirectiva/:id',desactivarDirectiva);
+router.put('/autorizardirectivas/:id',autorizarDirectiva);
+router.put('/activardirectivas/:id',activarDirectiva);
+router.put('/desactivardirectivas/:id',desactivarDirectiva);
 export default router

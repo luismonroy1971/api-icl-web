@@ -8,7 +8,7 @@ router.put('/noticias/:id',actualizarNoticia);
 router.delete('/noticias/:id',eliminarNoticia);
 router.get('/noticias/:id', leerNoticia);
 router.get('/noticias/:id/imagenes', leerImagenesNoticia);
-router.put('/autorizarnoticia/:id', autorizarNoticia);
-router.put('/activarnoticia/:id',activarNoticia);
-router.put('/desactivarnoticia/:id',desactivarNoticia);
+router.put('/autorizarnoticias/:id', autorizarNoticia);
+router.put('/activarnoticias/:id',activarNoticia);
+router.put('/desactivarnoticias/:id',desactivarNoticia);
 export default router

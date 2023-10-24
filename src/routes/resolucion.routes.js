@@ -8,7 +8,7 @@ router.put('/resoluciones/:id',actualizarResolucion);
 router.delete('/resoluciones/:id',eliminarResolucion);
 router.get('/resoluciones/:id', leerResolucion);
 router.get('/resolucionesperiodo', obtenerPeriodos);
-router.put('/autorizarresolucion/:id',autorizarResolucion);
-router.put('/activarresolucion/:id',activarResolucion);
-router.put('/desactivarresolucion/:id',desactivarResolucion);
+router.put('/autorizarresoluciones/:id',autorizarResolucion);
+router.put('/activarresoluciones/:id',activarResolucion);
+router.put('/desactivarresoluciones/:id',desactivarResolucion);
 export default router

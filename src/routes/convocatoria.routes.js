@@ -8,7 +8,7 @@ router.put('/convocatorias/:id',actualizarConvocatoria);
 router.delete('/convocatorias/:id',eliminarConvocatoria);
 router.get('/convocatorias/:id', leerConvocatoria);
 router.get('/convocatoriasperiodo', obtenerPeriodos);
-router.put('/autorizarconvocatoria/:id',autorizarConvocatoria);
-router.put('/activarconvocatoria/:id', activarConvocatoria);
-router.put('/desactivarconvocatoria/:id', desactivarConvocatoria);
+router.put('/autorizarconvocatorias/:id',autorizarConvocatoria);
+router.put('/activarconvocatorias/:id', activarConvocatoria);
+router.put('/desactivarconvocatorias/:id', desactivarConvocatoria);
 export default router

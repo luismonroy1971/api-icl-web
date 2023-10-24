@@ -6,6 +6,6 @@ router.post('/uits', crearUit);
 router.put('/uits/:id',actualizarUit);
 router.delete('/uits/:id',eliminarUit);
 router.get('/uits/:id', leerUit);
-router.put('/activaruit/:id',activarUit);
-router.put('/desactivaruit/:id',desactivarUit);
+router.put('/activaruits/:id',activarUit);
+router.put('/desactivaruits/:id',desactivarUit);
 export default router

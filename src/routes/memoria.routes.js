@@ -8,7 +8,7 @@ router.put('/memorias/:id',actualizarMemoria);
 router.delete('/memorias/:id',eliminarMemoria);
 router.get('/memorias/:id', leerMemoria);
 router.get('/memoriasperiodo', obtenerPeriodos);
-router.put('/autorizarmemoria/:id',autorizarMemoria);
-router.put('/activarmemoria/:id',activarMemoria);
-router.put('/desactivarmemoria/:id',desactivarMemoria);
+router.put('/autorizarmemorias/:id',autorizarMemoria);
+router.put('/activarmemorias/:id',activarMemoria);
+router.put('/desactivarmemorias/:id',desactivarMemoria);
 export default router

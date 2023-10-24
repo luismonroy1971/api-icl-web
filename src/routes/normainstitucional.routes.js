@@ -7,7 +7,7 @@ router.post('/normas', crearNorma);
 router.put('/normas/:id',actualizarNorma);
 router.delete('/normas/:id',eliminarNorma);
 router.get('/normas/:id', leerNorma);
-router.put('/autorizarnorma/:id',autorizarNorma);
-router.put('/activarnorma/:id',activarNorma);
-router.put('/desactivarnorma/:id',desactivarNorma);
+router.put('/autorizarnormas/:id',autorizarNorma);
+router.put('/activarnormas/:id',activarNorma);
+router.put('/desactivarnormas/:id',desactivarNorma);
 export default router

@@ -8,7 +8,7 @@ router.put('/convenios/:id',actualizarConvenio);
 router.delete('/convenios/:id',eliminarConvenio);
 router.get('/convenios/:id', leerConvenio);
 router.get('/conveniosperiodo', obtenerPeriodos);
-router.put('/autorizarconvenio/:id',autorizarConvenio);
-router.put('/activarconvenio/:id',activarConvenio);
-router.put('/desactivarconvenio/:id',desactivarConvenio);
+router.put('/autorizarconvenios/:id',autorizarConvenio);
+router.put('/activarconvenios/:id',activarConvenio);
+router.put('/desactivarconvenios/:id',desactivarConvenio);
 export default router

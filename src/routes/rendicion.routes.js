@@ -8,7 +8,7 @@ router.put('/rendiciones/:id',actualizarRendicion);
 router.delete('/rendiciones/:id',eliminarRendicion);
 router.get('/rendiciones/:id', leerRendicion);
 router.get('/rendicionesperiodo', obtenerPeriodos);
-router.put('/autorizarrendicion/:id',autorizarRendicion);
-router.put('/activarrendicion/:id',activarRendicion);
-router.put('/desactivarrendicion/:id',desactivarRendicion);
+router.put('/autorizarrendiciones/:id',autorizarRendicion);
+router.put('/activarrendiciones/:id',activarRendicion);
+router.put('/desactivarrendiciones/:id',desactivarRendicion);
 export default router

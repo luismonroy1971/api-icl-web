@@ -7,7 +7,7 @@ router.post('/funcionarios', crearFuncionario);
 router.put('/funcionarios/:id',actualizarFuncionario);
 router.delete('/funcionarios/:id',eliminarFuncionario);
 router.get('/funcionarios/:id', leerFuncionario);
-router.put('/autorizarfuncionario/:id',autorizarFuncionario);
-router.put('/activarcurso/:id',activarFuncionario);
-router.put('/desactivarcurso/:id',desactivarFuncionario);
+router.put('/autorizarfuncionarios/:id',autorizarFuncionario);
+router.put('/activarcursos/:id',activarFuncionario);
+router.put('/desactivarcursos/:id',desactivarFuncionario);
 export default router

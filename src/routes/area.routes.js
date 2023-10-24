@@ -6,6 +6,6 @@ router.post('/areas', crearArea);
 router.put('/areas/:id',actualizarArea);
 router.delete('/areas/:id',eliminarArea);
 router.get('/areas/:id', leerArea);
-router.put('/activararea/:id',activarArea);
-router.put('/desactivararea/:id',desactivarArea);
+router.put('/activarareas/:id',activarArea);
+router.put('/desactivarareas/:id',desactivarArea);
 export default router

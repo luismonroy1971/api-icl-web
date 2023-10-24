@@ -7,7 +7,7 @@ router.post('/cursos', crearCurso);
 router.put('/cursos/:id',actualizarCurso);
 router.delete('/cursos/:id',eliminarCurso);
 router.get('/cursos/:id', leerCurso);
-router.put('/autorizarcurso/:id',autorizarCurso);
-router.put('/activarcurso/:id',activarCurso);
-router.put('/desactivarcurso/:id',desactivarCurso);
+router.put('/autorizarcursos/:id',autorizarCurso);
+router.put('/activarcursos/:id',activarCurso);
+router.put('/desactivarcursos/:id',desactivarCurso);
 export default router

@@ -6,6 +6,6 @@ router.post('/categorias', crearCategoria);
 router.put('/categorias/:id',actualizarCategoria);
 router.delete('/categorias/:id',eliminarCategoria);
 router.get('/categorias/:id', leerCategoria);
-router.put('/activarcategoria/:id',activarCategoria);
-router.put('/desactivarcategoria/:id',desactivarCategoria);
+router.put('/activarcategorias/:id',activarCategoria);
+router.put('/desactivarcategorias/:id',desactivarCategoria);
 export default router

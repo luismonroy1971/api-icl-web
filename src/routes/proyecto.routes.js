@@ -7,7 +7,7 @@ router.post('/proyectos', crearProyecto);
 router.put('/proyectos/:id',actualizarProyecto);
 router.delete('/proyectos/:id',eliminarProyecto);
 router.get('/proyectos/:id', leerProyecto);
-router.put('/autorizarproyecto/:id',autorizarProyecto);
-router.put('/activarproyecto/:id',activarProyecto);
-router.put('/desactivarproyecto/:id',desactivarProyecto);
+router.put('/autorizarproyectos/:id',autorizarProyecto);
+router.put('/activarproyectos/:id',activarProyecto);
+router.put('/desactivarproyectos/:id',desactivarProyecto);
 export default router
