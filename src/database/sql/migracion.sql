@@ -3090,7 +3090,7 @@ INSERT INTO servicios ( id, tipo_servicio, flag_construccion, flag_calculo, requ
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','0','Opciones Generales','Generales','Opciones Generales de la web','/generales');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','1','Areas','Areas','Administrador de Areas','/areas');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','2','Categorías','Categorías','Administrador de Categorías','/categorias');
-INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','3','Departamento','Departamento','Administrador de Departamento','/departamentod');
+INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','3','Departamento','Departamento','Administrador de Departamento','/departamentos');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','4','Provincia','Provincia','Administrador de Provincia','/provincias');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','5','Distrito','Distrito','Administrador de Distrito','/distritos');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','6','UIT','UIT','Administrador de UIT','/uits');
@@ -3100,7 +3100,7 @@ INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, desc
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','1','Convenios','Convenios','Administrador de Convenios','/convenios');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','2','Convocatorias','Convocatorias','Administrador de Convocatorias','/convocatorias');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','3','Cursos','Cursos','Administrador de Cursos','/cursos');
-INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','4','Directivas','Directivas','Administrador de Directivas','/cirectivas');
+INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','4','Directivas','Directivas','Administrador de Directivas','/directivas');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','5','Funcionarios','Funcionarios','Administrador de Funcionarios','/funcionarios');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','6','Memorias','Memorias','Administrador de Memorias','/memorias');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('2','7','Normas','Normas','Administrador de Normas','/normas');
