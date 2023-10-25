@@ -48,6 +48,7 @@ export const buscarServicios = async (req, res) => {
       }
 
       whereClause.activo = '1';
+      whereClause.flag_seleccion = '1';
   
       const servicios = await Servicio.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
