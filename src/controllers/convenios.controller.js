@@ -180,6 +180,9 @@ export const actualizarConvenio = async (req, res) => {
         convenio.id_distrito = id_distrito;
         convenio.modificado_por = modificado_por;
         convenio.modificado_fecha = modificado_fecha;
+        convenio.autorizado = '0';
+        convenio.autorizado_por = null;
+        convenio.autorizado_fecha = null;
         convenio.activo = activo;
 
         if (flag_adjunto === 'URL' && pdfFile) {

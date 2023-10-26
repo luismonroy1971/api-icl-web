@@ -143,6 +143,9 @@ export const actualizarNorma = async (req, res) => {
 
         norma.modificado_por = modificado_por;
         norma.modificado_fecha = modificado_fecha;
+        norma.autorizado = '0';
+        norma.autorizado_por = null;
+        norma.autorizado_fecha = null;
         norma.activo = activo;
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo

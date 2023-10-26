@@ -183,6 +183,9 @@ export const actualizarDirectiva = async (req, res) => {
         directiva.abreviacion_area = abreviacion_area;
         directiva.modificado_por = modificado_por;
         directiva.modificado_fecha = modificado_fecha;
+        directiva.autorizado = '0';
+        directiva.autorizado_por = null;
+        directiva.autorizado_fecha = null;
         directiva.activo = activo;
 
         if (flag_adjunto === 'BIN') {

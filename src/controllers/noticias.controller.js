@@ -114,6 +114,9 @@ export const actualizarNoticia = async (req, res) =>{
     noticia.id_categoria_noticia = id_categoria_noticia;
     noticia.modificado_por = modificado_por;
     noticia.modificado_fecha = modificado_fecha;
+    noticia.autorizado = '0';
+    noticia.autorizado_por = null;
+    noticia.autorizado_fecha = null;
     noticia.activo = activo;
     await noticia.save(); 
     res.send('Noticia actualizada');

@@ -95,6 +95,9 @@ export const actualizarCurso = async (req, res) =>{
     curso.link = link;
     curso.modificado_por = modificado_por;
     curso.modificado_fecha = modificado_fecha;
+    curso.autorizado = '0';
+    curso.autorizado_por = null;
+    curso.autorizado_fecha = null;
     curso.activo = activo;
     await curso.save(); 
     res.send('Curso actualizado');

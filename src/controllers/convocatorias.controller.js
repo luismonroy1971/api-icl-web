@@ -344,6 +344,9 @@ export const actualizarConvocatoria = async (req, res) => {
         convocatoria.estado_convocatoria = estado_convocatoria;
         convocatoria.modificado_por = modificado_por;
         convocatoria.modificado_fecha = modificado_fecha;
+        convocatoria.autorizado = '0';
+        convocatoria.autorizado_por = null;
+        convocatoria.autorizado_fecha = null;
         convocatoria.activo = activo;
 
         if (flag_adjunto === 'URL') {

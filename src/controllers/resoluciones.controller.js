@@ -176,6 +176,9 @@ export const actualizarResolucion = async (req, res) => {
         resolucion.abreviacion_area = abreviacion_area;
         resolucion.modificado_por = modificado_por;
         resolucion.modificado_fecha = modificado_fecha;
+        resolucion.autorizado = '0';
+        resolucion.autorizado_por = null;
+        resolucion.autorizado_fecha = null;
         resolucion.activo = activo;
 
         if (flag_adjunto === 'BIN') {

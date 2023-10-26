@@ -115,6 +115,9 @@ export const actualizarServicio = async (req, res) =>{
         servicio.monto_uit = monto_uit;
         servicio.modificado_por = modificado_por;
         servicio.modificado_fecha = modificado_fecha;
+        servicio.autorizado = '0';
+        servicio.autorizado_por = null;
+        servicio.autorizado_fecha = null;
         servicio.activo = activo;
         await servicio.save(); 
         res.send('Servicio actualizado');
@@ -132,7 +135,7 @@ export const autorizarServicio = async (req, res) =>{
       const servicio = await Servicio.findByPk(id);
       servicio.autorizado = autorizado;
       servicio.autorizado_por = autorizado_por;
-      servicio.autorizado_por = autorizado_fecha;
+      servicio.autorizado_fecha = autorizado_fecha;
       await servicio.save(); 
       res.send('Servicio autorizado / desautorizado');
   }

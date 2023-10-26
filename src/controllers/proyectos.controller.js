@@ -95,6 +95,9 @@ export const actualizarProyecto = async (req, res) =>{
     proyecto.link = link
     proyecto.modificado_por = modificado_por;
     proyecto.modificado_fecha = modificado_fecha;
+    proyecto.autorizado = '0';
+    proyecto.autorizado_por = null;
+    proyecto.autorizado_fecha = null;
     proyecto.activo = activo;
     await proyecto.save(); 
     res.send('Proyecto actualizado');

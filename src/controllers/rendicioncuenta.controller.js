@@ -168,6 +168,9 @@ export const actualizarRendicion = async (req, res) => {
 
         rendicion.modificado_por = modificado_por;
         rendicion.modificado_fecha = modificado_fecha;
+        rendicion.autorizado = '0';
+        rendicion.autorizado_por = null;
+        rendicion.autorizado_fecha = null;
         rendicion.activo = activo;
 
         await rendicion.save();

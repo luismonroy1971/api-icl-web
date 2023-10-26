@@ -147,6 +147,9 @@ export const actualizarMemoria = async (req, res) => {
         memoria.descripcion_memoria = descripcion_memoria;
         memoria.modificado_por = modificado_por;
         memoria.modificado_fecha = modificado_fecha;
+        memoria.autorizado = '0';
+        memoria.autorizado_por = null;
+        memoria.autorizado_fecha = null;
         memoria.activo = activo;
 
         if (flag_adjunto === 'URL' && memoriaFile) {

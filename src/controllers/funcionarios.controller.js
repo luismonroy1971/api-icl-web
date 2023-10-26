@@ -93,6 +93,9 @@ export const actualizarFuncionario = async (req, res) =>{
     funcionario.link = link;
     funcionario.modificado_por = modificado_por;
     funcionario.modificado_fecha = modificado_fecha;
+    funcionario.autorizado = '0';
+    funcionario.autorizado_por = null;
+    funcionario.autorizado_fecha = null;
     funcionario.activo = activo;
     await funcionario.save(); 
     res.send('Funcionario actualizado');

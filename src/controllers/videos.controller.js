@@ -116,6 +116,9 @@ export const actualizarVideo = async (req, res) =>{
     video.idCategoriaVideo = idCategoriaVideo;
     video.modificado_por = modificado_por;
     video.modificado_fecha = modificado_fecha;
+    video.autorizado = '0';
+    video.autorizado_por = null;
+    video.autorizado_fecha = null;
     video.activo = activo;
     await video.save(); 
     res.send('Video actualizado');
