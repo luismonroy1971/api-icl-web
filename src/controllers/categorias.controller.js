@@ -1,18 +1,21 @@
 import {Categoria} from '../models/Categoria.js';
 
-export const leerCategorias = async (req, res) =>{
-    try {
-        const categorias = await Categoria.findAll({
-            where: {
-              activo: '1', 
-            },
-          });
-        res.json(categorias);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
+export const leerCategorias = async (req, res) => {
+  try {
+    const { activo } = req.params;
+    const whereClause = activo ? { activo } : {};
 
+    const categorias = await Categoria.findAll({
+      where: whereClause,
+      order: [['id', 'ASC']],
+    });
+
+    res.json(categorias);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
 }
+
 
 export const leerCategoria = async (req, res) =>{
     const { id } = req.params;

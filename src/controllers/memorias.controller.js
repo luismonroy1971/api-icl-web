@@ -35,7 +35,7 @@ export const leerMemorias = async (req, res) =>{
 }
 
 export const buscarMemorias = async (req, res) => {
-    const { periodo_memoria, descripcion_memoria, autorizado } = req.query;
+    const { periodo_memoria, descripcion_memoria, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -54,10 +54,14 @@ export const buscarMemorias = async (req, res) => {
         };
       }
   
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       
       const memorias = await Memoria.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,order: [
+          ['periodo_memoria', 'DESC'],
+        ]
       });
   
       res.json(memorias);

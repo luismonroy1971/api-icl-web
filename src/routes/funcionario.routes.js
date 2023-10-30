@@ -8,6 +8,6 @@ router.put('/funcionarios/:id',actualizarFuncionario);
 router.delete('/funcionarios/:id',eliminarFuncionario);
 router.get('/funcionarios/:id', leerFuncionario);
 router.put('/autorizarfuncionarios/:id',autorizarFuncionario);
-router.put('/activarcursos/:id',activarFuncionario);
-router.put('/desactivarcursos/:id',desactivarFuncionario);
+router.put('/activarfuncionarios/:id',activarFuncionario);
+router.put('/desactivarfuncionarios/:id',desactivarFuncionario);
 export default router

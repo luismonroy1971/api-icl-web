@@ -16,7 +16,7 @@ export const leerProyectos = async (req, res) =>{
 }
 
 export const buscarProyectos = async (req, res) => {
-    const { title, content, autorizado } = req.query;
+    const { title, content, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -35,10 +35,15 @@ export const buscarProyectos = async (req, res) => {
         };
       }
   
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       
       const proyectos = await Proyecto.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['id', 'ASC'],
+        ]
       });
   
       res.json(proyectos);

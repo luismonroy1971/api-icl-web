@@ -1,18 +1,21 @@
 import {Uit} from '../models/Uit.js'
 
-export const leerUits = async (req, res) =>{
+export const leerUits = async (req, res) => {
     try {
-        const uits = await Uit.findAll({
-            where: {
-              activo: '1', 
-            },
-          });
-        res.json(uits);
+      const { activo } = req.params;
+      const whereClause = activo ? { activo } : {};
+  
+      const uits = await Uit.findAll({
+        where: whereClause,
+        order: [['periodo_uit', 'DESC']],
+      });
+  
+      res.json(uits);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
+      return res.status(500).json({ mensaje: error.message });
     }
-
-}
+  }
+  
 
 export const leerUit = async (req, res) =>{
     const { id } = req.params;

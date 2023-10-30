@@ -16,7 +16,7 @@ export const leerNormas = async (req, res) =>{
 }
 
 export const buscarNormas = async (req, res) => {
-    const { tipo_norma, denominacion_norma, autorizado } = req.query;
+    const { tipo_norma, denominacion_norma, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -35,7 +35,9 @@ export const buscarNormas = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
   
       const normas = await Norma.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause

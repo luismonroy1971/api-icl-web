@@ -17,7 +17,7 @@ export const leerNoticias = async (req, res) =>{
 }
 
 export const buscarNoticias = async (req, res) => {
-  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia, autorizado } = req.query;
+  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia, autorizado, activo } = req.query;
 
   try {
     const whereClause = {};
@@ -46,10 +46,15 @@ export const buscarNoticias = async (req, res) => {
       };
     }
 
-    whereClause.activo = '1';
+    if (activo) {
+      whereClause.activo = activo;
+    }
     
     const noticias = await Noticia.findAll({
-      where: Object.keys(whereClause).length === 0 ? {} : whereClause
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['id', 'ASC'],
+      ]
     });
 
     res.json(noticias);

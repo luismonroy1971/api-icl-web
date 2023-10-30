@@ -35,7 +35,7 @@ export const leerResoluciones = async (req, res) =>{
 }
 
 export const buscarResoluciones = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -66,14 +66,16 @@ export const buscarResoluciones = async (req, res) => {
         };
       }
   
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       
       const resoluciones = await Resolucion.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause,
         order: [
-          ['periodo_resolucion', 'ASC'],
-          ['id_area', 'ASC'],
-          ['numero_resolucion', 'ASC']
+          ['periodo_resolucion', 'DESC'],
+          ['id_area', 'DESC'],
+          ['numero_resolucion', 'DESC']
         ]
       });
   

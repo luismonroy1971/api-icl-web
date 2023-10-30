@@ -2,21 +2,24 @@ import { Sequelize } from 'sequelize';
 import {Funcionario} from '../models/Funcionario.js';
 
 export const leerFuncionarios = async (req, res) =>{
-    try {
-        const funcionarios = await Funcionario.findAll({
-            where: {
-              activo: '1', 
-            },
-          });
-        res.json(funcionarios);
-    } catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
+  try {
+    const { activo } = req.params;
+    const whereClause = activo ? { activo } : {};
 
+    const funcionarios = await Funcionario.findAll({
+      where: whereClause,
+    });
+
+    res.json(funcionarios);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
 }
 
+
+
 export const buscarFuncionarios = async (req, res) => {
-    const { name, position, autorizado } = req.query;
+    const { name, position, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -35,10 +38,16 @@ export const buscarFuncionarios = async (req, res) => {
         };
       }
   
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       
       const funcionarios = await Funcionario.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['id', 'ASC'],
+        ]
+
       });
   
       res.json(funcionarios);

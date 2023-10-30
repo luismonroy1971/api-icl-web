@@ -16,7 +16,7 @@ export const leerServicios = async (req, res) =>{
 }
 
 export const buscarServicios = async (req, res) => {
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado } = req.query;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -47,11 +47,18 @@ export const buscarServicios = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       whereClause.flag_seleccion = '1';
   
       const servicios = await Servicio.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['tipo_servicio', 'ASC'],
+          ['numero_servicio', 'ASC'],
+          ['sub_nivel_servicio', 'ASC']
+        ]
       });
   
       res.json(servicios);

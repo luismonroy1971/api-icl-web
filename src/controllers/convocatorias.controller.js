@@ -23,7 +23,7 @@ export const obtenerPeriodos = async (req, res) => {
 };
 
 export const buscarConvocatorias = async (req, res) => {
-    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado } = req.query;
+    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -58,13 +58,15 @@ export const buscarConvocatorias = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
   
       const convocatorias = await Convocatoria.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause,
         order: [
-          ['periodo_convocatoria', 'ASC'],
-          ['numero_convocatoria', 'ASC']
+          ['periodo_convocatoria', 'DESC'],
+          ['numero_convocatoria', 'DESC']
         ]
       });
   

@@ -1,18 +1,20 @@
 import {Area} from '../models/Area.js';
 
-export const leerAreas = async (req, res) =>{
+export const leerAreas = async (req, res) => {
     try {
-        const areas = await Area.findAll({
-            where: {
-              activo: '1', // Filtra por áreas con activo igual a '1'
-            },
-          });
-          res.json(areas);
+      const { activo } = req.params;
+      const whereClause = activo ? { activo } : {};
+  
+      const areas = await Area.findAll({
+        where: whereClause,
+      });
+  
+      res.json(areas);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
+      return res.status(500).json({ mensaje: error.message });
     }
-
-}
+  }
+  
 
 export const leerArea = async (req, res) =>{
     const { id } = req.params;

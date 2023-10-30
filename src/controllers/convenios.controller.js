@@ -37,7 +37,7 @@ export const leerConvenios = async (req, res) =>{
 }
 
 export const buscarConvenios = async (req, res) => {
-  const { descripcion_convenio, periodo_convenio, periodo_mes, id_departamento, id_provincia, id_distrito, autorizado } = req.query;
+  const { descripcion_convenio, periodo_convenio, periodo_mes, id_departamento, id_provincia, id_distrito, autorizado, activo } = req.query;
 
   try {
     const whereClause = {};
@@ -72,10 +72,13 @@ export const buscarConvenios = async (req, res) => {
       whereClause.id_distrito = id_distrito;
     }
 
-    whereClause.activo = '1';
-    
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
     const convenios = await Convenio.findAll({
-      where: whereClause
+      where: whereClause,
+      order: [['fecha_convenio', 'DESC']], 
     });
 
     res.json(convenios);

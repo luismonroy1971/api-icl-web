@@ -16,7 +16,7 @@ export const leerCursos = async (req, res) =>{
 }
 
 export const buscarCursos = async (req, res) => {
-    const { title, content, autorizado } = req.query;
+    const { title, content, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -35,10 +35,15 @@ export const buscarCursos = async (req, res) => {
         };
       }
   
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
       
       const cursos = await Curso.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['id', 'ASC'],
+        ]
       });
   
       res.json(cursos);
@@ -114,11 +119,6 @@ export const autorizarCurso = async (req, res) =>{
   try{
   const curso = await Curso.findByPk(id);
   
-  curso.image = image;
-  curso.video = video;
-  curso.title = title;
-  curso.content = content;
-  curso.link = link;
   curso.autorizado = autorizado;
   curso.autorizado_por = autorizado_por;
   curso.autorizado_fecha = autorizado_fecha;

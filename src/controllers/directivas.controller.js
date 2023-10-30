@@ -36,7 +36,7 @@ export const leerDirectivas = async (req, res) =>{
 }
 
 export const buscarDirectivas = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -67,10 +67,15 @@ export const buscarDirectivas = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
   
       const directivas = await Directiva.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['id', 'ASC'],
+        ]
       });
   
       res.json(directivas);

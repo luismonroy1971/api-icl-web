@@ -35,7 +35,7 @@ export const leerRendiciones = async (req, res) =>{
 }
 
 export const buscarRendiciones = async (req, res) => {
-    const { periodo_rendicion, descripcion_rendicion, autorizado } = req.query;
+    const { periodo_rendicion, descripcion_rendicion, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -54,10 +54,15 @@ export const buscarRendiciones = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
   
       const rendiciones = await Rendicion.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [
+          ['periodo_rendicion', 'DESC']
+        ]
       });
   
       res.json(rendiciones);

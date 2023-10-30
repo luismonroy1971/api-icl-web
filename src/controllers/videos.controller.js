@@ -16,7 +16,7 @@ export const leerVideos = async (req, res) =>{
 }
 
 export const buscarVideos = async (req, res) => {
-    const { fecha_video, id_categoria_video, titulo_video, descripcion_video, autorizado } = req.query;
+    const { fecha_video, id_categoria_video, titulo_video, descripcion_video, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -45,7 +45,9 @@ export const buscarVideos = async (req, res) => {
         };
       }
 
-      whereClause.activo = '1';
+      if (activo) {
+        whereClause.activo = activo;
+      }
   
       const videos = await Video.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause
