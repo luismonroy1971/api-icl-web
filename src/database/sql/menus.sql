@@ -1,9 +1,6 @@
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','0','Opciones Generales','Generales','Opciones Generales de la web','/Generales');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','1','Areas','Areas','Administrador de Areas','/Areas');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','2','Categorías','Categorías','Administrador de Categorías','/Categorías');
-INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','3','Departamento','Departamento','Administrador de Departamento','/Departamento');
-INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','4','Provincia','Provincia','Administrador de Provincia','/Provincia');
-INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','5','Distrito','Distrito','Administrador de Distrito','/Distrito');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','6','UIT','UIT','Administrador de UIT','/UIT');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','7','Tipo de documento','Tipodoc','Administrador de Tipo de documento','/Tipodoc');
 INSERT INTO MENUS (primer_nivel, segundo_nivel, nombre_menu, etiqueta_menu, descripcion_menu, url) values ('1','8','Usuarios','Usuarios','Administrador de Usuarios','/Usuarios');
