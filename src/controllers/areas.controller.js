@@ -7,6 +7,7 @@ export const leerAreas = async (req, res) => {
   
       const areas = await Area.findAll({
         where: whereClause,
+        order: [['id', 'ASC']],
       });
   
       res.json(areas);
