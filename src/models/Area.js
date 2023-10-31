@@ -17,11 +17,25 @@ export const Area = sequelize.define('areas',{
     abreviacion_area:{
         type: DataTypes.CHAR(2)
     }, 
+    label:{
+        type: DataTypes.STRING
+    },
     activo:{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
 },{timestamps: false})
+
+Area.beforeCreate((area, options) => {
+    area.label = area.descripcion_area;
+  });
+  
+  Area.beforeUpdate((area, options) => {
+    // Verifica si el campo descripcion_area ha cambiado antes de actualizar el campo label.
+    if (area.changed('descripcion_area')) {
+      area.label = area.descripcion_area;
+    }
+  });
 
 Area.hasMany(Resolucion,{
     foreignKey: 'id_area',

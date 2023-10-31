@@ -11,8 +11,22 @@ export const Provincia = sequelize.define('provincias',{
     },
     provincia:{
         type: DataTypes.STRING
+    },
+    label:{
+        type: DataTypes.STRING
     }
 },{timestamps: false})
+
+Provincia.beforeCreate((provincia, options) => {
+    provincia.label = provincia.provincia;
+  });
+  
+  Provincia.beforeUpdate((provincia, options) => {
+    // Verifica si el campo provincia ha cambiado antes de actualizar el campo label.
+    if (provincia.changed('provincia')) {
+      provincia.label = provincia.provincia;
+    }
+  });
 
 Provincia.hasMany(Convenio, {
     foreignKey: 'id_provincia',

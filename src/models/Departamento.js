@@ -12,8 +12,22 @@ export const Departamento = sequelize.define('departamentos',{
     },
     departamento:{
         type: DataTypes.STRING
+    },
+    label:{
+        type: DataTypes.STRING
     }
 },{timestamps: false})
+
+Departamento.beforeCreate((departamento, options) => {
+    departamento.label = departamento.departamento;
+  });
+  
+  Departamento.beforeUpdate((departamento, options) => {
+    // Verifica si el campo departamento ha cambiado antes de actualizar el campo label.
+    if (departamento.changed('departamento')) {
+      departamento.label = departamento.departamento;
+    }
+  });
 
 Departamento.hasMany(Convenio,{
     foreignKey: 'id_departamento',

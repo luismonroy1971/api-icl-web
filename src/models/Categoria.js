@@ -12,11 +12,26 @@ export const Categoria = sequelize.define('categorias',{
     descripcion_categoria:{
         type: DataTypes.STRING
     },  
+    label:{
+        type: DataTypes.STRING
+    },
     activo:{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
 },{timestamps: false})
+
+Categoria.beforeCreate((categoria, options) => {
+    categoria.label = categoria.descripcion_categoria;
+  });
+  
+  Categoria.beforeUpdate((categoria, options) => {
+    // Verifica si el campo descripcion_categoria ha cambiado antes de actualizar el campo label.
+    if (categoria.changed('descripcion_categoria')) {
+      categoria.label = categoria.descripcion_categoria;
+    }
+  });
+  
 
 Categoria.hasMany(Noticia,{
     foreignKey: 'id_categoria_noticia',

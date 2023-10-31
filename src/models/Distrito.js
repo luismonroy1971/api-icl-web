@@ -11,10 +11,24 @@ export const Distrito = sequelize.define('distritos',{
     distrito:{
         type: DataTypes.STRING
     },
+    label:{
+        type: DataTypes.STRING
+    },
     ubigeo:{
         type: DataTypes.STRING
     }
 },{timestamps: false})
+
+Distrito.beforeCreate((distrito, options) => {
+    distrito.label = distrito.distrito;
+  });
+  
+  Distrito.beforeUpdate((distrito, options) => {
+    // Verifica si el campo distrito ha cambiado antes de actualizar el campo label.
+    if (distrito.changed('distrito')) {
+      distrito.label = distrito.distrito;
+    }
+  });
 
 Distrito.hasMany(Convenio, {
     foreignKey: 'id_distrito',

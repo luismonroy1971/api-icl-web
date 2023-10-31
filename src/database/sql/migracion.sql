@@ -3313,6 +3313,14 @@ VALUES
    'http://icl.gob.pe/wp-content/uploads/2021/12/resumen_inventario_de_arboles_cercado_lima.pdf', 'Migración', NOW(), 'Migración', NOW(), '1', 'Migración', NOW());
 
 
+update areas set label = descripcion_area;
+update tipodocumentos set label = descripcion_tipo_documento;
+update categorias set label = descripcion_categoria;
+update distritos set label = distrito;
+update provincias set label = provincia;
+update departamentos set label = departamento;
+
+
 insert into usuarios (id, name, email, profile, password, activo) values (1,'Luis Monroy', 'luis.monroy@collikrenace.org', 'Administrador', '$2b$10$0kH.jtCDhI23ChtmPt4.x.aWEpt2ZkCmqWoirPK/eiD/SHN2vaiwG',1);
 
 insert into opcionesusuarios (id, id_usuario, id_menu) values (1,1,1);
