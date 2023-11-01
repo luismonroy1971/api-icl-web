@@ -29,17 +29,20 @@ Departamento.beforeCreate((departamento, options) => {
     }
   });
 
-Departamento.hasMany(Convenio,{
+Departamento.hasMany(Convenio, {
     foreignKey: 'id_departamento',
-    required: true
-})
+    required: true,
+    order: [['id', 'ASC']]
+});
 
-Departamento.hasMany(Provincia,{
+Departamento.hasMany(Provincia, {
     foreignKey: 'id_departamento',
-    required: true
-})
+    required: true,
+    order: [['id', 'ASC']]
+});
 
-Departamento.hasMany(Distrito,{
+Departamento.hasMany(Distrito, {
     foreignKey: 'id_departamento',
-    required: true
-})
+    required: true,
+    order: [['id', 'ASC']]
+});

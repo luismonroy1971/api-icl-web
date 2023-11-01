@@ -37,5 +37,6 @@ Provincia.hasMany(Convenio, {
 // Define la relación Provincia -> Distrito
 Provincia.hasMany(Distrito, {
     foreignKey: 'id_provincia',
-    sourceKey: 'id'
+    sourceKey: 'id',
+    order: [['id', 'ASC']]
 });

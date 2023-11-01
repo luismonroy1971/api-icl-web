@@ -72,20 +72,40 @@ export const buscarConvenios = async (req, res) => {
       whereClause.id_distrito = id_distrito;
     }
 
-    if (activo) {
-      whereClause.activo = activo;
-    }
-
     const convenios = await Convenio.findAll({
       where: whereClause,
       order: [['fecha_convenio', 'DESC']], 
     });
 
-    res.json(convenios);
+    // Transformar los resultados para cambiar el orden de los campos
+    const resultadoTransformado = convenios.map(convenio => ({
+      id: convenio.id,
+      descripcion_convenio: convenio.descripcion_convenio,
+      flag_adjunto: convenio.flag_adjunto,
+      id_departamento: convenio.id_departamento,
+      id_provincia: convenio.id_provincia,
+      id_distrito: convenio.id_distrito,
+      url_documento_convenio: convenio.url_documento_convenio,
+      contenido_documento_convenio: convenio.contenido_documento_convenio,
+      fecha_convenio: convenio.fecha_convenio,
+      periodo_convenio: convenio.periodo_convenio,
+      periodo_mes: convenio.periodo_mes,
+      creado_por: convenio.creado_por,
+      creado_fecha: convenio.creado_fecha,
+      modificado_por: convenio.modificado_por,
+      modificado_fecha: convenio.modificado_fecha,
+      autorizado: convenio.autorizado,
+      autorizado_por: convenio.autorizado_por,
+      autorizado_fecha: convenio.autorizado_fecha,
+      activo: convenio.activo,
+    }));
+
+    res.json(resultadoTransformado);
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
   
 
 export const leerConvenio = async (req, res) =>{
