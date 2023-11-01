@@ -148,7 +148,7 @@ export const actualizarPopup = async (req, res) => {
         }
 
         await popup.save();
-        res.send('Popup actualizado');
+         res.json({ mensaje: 'Popup actualizado con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

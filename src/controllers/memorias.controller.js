@@ -173,7 +173,7 @@ export const actualizarMemoria = async (req, res) => {
         }
 
         await memoria.save();
-        res.send('Memoria actualizada');
+         res.json({ mensaje: 'Memoria actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

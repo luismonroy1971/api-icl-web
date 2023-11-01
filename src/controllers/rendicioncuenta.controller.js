@@ -179,7 +179,7 @@ export const actualizarRendicion = async (req, res) => {
         rendicion.activo = activo;
 
         await rendicion.save();
-        res.send('Rendición actualizada');
+         res.json({ mensaje: 'Rendición actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

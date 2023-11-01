@@ -52,7 +52,7 @@ export const actualizarTipoDocumento = async (req, res) =>{
     tipodocumento.codigo_tramite_documentario = codigo_tramite_documentario;
     tipodocumento.activo = activo;
     await tipodocumento.save(); 
-    res.send('Tipo de documento actualizado');
+     res.json({ mensaje: 'Tipo de documento actualizado con éxito' });
     }
     catch(error){
        return res.status(500).json({ mensaje: error.message })

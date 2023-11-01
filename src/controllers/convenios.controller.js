@@ -200,10 +200,10 @@ export const actualizarConvenio = async (req, res) => {
         }
 
         await convenio.save();
-        res.json({ message: 'Convenio actualizado' });
+        res.json({ mensaje: 'Convenio actualizado' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error al actualizar el convenio' });
+        res.status(500).json({ mensaje: 'Error al actualizar el convenio' });
     }
 };
 

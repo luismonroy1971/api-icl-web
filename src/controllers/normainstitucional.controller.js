@@ -156,7 +156,7 @@ export const actualizarNorma = async (req, res) => {
         }
 
         await norma.save();
-        res.send('Norma actualizada');
+         res.json({ mensaje: 'Norma actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

@@ -44,20 +44,28 @@ export const crearCategoria = async (req, res) =>{
     }
 }
 
-export const actualizarCategoria = async (req, res) =>{
+export const actualizarCategoria = async (req, res) => {
     const { id } = req.params;
     const { descripcion_categoria, activo } = req.body;
+
     try {
-    const categoria = await Categoria.findByPk(id);
-    categoria.descripcion_categoria = descripcion_categoria;
-    categoria.activo = activo;
-    await categoria.save(); 
-    res.send('Categoría actualizada');
-    }
-      catch(error){
-      return res.status(500).json({ mensaje: error.message })
+        const categoria = await Categoria.findByPk(id);
+
+        if (!categoria) {
+            return res.status(404).json({ mensaje: 'Categoría no encontrada' });
+        }
+
+        categoria.descripcion_categoria = descripcion_categoria;
+        categoria.activo = activo;
+
+        await categoria.save();
+
+        return res.json({ mensaje: 'Categoría actualizada con éxito' });
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
 }
+
 
 export const eliminarCategoria = async (req, res) =>{
     try {

@@ -213,7 +213,7 @@ export const actualizarDirectiva = async (req, res) => {
         }
 
         await directiva.save();
-        res.send('Directiva actualizada');
+        res.json({ mensaje: 'Directiva actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

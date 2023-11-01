@@ -105,7 +105,7 @@ export const actualizarProyecto = async (req, res) =>{
     proyecto.autorizado_fecha = null;
     proyecto.activo = activo;
     await proyecto.save(); 
-    res.send('Proyecto actualizado');
+     res.json({ mensaje: 'Proyecto actualizado con éxito' });
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })

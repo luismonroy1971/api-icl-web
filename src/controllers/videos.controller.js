@@ -126,7 +126,7 @@ export const actualizarVideo = async (req, res) =>{
     video.autorizado_fecha = null;
     video.activo = activo;
     await video.save(); 
-    res.send('Video actualizado');
+     res.json({ mensaje: 'Video actualizado con éxito' });
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })

@@ -68,7 +68,7 @@ export const actualizarOpcionesUsuario = async (req, res) =>{
     opcionesusuario.id_usuario = id_usuario;
     opcionesusuario.id_menu = id_menu;
     await opcionesusuario.save(); 
-    res.send('Opciones del usuario actualizadas');
+     res.json({ mensaje: 'Opciones de usuario actualizados con éxito' });
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })

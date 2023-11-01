@@ -54,7 +54,7 @@ export const actualizarImagen = async (req, res) =>{
     imagen.id_noticia = id_noticia;
     
     await imagen.save(); 
-    res.send('Imagen actualizada');
+     res.json({ mensaje: 'Imagen actualizada con éxito' });
     }
         catch(error){
         return res.status(500).json({ mensaje: error.message })

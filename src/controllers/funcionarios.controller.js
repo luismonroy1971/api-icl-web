@@ -107,7 +107,7 @@ export const actualizarFuncionario = async (req, res) =>{
     funcionario.autorizado_fecha = null;
     funcionario.activo = activo;
     await funcionario.save(); 
-    res.send('Funcionario actualizado');
+     res.json({ mensaje: 'Funcionario actualizado con éxito' });
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })

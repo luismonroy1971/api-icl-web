@@ -196,7 +196,7 @@ export const actualizarResolucion = async (req, res) => {
         }
 
         await resolucion.save();
-        res.send('Resolución actualizada');
+         res.json({ mensaje: 'Resolución actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

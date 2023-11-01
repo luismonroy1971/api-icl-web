@@ -124,7 +124,7 @@ export const actualizarNoticia = async (req, res) =>{
     noticia.autorizado_fecha = null;
     noticia.activo = activo;
     await noticia.save(); 
-    res.send('Noticia actualizada');
+     res.json({ mensaje: 'Noticia actualizada con éxito' });
     }
     catch(error){
          return res.status(500).json({ mensaje: error.message })

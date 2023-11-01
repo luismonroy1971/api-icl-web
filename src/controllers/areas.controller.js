@@ -46,23 +46,29 @@ export const crearArea = async (req, res) =>{
     }
 }
 
-export const actualizarArea = async (req, res) =>{
+export const actualizarArea = async (req, res) => {
     const { id } = req.params;
     const { descripcion_area, abreviacion_area, activo } = req.body;
 
-    try{
-    const area = await Area.findByPk(id);
-    
-    area.descripcion_area = descripcion_area;
-    area.abreviacion_area = abreviacion_area;
-    area.activo = activo;
-    await area.save(); 
-    res.send('Area actualizada');
-    }
-        catch(error){
-        return res.status(500).json({ mensaje: error.message })
+    try {
+        const area = await Area.findByPk(id);
+
+        if (!area) {
+            return res.status(404).json({ mensaje: 'Área no encontrada' });
+        }
+
+        area.descripcion_area = descripcion_area;
+        area.abreviacion_area = abreviacion_area;
+        area.activo = activo;
+
+        await area.save();
+
+        return res.json({ mensaje: 'Área actualizada con éxito' });
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
 }
+
 
 export const eliminarArea = async (req, res) =>{
 

@@ -388,7 +388,7 @@ export const actualizarConvocatoria = async (req, res) => {
             }
         });
 
-        res.send('Convocatoria actualizada');
+        res.json({ mensaje: 'Convocatoria actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }

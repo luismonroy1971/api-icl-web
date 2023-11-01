@@ -86,31 +86,37 @@ export const crearCurso = async (req, res) =>{
     }
 }
 
-export const actualizarCurso = async (req, res) =>{
+export const actualizarCurso = async (req, res) => {
     const { id } = req.params;
     const { image, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
 
-    try{
-    const curso = await Curso.findByPk(id);
-    
-    curso.image = image;
-    curso.video = video;
-    curso.title = title;
-    curso.content = content;
-    curso.link = link;
-    curso.modificado_por = modificado_por;
-    curso.modificado_fecha = modificado_fecha;
-    curso.autorizado = '0';
-    curso.autorizado_por = null;
-    curso.autorizado_fecha = null;
-    curso.activo = activo;
-    await curso.save(); 
-    res.send('Curso actualizado');
+    try {
+        const curso = await Curso.findByPk(id);
+
+        if (!curso) {
+            return res.status(404).json({ mensaje: 'Curso no encontrado' });
+        }
+
+        curso.image = image;
+        curso.video = video;
+        curso.title = title;
+        curso.content = content;
+        curso.link = link;
+        curso.modificado_por = modificado_por;
+        curso.modificado_fecha = modificado_fecha;
+        curso.autorizado = '0';
+        curso.autorizado_por = null;
+        curso.autorizado_fecha = null;
+        curso.activo = activo;
+
+        await curso.save();
+
+        // Devuelve una respuesta JSON en lugar de enviar un mensaje de texto
+        return res.json({ mensaje: 'Curso actualizado con éxito' });
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
     }
-    catch(error){
-         return res.status(500).json({ mensaje: error.message })
-    }
-}
+};
 
 export const autorizarCurso = async (req, res) =>{
   const { id } = req.params;

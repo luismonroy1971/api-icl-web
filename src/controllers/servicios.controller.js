@@ -127,7 +127,7 @@ export const actualizarServicio = async (req, res) =>{
         servicio.autorizado_fecha = null;
         servicio.activo = activo;
         await servicio.save(); 
-        res.send('Servicio actualizado');
+         res.json({ mensaje: 'Servicio actualizado con éxito' });
     }
     catch(error){
         return res.status(500).json({ mensaje: error.message })
