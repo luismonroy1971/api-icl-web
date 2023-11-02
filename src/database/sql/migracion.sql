@@ -3334,6 +3334,7 @@ insert into usuarios (id, name, email, profile, password, activo) values (1,'Lui
 insert into opcionesusuarios (id, id_usuario, id_menu) values (1,1,1);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (2,1,2);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (3,1,3);
+insert into opcionesusuarios (id, id_usuario, id_menu) values (4,1,4);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (7,1,7);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (8,1,8);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (9,1,9);
