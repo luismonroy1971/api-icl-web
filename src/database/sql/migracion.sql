@@ -2511,8 +2511,10 @@ INSERT INTO rendiciones (id,descripcion_rendicion, periodo_rendicion, url_rendic
 INSERT INTO rendiciones (id,descripcion_rendicion, periodo_rendicion, url_rendicion, autorizado, autorizado_por, activo) values (3,'Rendición de Cuentas de Titulares 2020',2020,'https://icl.gob.pe/wp-content/uploads/2022/02/informe_anual_rendicion_cuenta_titulares_icl_2020.pdf','1','Migración','1');								
 INSERT INTO rendiciones (id,descripcion_rendicion, periodo_rendicion, url_rendicion, autorizado, autorizado_por, activo) values (4,'Rendición de Cuentas de Titulares 2019',2019,'https://icl.gob.pe/wp-content/uploads/2022/02/informe_anual_rendicion_cuenta_titulares_icl_2019.pdf','1','Migración','1');								
 
-INSERT INTO videos (id, titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, autorizado, autorizado_por, activo, id_categoria_video) VALUES (1, 'Qué es un convenio marco', 'El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano. Además estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostró interés en el catastro y el desarrollo de su localidad.', 'Año 2023', 'https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-marco.jpg', 'https://drive.google.com/file/d/1tZw4km6weNxhiCWw9rnc7jZc86eBtBma/view?usp=sharing', '1', 'Migración', '1', 1);
-INSERT INTO videos (id, titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, autorizado, autorizado_por, activo, id_categoria_video) VALUES (2, 'Firma de Convenio con 5 regiones', 'Impulsando el desarrollo catastral, firma de convenio de 5 regiones: Ancash, Cusco, Amazonas, Puno y San Martín', 'Año 2023', 'https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-1.jpg', 'https://drive.google.com/file/d/10QVekt6UBDdUZVQbLv_uggxG3jiwV9Vc/view?usp=sharing', '1', 'Migración', '1', 1);
+INSERT INTO videos (id, titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, orden, autorizado, autorizado_por, activo, id_categoria_video)
+VALUES (1, 'Qué es un convenio marco', 'El Instituto Catastral de Lima (ICL) se reunió con el alcalde de la Municipalidad Provincial de Atalaya Francisco De Asis Mendoza De Souza para definir el Convenio Específico del Catastro urbano. Además estuvo presente el alcalde distrital de Tahuania de la Provincia de Atalaya Luis Fernando Arechaga García, quien mostró interés en el catastro y el desarrollo de su localidad.', 'Año 2023', 'https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-marco.jpg', 'https://drive.google.com/file/d/1tZw4km6weNxhiCWw9rnc7jZc86eBtBma/view?usp=sharing', 2, '1', 'Migración', '1', 1);
+INSERT INTO videos (id, titulo_video, descripcion_video, fecha_video, url_imagen_video, url_video, orden, autorizado, autorizado_por, activo, id_categoria_video)
+VALUES (2, 'Firma de Convenio con 5 regiones', 'Impulsando el desarrollo catastral, firma de convenio de 5 regiones: Ancash, Cusco, Amazonas, Puno y San Martín', 'Año 2023', 'https://alldesign.pro/icl/wp-content/uploads/2023/09/convenio-1.jpg', 'https://drive.google.com/file/d/10QVekt6UBDdUZVQbLv_uggxG3jiwV9Vc/view?usp=sharing',1, '1', 'Migración', '1', 1);
 
 INSERT INTO directivas (id,periodo_resolucion, numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo, id_area, id_tipo_documento) VALUES(1,2013,29,'','Nº 02-2013-GA-ICL/MMLDirectiva de Tratamiento Contable de los Bienes Intangibles','https://icl.gob.pe/wp-content/uploads/2022/02/Resolucion-No-29_2013_GG_ICLMML.pdf','GG','1','Migración','1',2,1);
 INSERT INTO directivas (id,periodo_resolucion, numero_resolucion, adicional_resolucion, sumilla_resolucion, url_documento_resolucion, abreviacion_area, autorizado, autorizado_por, activo, id_area, id_tipo_documento) VALUES(2,2013,28,'','s/n Procedimientos contables aplicables al ICL','https://icl.gob.pe/wp-content/uploads/2022/02/Resolucion-No-28_2013_GG_ICLMML.pdf','GG','1','Migración','1',2,1);
@@ -3378,3 +3380,23 @@ insert into opcionesusuarios (id, id_usuario, id_menu) values (20,1,20);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (21,1,21);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (22,1,22);
 insert into opcionesusuarios (id, id_usuario, id_menu) values (23,1,23);
+
+SELECT setval('areas_id_seq', (SELECT MAX(id) FROM areas));
+SELECT setval('campostablas_id_seq', (SELECT MAX(id) FROM campostablas));
+SELECT setval('categorias_id_seq', (SELECT MAX(id) FROM categorias));
+SELECT setval('convenios_id_seq', (SELECT MAX(id) FROM convenios));
+SELECT setval('convocatorias_id_seq', (SELECT MAX(id) FROM convocatorias));
+SELECT setval('cursos_id_seq', (SELECT MAX(id) FROM cursos));
+SELECT setval('directivas_id_seq', (SELECT MAX(id) FROM directivas));
+SELECT setval('funcionarios_id_seq', (SELECT MAX(id) FROM funcionarios));
+SELECT setval('imagenes_id_seq', (SELECT MAX(id) FROM imagenes));
+SELECT setval('memorias_id_seq', (SELECT MAX(id) FROM memorias));
+SELECT setval('menus_id_seq', (SELECT MAX(id) FROM menus));
+SELECT setval('normasinstitucionales_id_seq', (SELECT MAX(id) FROM normasinstitucionales));
+SELECT setval('noticias_id_seq', (SELECT MAX(id) FROM noticias));
+SELECT setval('rendiciones_id_seq', (SELECT MAX(id) FROM rendiciones));
+SELECT setval('resoluciones_id_seq', (SELECT MAX(id) FROM resoluciones));
+SELECT setval('servicios_id_seq', (SELECT MAX(id) FROM servicios));
+SELECT setval('tipodocumentos_id_seq', (SELECT MAX(id) FROM tipodocumentos));
+SELECT setval('uits_id_seq', (SELECT MAX(id) FROM uits));
+SELECT setval('videos_id_seq', (SELECT MAX(id) FROM videos));

@@ -22,6 +22,9 @@ export const Video = sequelize.define('videos',{
     url_video:{
         type: DataTypes.STRING
     },
+    orden:{
+        type: DataTypes.INTEGER
+    },
     creado_por:{
         type: DataTypes.STRING
     },
@@ -52,3 +55,18 @@ export const Video = sequelize.define('videos',{
         defaultValue: '1'
     }
 },{timestamps: false})
+
+
+Video.beforeCreate((video, options) => {
+    return Video.max('orden')
+        .then((maxOrden) => {
+            video.orden = maxOrden != null ? maxOrden + 1 : 1;
+        });
+});
+
+Video.beforeUpdate((video, options) => {
+    // Verifica si el campo descripcion_video ha cambiado antes de actualizar el campo label.
+    if (video.changed('id')) {
+      video.orden = video.id;
+    }
+  });

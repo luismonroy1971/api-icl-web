@@ -58,12 +58,15 @@ Noticia.hasMany(ImagenNoticia,{
 })
 
 Noticia.beforeCreate((noticia, options) => {
+    return Noticia.max('orden')
+        .then((maxOrden) => {
+            noticia.orden = maxOrden != null ? maxOrden + 1 : 1;
+        });
+});
+
+Noticia.beforeUpdate((noticia, options) => {
+// Verifica si el campo descripcion_noticia ha cambiado antes de actualizar el campo label.
+if (noticia.changed('id')) {
     noticia.orden = noticia.id;
-  });
-  
-  Noticia.beforeUpdate((noticia, options) => {
-    // Verifica si el campo descripcion_noticia ha cambiado antes de actualizar el campo label.
-    if (noticia.changed('descripcion_noticia')) {
-      noticia.orden = noticia.id;
-    }
-  });
+}
+});

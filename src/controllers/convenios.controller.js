@@ -145,7 +145,7 @@ export const crearConvenio = async (req, res) => {
         if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
             const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            url_documento_convenio = `\\convenios\\${fileName}`;
+            url_documento_convenio = '/documentos/convenios/' + fileName;
         } else if (flag_adjunto === 'BIN' && pdfFile) {
             // Mantén el nombre original del archivo al subirlo en formato binario
             url_documento_convenio = null;
@@ -211,7 +211,7 @@ export const actualizarConvenio = async (req, res) => {
       if (flag_adjunto === 'URL' && pdfFile) {
           const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
           const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-          convenio.url_documento_convenio = `\\convenios\\${fileName}`;
+          convenio.url_documento_convenio = '/documentos/convenios/' + fileName;
           convenio.contenido_documento_convenio = null; // Elimina el contenido binario
       } else if (flag_adjunto === 'BIN' && pdfFile) {
           // Mantén el nombre original del archivo al subirlo en formato binario

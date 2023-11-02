@@ -52,7 +52,7 @@ export const buscarVideos = async (req, res) => {
       const videos = await Video.findAll({
         where: Object.keys(whereClause).length === 0 ? {} : whereClause,
         order: [
-          ['id', 'ASC'],
+          ['orden', 'DESC'],
         ]
       });
   
