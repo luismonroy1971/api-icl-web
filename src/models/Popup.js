@@ -7,9 +7,6 @@ export const Popup = sequelize.define('popup', {
         primaryKey: true,
         autoIncrement: true,
     },
-    periodo_popup: {
-        type: DataTypes.INTEGER,
-    },
     descripcion_popup: {
         type: DataTypes.STRING,
     },

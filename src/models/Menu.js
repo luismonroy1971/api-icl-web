@@ -23,6 +23,10 @@ export const Menu = sequelize.define('menus',{
     descripcion_menu:{
         type: DataTypes.STRING(300)
     },
+    tipo_menu:{
+        type: DataTypes.ENUM(['ADMINISTRADOR', 'USUARIO']),
+        defaultValue: 'USUARIO'
+    },
     url:{
         type: DataTypes.STRING
     }

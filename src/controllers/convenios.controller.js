@@ -174,57 +174,62 @@ export const crearConvenio = async (req, res) => {
 
 
 export const actualizarConvenio = async (req, res) => {
-    const { id } = req.params;
-    const {
-        descripcion_convenio,
-        fecha_convenio,
-        id_departamento,
-        id_provincia,
-        id_distrito,
-        modificado_por,
-        modificado_fecha,
-        activo,
-        flag_adjunto
-    } = req.body;
+  const { id } = req.params;
+  const {
+      descripcion_convenio,
+      fecha_convenio,
+      id_departamento,
+      id_provincia,
+      id_distrito,
+      modificado_por,
+      modificado_fecha,
+      activo,
+      flag_adjunto
+  } = req.body;
 
-    const pdfFile = req.file; // Acceder al archivo cargado
+  const pdfFile = req.file; // Acceder al archivo cargado
 
-    try {
-        const convenio = await Convenio.findByPk(id);
+  try {
+      const convenio = await Convenio.findByPk(id);
 
-        if (!convenio) {
-            return res.status(404).json({ message: 'Convenio no encontrado' });
-        }
+      if (!convenio) {
+          return res.status(404).json({ message: 'Convenio no encontrado' });
+      }
 
-        convenio.descripcion_convenio = descripcion_convenio;
-        convenio.fecha_convenio = fecha_convenio;
-        convenio.id_departamento = id_departamento;
-        convenio.id_provincia = id_provincia;
-        convenio.id_distrito = id_distrito;
-        convenio.modificado_por = modificado_por;
-        convenio.modificado_fecha = modificado_fecha;
-        convenio.autorizado = '0';
-        convenio.autorizado_por = null;
-        convenio.autorizado_fecha = null;
-        convenio.activo = activo;
+      convenio.descripcion_convenio = descripcion_convenio;
+      convenio.fecha_convenio = fecha_convenio;
+      convenio.id_departamento = id_departamento;
+      convenio.id_provincia = id_provincia;
+      convenio.id_distrito = id_distrito;
+      convenio.modificado_por = modificado_por;
+      convenio.modificado_fecha = modificado_fecha;
+      convenio.autorizado = '0';
+      convenio.autorizado_por = null;
+      convenio.autorizado_fecha = null;
+      convenio.activo = activo;
 
-        if (flag_adjunto === 'URL' && pdfFile) {
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            convenio.url_documento_convenio = `\\convenios\\${fileName}`;
-            convenio.contenido_documento_convenio = null; // Elimina el contenido binario
-        } else if (flag_adjunto === 'BIN' && pdfFile) {
-            // Mantén el nombre original del archivo al subirlo en formato binario
-            convenio.url_documento_convenio = null;
-            convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
-        }
+      if (flag_adjunto === 'URL' && pdfFile) {
+          const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+          const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+          convenio.url_documento_convenio = `\\convenios\\${fileName}`;
+          convenio.contenido_documento_convenio = null; // Elimina el contenido binario
+      } else if (flag_adjunto === 'BIN' && pdfFile) {
+          // Mantén el nombre original del archivo al subirlo en formato binario
+          convenio.url_documento_convenio = null;
+          convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
+      } else {
+          // No se subió un archivo, establece ambos campos como nulos
+          convenio.url_documento_convenio = null;
+          convenio.contenido_documento_convenio = null;
+      }
 
-        await convenio.save();
-        res.json({ mensaje: 'Convenio actualizado' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ mensaje: 'Error al actualizar el convenio' });
-    }
+      await convenio.save();
+
+      res.status(200).json({ message: 'Convenio actualizado correctamente' });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error al actualizar el convenio' });
+  }
 };
 
 

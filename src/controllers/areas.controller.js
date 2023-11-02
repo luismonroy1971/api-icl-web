@@ -79,7 +79,7 @@ export const eliminarArea = async (req, res) =>{
                 id,
             }
         })
-        res.sendStatus(204);
+        return res.status(204).json({ mensaje: 'Área eliminada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message})
     }
