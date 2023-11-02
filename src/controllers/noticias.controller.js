@@ -53,7 +53,7 @@ export const buscarNoticias = async (req, res) => {
     const noticias = await Noticia.findAll({
       where: Object.keys(whereClause).length === 0 ? {} : whereClause,
       order: [
-        ['id', 'ASC'],
+        ['orden', 'DESC'],
       ]
     });
 

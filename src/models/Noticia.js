@@ -20,6 +20,9 @@ export const Noticia = sequelize.define('noticias',{
     url_imagen_portada:{
         type: DataTypes.STRING
     },
+    orden:{
+        type: DataTypes.INTEGER
+    },
     creado_por:{
         type: DataTypes.STRING
     },
@@ -53,3 +56,14 @@ Noticia.hasMany(ImagenNoticia,{
     foreignKey: 'id_noticia',
     sourceKey: 'id'
 })
+
+Noticia.beforeCreate((noticia, options) => {
+    noticia.orden = noticia.id;
+  });
+  
+  Noticia.beforeUpdate((noticia, options) => {
+    // Verifica si el campo descripcion_noticia ha cambiado antes de actualizar el campo label.
+    if (noticia.changed('descripcion_noticia')) {
+      noticia.orden = noticia.id;
+    }
+  });
