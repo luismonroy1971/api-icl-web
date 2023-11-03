@@ -1,8 +1,29 @@
 import { Sequelize } from 'sequelize';
 import {Popup} from '../models/Popup.js';
 
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    // Establece la ubicación para guardar los archivos adjuntos
+    if (req.body.flag_adjunto === 'URL') {
+      cb(null, 'documentos/popups');
+    } else {
+      cb(null, 'otra_ruta_de_guardado'); // Cambia esta ruta si es diferente
+    }
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const fileName = `${file.originalname}-${uniqueSuffix}`;
+    cb(null, fileName);
+  },
+});
+
+const upload = multer({ storage });
+
+
 export const buscarPopups = async (req, res) => {
-  const { fecha_inicial, fecha_final, descripcion_popup, autorizado, activo } = req.query;
+  const { descripcion_popup, autorizado, activo, fechaActual } = req.query;
 
   try {
     const whereClause = {};
@@ -21,17 +42,27 @@ export const buscarPopups = async (req, res) => {
       whereClause.activo = activo;
     }
 
-    if (fecha_inicial && fecha_final) {
-      whereClause.fecha_inicial = {
-        [Sequelize.Op.between]: [fecha_inicial, fecha_final]
-      };
+    if (fechaActual) {
+      // Utiliza Sequelize.Op.and para construir una condición compuesta
+      whereClause[Sequelize.Op.and] = [
+        {
+          fecha_inicial: {
+            [Sequelize.Op.lte]: fechaActual,
+          },
+        },
+        {
+          fecha_final: {
+            [Sequelize.Op.gte]: fechaActual,
+          },
+        },
+      ];
     }
 
     const popups = await Popup.findAll({
       where: Object.keys(whereClause).length === 0 ? {} : whereClause,
       order: [
         ['fecha_final', 'DESC'],
-      ]
+      ],
     });
 
     res.json(popups);
@@ -39,8 +70,6 @@ export const buscarPopups = async (req, res) => {
     return res.status(500).json({ mensaje: error.message });
   }
 };
-
-  
 
 export const leerPopup = async (req, res) =>{
     const { id } = req.params;
@@ -57,102 +86,95 @@ export const leerPopup = async (req, res) =>{
 
 }
 
-import fs from 'fs';
+export const crearPopup = upload.single('popupFile', async (req, res) => {
+  const {
+    descripcion_popup,
+    fecha_inicial,
+    fecha_final,
+    flag_adjunto,
+    creado_por,
+    creado_fecha,
+  } = req.body;
 
-export const crearPopup = async (req, res) => {
-    const {
-        descripcion_popup,
-        fecha_inicial,
-        fecha_final,
-        flag_adjunto,
-        creado_por,
-        creado_fecha,
-    } = req.body;
+  const popupFile = req.file; // Acceder al archivo cargado
 
-    const popupFile = req.file; // Acceder al archivo cargado
+  try {
+    let nuevoPopup = {
+      fecha_inicial,
+      fecha_final,
+      descripcion_popup,
+      creado_por,
+      creado_fecha,
+    };
 
-    try {
-        const nuevoPopup = await Popup.create({
-            fecha_inicial,
-            fecha_final,
-            descripcion_popup,
-            creado_por,
-            creado_fecha,
-        });
-
-        if (flag_adjunto === 'URL' && popupFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${popupFile.originalname}-${uniqueSuffix}`;
-            nuevoPopup.url_popup = `\\popups\\${fileName}`;
-        } else if (flag_adjunto === 'BIN' && popupFile) {
-            nuevoPopup.contenido_popup = fs.readFileSync(popupFile.path);
-        }
-
-        // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(popupFile.path);
-
-        await nuevoPopup.save();
-        res.json(nuevoPopup);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+    if (flag_adjunto === 'URL' && popupFile) {
+      // Guardar la URL del archivo en el registro
+      nuevoPopup.url_popup = `/documentos/popups/${popupFile.filename}`;
+    } else if (flag_adjunto === 'BIN' && popupFile) {
+      // Si es BIN, guarda el contenido del archivo
+      nuevoPopup.contenido_popup = fs.readFileSync(popupFile.path);
     }
-};
+
+    nuevoPopup = await Popup.create(nuevoPopup);
+    res.json(nuevoPopup);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+});
 
 
-export const actualizarPopup = async (req, res) => {
-    const { id } = req.params;
-    const {
-        fecha_inicial,
-        fecha_final,
-        descripcion_popup,
-        modificado_por,
-        modificado_fecha,
-        activo,
-        flag_adjunto, // Nuevo campo
-    } = req.body;
+export const actualizarPopup = upload.single('popupFile', async (req, res) => {
+  const { id } = req.params;
+  const {
+    fecha_inicial,
+    fecha_final,
+    descripcion_popup,
+    modificado_por,
+    modificado_fecha,
+    activo,
+    flag_adjunto, // Nuevo campo
+  } = req.body;
 
-    const popupFile = req.file; // Acceder al archivo cargado
+  const popupFile = req.file; // Acceder al archivo cargado
 
-    try {
-        const popup = await Popup.findByPk(id);
+  try {
+    const popup = await Popup.findByPk(id);
 
-        if (!popup) {
-            return res.status(404).json({ mensaje: 'Popup no encontrado' });
-        }
-
-        popup.fecha_inicial = fecha_inicial;
-        popup.fecha_final = fecha_final;
-        popup.descripcion_popup = descripcion_popup;
-        popup.modificado_por = modificado_por;
-        popup.modificado_fecha = modificado_fecha;
-        popup.autorizado = '0';
-        popup.autorizado_por = null;
-        popup.autorizado_fecha = null;
-        popup.activo = activo;
-
-        if (flag_adjunto === 'URL' && popupFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${popupFile.originalname}-${uniqueSuffix}`;
-            popup.url_popup = `\\popups\\${fileName}`;
-            popup.contenido_popup = null; // Elimina el contenido binario
-        } else if (flag_adjunto === 'BIN' && popupFile) {
-            popup.url_popup = popupFile.originalname; // Almacena el nombre del archivo, si es necesario
-            popup.contenido_popup = fs.readFileSync(popupFile.path);
-        }
-
-        // Actualizar el campo BLOB si se proporciona un nuevo archivo
-        if (popupFile) {
-            fs.unlinkSync(popupFile.path);
-        }
-
-        await popup.save();
-         res.json({ mensaje: 'Popup actualizado con éxito' });
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+    if (!popup) {
+      return res.status(404).json({ mensaje: 'Popup no encontrado' });
     }
-};
+
+    popup.fecha_inicial = fecha_inicial;
+    popup.fecha_final = fecha_final;
+    popup.descripcion_popup = descripcion_popup;
+    popup.modificado_por = modificado_por;
+    popup.modificado_fecha = modificado_fecha;
+    popup.autorizado = '0';
+    popup.autorizado_por = null;
+    popup.autorizado_fecha = null;
+    popup.activo = activo;
+
+    if (flag_adjunto === 'URL' && popupFile) {
+      // Guardar la URL del archivo en el registro
+      popup.url_popup = `/documentos/popups/${popupFile.filename}`;
+      popup.contenido_popup = null; // Elimina el contenido binario
+    } else if (flag_adjunto === 'BIN' && popupFile) {
+      // Almacena el nombre del archivo, si es necesario
+      popup.url_popup = popupFile.originalname;
+      popup.contenido_popup = fs.readFileSync(popupFile.path);
+    }
+
+    // Actualizar el campo BLOB si se proporciona un nuevo archivo
+    if (popupFile) {
+      fs.unlinkSync(popupFile.path);
+    }
+
+    await popup.save();
+    res.json({ mensaje: 'Popup actualizado con éxito' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+});
 
 
 export const autorizarPopup = async (req, res) =>{

@@ -1,6 +1,8 @@
 import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
 import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -127,7 +129,7 @@ export const crearDirectiva = async (req, res) => {
             sumilla_resolucion,
             abreviacion_area,
             creado_por,
-            creado_fecha
+            creado_fecha,
         });
 
         if (flag_adjunto === 'BIN') {
@@ -136,9 +138,15 @@ export const crearDirectiva = async (req, res) => {
             }
         } else if (flag_adjunto === 'URL') {
             if (documentoResolucionFile) {
-                const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
                 const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
-                nuevaDirectiva.url_documento_resolucion = `\\directivas\\${fileName}`;
+                const uploadPath = path.join(__dirname, '/documentos/directivas', fileName); // Ruta de destino del archivo
+
+                // Mueve el archivo a la carpeta de documentos/directivas
+                fs.renameSync(documentoResolucionFile.path, uploadPath);
+
+                // Guarda la URL del archivo en la base de datos
+                nuevaDirectiva.url_documento_resolucion = `/documentos/directivas/${fileName}`;
             }
         }
 
@@ -147,78 +155,77 @@ export const crearDirectiva = async (req, res) => {
 
         await nuevaDirectiva.save();
 
+        return res.status(200).json({ mensaje: 'Directiva creada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
-
 
 
 export const actualizarDirectiva = async (req, res) => {
-    const { id } = req.params;
-    const {
-        periodo_resolucion,
-        id_area,
-        id_tipo_documento,
-        numero_resolucion,
-        adicional_resolucion,
-        sumilla_resolucion,
-        abreviacion_area,
-        modificado_por,
-        modificado_fecha,
-        activo,
-        flag_adjunto,
-    } = req.body;
+  const { id } = req.params;
+  const {
+      periodo_resolucion,
+      id_area,
+      id_tipo_documento,
+      numero_resolucion,
+      adicional_resolucion,
+      sumilla_resolucion,
+      abreviacion_area,
+      modificado_por,
+      modificado_fecha,
+      activo,
+      flag_adjunto,
+  } = req.body;
 
-    const documentoResolucionFile = req.file; // Acceder al archivo cargado
+  const documentoResolucionFile = req.file; // Acceder al archivo cargado
 
-    try {
-        const directiva = await Directiva.findByPk(id);
+  try {
+      const directiva = await Directiva.findByPk(id);
 
-        if (!directiva) {
-            return res.status(404).json({ mensaje: 'Directiva no encontrada' });
-        }
+      if (!directiva) {
+          return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+      }
 
-        directiva.periodo_resolucion = periodo_resolucion;
-        directiva.id_area = id_area;
-        directiva.id_tipo_documento = id_tipo_documento;
-        directiva.numero_resolucion = numero_resolucion;
-        directiva.adicional_resolucion = adicional_resolucion;
-        directiva.sumilla_resolucion = sumilla_resolucion;
-        directiva.abreviacion_area = abreviacion_area;
-        directiva.modificado_por = modificado_por;
-        directiva.modificado_fecha = modificado_fecha;
-        directiva.autorizado = '0';
-        directiva.autorizado_por = null;
-        directiva.autorizado_fecha = null;
-        directiva.activo = activo;
+      directiva.periodo_resolucion = periodo_resolucion;
+      directiva.id_area = id_area;
+      directiva.id_tipo_documento = id_tipo_documento;
+      directiva.numero_resolucion = numero_resolucion;
+      directiva.adicional_resolucion = adicional_resolucion;
+      directiva.sumilla_resolucion = sumilla_resolucion;
+      directiva.abreviacion_area = abreviacion_area;
+      directiva.modificado_por = modificado_por;
+      directiva.modificado_fecha = modificado_fecha;
+      directiva.autorizado = '0';
+      directiva.autorizado_por = null;
+      directiva.autorizado_fecha = null;
+      directiva.activo = activo;
 
-        if (flag_adjunto === 'BIN') {
-            if (documentoResolucionFile) {
-                directiva.url_documento_resolucion = null; // Elimina la URL del documento
-                directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
-            }
-        } else if (flag_adjunto === 'URL') {
-            if (documentoResolucionFile) {
-                const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-                const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
-                directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
-                directiva.url_documento_resolucion = `\\directivas\\${fileName}`;
-            }
-        }
+      if (flag_adjunto === 'BIN') {
+          if (documentoResolucionFile) {
+              directiva.url_documento_resolucion = null; // Elimina la URL del documento
+              directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+          }
+      } else if (flag_adjunto === 'URL') {
+          if (documentoResolucionFile) {
+              const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+              const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
+              directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
+              directiva.url_documento_resolucion = `\\directivas\\${fileName}`;
+          }
+      }
 
-        // Actualiza el campo BLOB si se proporciona un nuevo archivo
-        if (documentoResolucionFile) {
-            fs.unlinkSync(documentoResolucionFile.path);
-        }
+      // Actualiza el campo BLOB si se proporciona un nuevo archivo
+      if (documentoResolucionFile) {
+          fs.unlinkSync(documentoResolucionFile.path);
+      }
 
-        await directiva.save();
-        res.json({ mensaje: 'Directiva actualizada con éxito' });
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
-    }
+      await directiva.save();
+      res.json({ mensaje: 'Directiva actualizada con éxito' });
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
 };
-
 
 export const autorizarDirectiva = async (req, res) =>{
   const { id } = req.params;

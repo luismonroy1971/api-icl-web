@@ -1,5 +1,8 @@
 import { Sequelize } from 'sequelize';
 import {Memoria} from '../models/Memorias.js';
+import fs from 'fs';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -86,7 +89,6 @@ export const leerMemoria = async (req, res) =>{
 
 }
 
-import fs from 'fs';
 
 export const crearMemoria = async (req, res) => {
     const {
@@ -108,10 +110,16 @@ export const crearMemoria = async (req, res) => {
         });
 
         if (flag_adjunto === 'URL' && memoriaFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${memoriaFile.originalname}-${uniqueSuffix}`;
-            nuevaMemoria.url_memoria = `\\memorias\\${fileName}`;
+            const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
+            const fileName = `${uniqueSuffix}-${memoriaFile.originalname}`;
+            const uploadPath = path.join(__dirname, '/documentos/memorias', fileName); // Ruta de destino del archivo
+
+            // Mueve el archivo a la carpeta de documentos/memorias
+            fs.renameSync(memoriaFile.path, uploadPath);
+
+            // Guarda la URL del archivo en la base de datos
+            nuevaMemoria.contenido_memoria = null; // Elimina el contenido binario
+            nuevaMemoria.url_memoria = `/documentos/memorias/${fileName}`;
         } else if (flag_adjunto === 'BIN' && memoriaFile) {
             nuevaMemoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
         }
@@ -120,12 +128,11 @@ export const crearMemoria = async (req, res) => {
         fs.unlinkSync(memoriaFile.path);
 
         await nuevaMemoria.save();
-        res.json(nuevaMemoria);
+        return res.status(200).json(nuevaMemoria);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
-
 
 export const actualizarMemoria = async (req, res) => {
     const { id } = req.params;
@@ -157,10 +164,15 @@ export const actualizarMemoria = async (req, res) => {
         memoria.activo = activo;
 
         if (flag_adjunto === 'URL' && memoriaFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${memoriaFile.originalname}-${uniqueSuffix}`;
-            memoria.url_memoria = `\\memorias\\${fileName}`;
+            const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
+            const fileName = `${uniqueSuffix}-${memoriaFile.originalname}`;
+            const uploadPath = path.join(__dirname, '/documentos/memorias', fileName); // Ruta de destino del archivo
+
+            // Mueve el archivo a la carpeta de documentos/memorias
+            fs.renameSync(memoriaFile.path, uploadPath);
+
+            // Guarda la URL del archivo en la base de datos
+            memoria.url_memoria = `/documentos/memorias/${fileName}`;
             memoria.contenido_memoria = null; // Elimina el contenido binario
         } else if (flag_adjunto === 'BIN' && memoriaFile) {
             memoria.url_memoria = memoriaFile.originalname; // Almacena el nombre del archivo, si es necesario
@@ -173,12 +185,11 @@ export const actualizarMemoria = async (req, res) => {
         }
 
         await memoria.save();
-         res.json({ mensaje: 'Memoria actualizada con éxito' });
+        return res.status(200).json({ mensaje: 'Memoria actualizada con éxito' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message });
     }
 };
-
 
 export const autorizarMemoria = async (req, res) =>{
   const { id } = req.params;
