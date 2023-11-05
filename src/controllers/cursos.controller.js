@@ -128,7 +128,6 @@ export const autorizarCurso = async (req, res) =>{
   curso.autorizado = autorizado;
   curso.autorizado_por = autorizado_por;
   curso.autorizado_fecha = autorizado_fecha;
-  curso.activo = activo;
   await curso.save(); 
   res.send('Curso actualizado');
   }
