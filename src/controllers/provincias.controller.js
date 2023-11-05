@@ -2,15 +2,26 @@ import { Sequelize } from 'sequelize';
 import {Provincia} from '../models/Provincia.js';
 import {Convenio} from '../models/Convenio.js'
 
-export const leerProvincias = async (req, res) =>{
+export const leerProvincias = async (req, res) => {
     try {
-        const provincias = await Provincia.findAll();
-          res.json(provincias);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
+        // Obtén el valor de id_departamento de los query params
+        const { id_departamento } = req.query;
 
+        // Configura la condición para el filtro
+        const whereCondition = {};
+        if (id_departamento) {
+            whereCondition.id_departamento = id_departamento;
+        }
+
+        // Realiza la consulta utilizando el where
+        const provincias = await Provincia.findAll({ where: whereCondition });
+
+        res.json(provincias);
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
+    }
 }
+
 
 export const provinciasConvenio = async (req, res) => {
     try {
