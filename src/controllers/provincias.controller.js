@@ -5,13 +5,12 @@ import {Convenio} from '../models/Convenio.js'
 export const leerProvincias = async (req, res) => {
     try {
         // Obtén el valor de id_departamento de los query params
-        const { id_departamento } = req.query;
+        const id_departamento = req.query.id_departamento || null;
 
         // Configura la condición para el filtro
-        const whereCondition = {};
-        if (id_departamento) {
-            whereCondition.id_departamento = id_departamento;
-        }
+        const whereCondition = id_departamento
+            ? { id_departamento: id_departamento }
+            : {}; // Si no se proporciona id_departamento, se pasa un objeto vacío
 
         // Realiza la consulta utilizando el where
         const provincias = await Provincia.findAll({ where: whereCondition });
