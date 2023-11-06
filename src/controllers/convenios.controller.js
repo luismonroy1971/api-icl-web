@@ -134,18 +134,19 @@ export const crearConvenio = async (req, res) => {
         id_provincia,
         id_distrito,
         flag_adjunto
-    } = req.body;
-
+  } = req.body;
     const pdfFile = req.file; // Acceder al archivo cargado
-
     try {
+        if (pdfFile.size > 10000000) { // 10 MB en bytes (10 * 1024 * 1024)
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
         let url_documento_convenio = null;
         let contenido_documento_convenio = null;
 
         if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
             const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            url_documento_convenio = '/documentos/convenios/' + fileName;
+            url_documento_convenio = 'documentos/convenios/' + fileName;
         } else if (flag_adjunto === 'BIN' && pdfFile) {
             // Mantén el nombre original del archivo al subirlo en formato binario
             url_documento_convenio = null;
@@ -208,21 +209,22 @@ export const actualizarConvenio = async (req, res) => {
       convenio.autorizado_fecha = null;
       convenio.activo = activo;
 
-      if (flag_adjunto === 'URL' && pdfFile) {
-          const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-          const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-          convenio.url_documento_convenio = '/documentos/convenios/' + fileName;
-          convenio.contenido_documento_convenio = null; // Elimina el contenido binario
-      } else if (flag_adjunto === 'BIN' && pdfFile) {
-          // Mantén el nombre original del archivo al subirlo en formato binario
-          convenio.url_documento_convenio = null;
-          convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
-      } else {
-          // No se subió un archivo, establece ambos campos como nulos
-          convenio.url_documento_convenio = null;
-          convenio.contenido_documento_convenio = null;
-      }
+      if (pdfFile) {
+          if (pdfFile.size > 10000000) { // 10 MB en bytes (10 * 1024 * 1024)
+              return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+          }
 
+          if (flag_adjunto === 'URL') {
+              const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+              const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+              convenio.url_documento_convenio = '/documentos/convenios/' + fileName;
+              convenio.contenido_documento_convenio = null; // Elimina el contenido binario
+          } else if (flag_adjunto === 'BIN') {
+              // Mantén el nombre original del archivo al subirlo en formato binario
+              convenio.url_documento_convenio = null;
+              convenio.contenido_documento_convenio = fs.readFileSync(pdfFile.path);
+          }
+        }
       await convenio.save();
 
       res.status(200).json({ message: 'Convenio actualizado correctamente' });
@@ -253,20 +255,20 @@ export const autorizarConvenio = async (req, res) =>{
 }
 
 
-export const eliminarConvenio = async (req, res) =>{
-
+export const eliminarConvenio = async (req, res) => {
     try {
-        const { id } = req.params
+        const { id } = req.params;
         await Convenio.destroy({
-            where:{
+            where: {
                 id,
-            }
-        })
-        res.sendStatus(204);
+            },
+        });
+        res.status(204).json({ mensaje: 'Convenio eliminado correctamente' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message})
+        return res.status(500).json({ mensaje: error.message });
     }
-}
+};
+
 
 export const activarConvenio = async (req, res) => {
     try {
