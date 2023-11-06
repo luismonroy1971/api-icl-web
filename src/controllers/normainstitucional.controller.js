@@ -77,7 +77,7 @@ export const crearNorma = async (req, res) => {
         creado_fecha,
     } = req.body;
 
-    const normaFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file; // Acceder al archivo cargado
 
     try {
         const nuevaNorma = await Norma.create({
@@ -87,29 +87,29 @@ export const crearNorma = async (req, res) => {
             creado_fecha
         });
 
-        if (flag_adjunto === 'URL' && normaFile) {
+        if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${normaFile.originalname}`;
-            const uploadPath = path.join(__dirname, '/documentos/normas', fileName); // Ruta de destino del archivo
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+            const uploadPath = path.join(process.cwd(), '/documentos/normas', fileName); // Ruta de destino del archivo
 
             // Mueve el archivo a la carpeta de documentos/normas
-            fs.renameSync(normaFile.path, uploadPath);
+            fs.renameSync(pdfFile.path, uploadPath);
 
             // Guarda la URL del archivo en la base de datos
             nuevaNorma.url_norma = `/documentos/normas/${fileName}`;
             nuevaNorma.contenido_norma = null; // Elimina el contenido binario
-        } else if (flag_adjunto === 'BIN' && normaFile) {
-            nuevaNorma.url_norma = normaFile.originalname; // Almacena el nombre del archivo, si es necesario
-            nuevaNorma.contenido_norma = fs.readFileSync(normaFile.path);
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
+            nuevaNorma.url_norma = pdfFile.originalname; // Almacena el nombre del archivo, si es necesario
+            nuevaNorma.contenido_norma = fs.readFileSync(pdfFile.path);
         }
 
         // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(normaFile.path);
+        fs.unlinkSync(pdfFile.path);
 
         await nuevaNorma.save();
         return res.status(200).json(nuevaNorma);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear norma', error: error.message });
     }
 };
 
@@ -125,7 +125,7 @@ export const actualizarNorma = async (req, res) => {
         activo,
     } = req.body;
 
-    const normaFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file; // Acceder al archivo cargado
 
     try {
         const norma = await Norma.findByPk(id);
@@ -143,31 +143,31 @@ export const actualizarNorma = async (req, res) => {
         norma.autorizado_fecha = null;
         norma.activo = activo;
 
-        if (flag_adjunto === 'URL' && normaFile) {
+        if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${normaFile.originalname}`;
-            const uploadPath = path.join(__dirname, '/documentos/normas', fileName); // Ruta de destino del archivo
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+            const uploadPath = path.join(process.cwd(), '/documentos/normas', fileName); // Ruta de destino del archivo
 
             // Mueve el archivo a la carpeta de documentos/normas
-            fs.renameSync(normaFile.path, uploadPath);
+            fs.renameSync(pdfFile.path, uploadPath);
 
             // Guarda la URL del archivo en la base de datos
             norma.url_norma = `/documentos/normas/${fileName}`;
             norma.contenido_norma = null; // Elimina el contenido binario
-        } else if (flag_adjunto === 'BIN' && normaFile) {
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
             norma.url_norma = null; // Establece url_norma en null
-            norma.contenido_norma = fs.readFileSync(normaFile.path); // Llena el campo contenido_norma con el archivo en binario
+            norma.contenido_norma = fs.readFileSync(pdfFile.path); // Llena el campo contenido_norma con el archivo en binario
         }
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo
-        if (normaFile) {
-            fs.unlinkSync(normaFile.path);
+        if (pdfFile) {
+            fs.unlinkSync(pdfFile.path);
         }
 
         await norma.save();
         return res.status(200).json({ mensaje: 'Norma actualizada con éxito' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al modificar norma', error: error.message });
     }
 };
 

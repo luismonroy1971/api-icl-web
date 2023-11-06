@@ -169,7 +169,7 @@ export const crearConvenio = async (req, res) => {
         res.status(201).json(nuevoConvenio);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Error al crear el convenio' });
+        return res.status(500).json({ mensaje: 'Error al crear convenio', error: error.message });
     }
 };
 
@@ -230,7 +230,7 @@ export const actualizarConvenio = async (req, res) => {
       res.status(200).json({ message: 'Convenio actualizado correctamente' });
   } catch (error) {
       console.error(error);
-      res.status(500).json({ message: 'Error al actualizar el convenio' });
+      return res.status(500).json({ mensaje: 'Error al modificar convenio', error: error.message });
   }
 };
 

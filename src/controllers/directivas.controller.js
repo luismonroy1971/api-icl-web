@@ -117,7 +117,9 @@ export const crearDirectiva = async (req, res) => {
         flag_adjunto,
     } = req.body;
 
-    const documentoResolucionFile = req.file; // Acceder al archivo cargado
+  const pdfFile = req.file; // Acceder al archivo cargado
+  
+  console.log(pdfFile)
 
     try {
         const nuevaDirectiva = await Directiva.create({
@@ -133,31 +135,31 @@ export const crearDirectiva = async (req, res) => {
         });
 
         if (flag_adjunto === 'BIN') {
-            if (documentoResolucionFile) {
-                nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+            if (pdfFile) {
+                nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
             }
         } else if (flag_adjunto === 'URL') {
-            if (documentoResolucionFile) {
+            if (pdfFile) {
                 const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-                const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
-                const uploadPath = path.join(__dirname, '/documentos/directivas', fileName); // Ruta de destino del archivo
+                const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+                const uploadPath = path.join(process.cwd(), 'documentos/directivas/', fileName); // Ruta de destino del archivo
 
                 // Mueve el archivo a la carpeta de documentos/directivas
-                fs.renameSync(documentoResolucionFile.path, uploadPath);
+                fs.renameSync(pdfFile.path, uploadPath);
 
                 // Guarda la URL del archivo en la base de datos
-                nuevaDirectiva.url_documento_resolucion = `/documentos/directivas/${fileName}`;
+                nuevaDirectiva.url_documento_resolucion = `documentos/directivas/${fileName}`;
             }
         }
 
         // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(documentoResolucionFile.path);
+        fs.unlinkSync(pdfFile.path);
 
         await nuevaDirectiva.save();
 
         return res.status(200).json({ mensaje: 'Directiva creada con éxito' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+         return res.status(500).json({ mensaje: 'Error al crear directiva', error: error.message });
     }
 };
 
@@ -178,7 +180,7 @@ export const actualizarDirectiva = async (req, res) => {
       flag_adjunto,
   } = req.body;
 
-  const documentoResolucionFile = req.file; // Acceder al archivo cargado
+  const pdfFile = req.file; // Acceder al archivo cargado
 
   try {
       const directiva = await Directiva.findByPk(id);
@@ -202,30 +204,32 @@ export const actualizarDirectiva = async (req, res) => {
       directiva.activo = activo;
 
       if (flag_adjunto === 'BIN') {
-          if (documentoResolucionFile) {
+          if (pdfFile) {
               directiva.url_documento_resolucion = null; // Elimina la URL del documento
-              directiva.contenido_documento_resolucion = fs.readFileSync(documentoResolucionFile.path);
+              directiva.contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
           }
       } else if (flag_adjunto === 'URL') {
-          if (documentoResolucionFile) {
+          if (pdfFile) {
               const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-              const fileName = `${uniqueSuffix}-${documentoResolucionFile.originalname}`;
+              const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+              directiva.url_documento_resolucion = '/documentos/convenios/' + fileName;
               directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
-              directiva.url_documento_resolucion = `\\directivas\\${fileName}`;
+              fs.renameSync(pdfFile.path, filePath); // Mueve el archivo al directorio deseado
           }
       }
 
       // Actualiza el campo BLOB si se proporciona un nuevo archivo
-      if (documentoResolucionFile) {
-          fs.unlinkSync(documentoResolucionFile.path);
+      if (pdfFile) {
+          fs.unlinkSync(pdfFile.path);
       }
 
       await directiva.save();
       res.json({ mensaje: 'Directiva actualizada con éxito' });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+      return res.status(500).json({ mensaje: 'Error al modificar directiva', error: error.message });
   }
 };
+
 
 export const autorizarDirectiva = async (req, res) =>{
   const { id } = req.params;

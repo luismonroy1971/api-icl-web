@@ -89,7 +89,6 @@ export const leerMemoria = async (req, res) =>{
 
 }
 
-
 export const crearMemoria = async (req, res) => {
     const {
         periodo_memoria,
@@ -99,9 +98,17 @@ export const crearMemoria = async (req, res) => {
         creado_fecha,
     } = req.body;
 
-    const memoriaFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file;
 
     try {
+        if (!pdfFile) {
+            return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });
+        }
+
+        if (flag_adjunto !== 'URL' && flag_adjunto !== 'BIN') {
+            return res.status(400).json({ mensaje: 'El valor de flag_adjunto no es válido' });
+        }
+
         const nuevaMemoria = await Memoria.create({
             periodo_memoria,
             descripcion_memoria,
@@ -109,30 +116,31 @@ export const crearMemoria = async (req, res) => {
             creado_fecha,
         });
 
-        if (flag_adjunto === 'URL' && memoriaFile) {
-            const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${memoriaFile.originalname}`;
-            const uploadPath = path.join(__dirname, '/documentos/memorias', fileName); // Ruta de destino del archivo
+        if (flag_adjunto === 'URL') {
+            const uniqueSuffix = uuidv4();
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+            const uploadPath = path.join(process.cwd(), 'documentos', 'memorias', fileName);
 
-            // Mueve el archivo a la carpeta de documentos/memorias
-            fs.renameSync(memoriaFile.path, uploadPath);
+            fs.renameSync(pdfFile.path, uploadPath);
 
-            // Guarda la URL del archivo en la base de datos
-            nuevaMemoria.contenido_memoria = null; // Elimina el contenido binario
+            nuevaMemoria.contenido_memoria = null;
             nuevaMemoria.url_memoria = `/documentos/memorias/${fileName}`;
-        } else if (flag_adjunto === 'BIN' && memoriaFile) {
-            nuevaMemoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
+        } else if (flag_adjunto === 'BIN') {
+          nuevaMemoria.contenido_memoria = fs.readFileSync(pdfFile.path);
+          if (fs.existsSync(pdfFile.path)) {
+              fs.unlinkSync(pdfFile.path);
+          } else {
+            console.error('El archivo no existe en la ubicación especificada:', pdfFile.path);
+          }
         }
-
-        // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(memoriaFile.path);
-
         await nuevaMemoria.save();
+
         return res.status(200).json(nuevaMemoria);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear memoria', error: error.message });
     }
 };
+
 
 export const actualizarMemoria = async (req, res) => {
     const { id } = req.params;
@@ -145,7 +153,7 @@ export const actualizarMemoria = async (req, res) => {
         flag_adjunto, // Nuevo campo
     } = req.body;
 
-    const memoriaFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file; // Acceder al archivo cargado
 
     try {
         const memoria = await Memoria.findByPk(id);
@@ -163,31 +171,31 @@ export const actualizarMemoria = async (req, res) => {
         memoria.autorizado_fecha = null;
         memoria.activo = activo;
 
-        if (flag_adjunto === 'URL' && memoriaFile) {
+        if (flag_adjunto === 'URL' && pdfFile) {
             const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${memoriaFile.originalname}`;
+            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
             const uploadPath = path.join(__dirname, '/documentos/memorias', fileName); // Ruta de destino del archivo
 
             // Mueve el archivo a la carpeta de documentos/memorias
-            fs.renameSync(memoriaFile.path, uploadPath);
+            fs.renameSync(pdfFile.path, uploadPath);
 
             // Guarda la URL del archivo en la base de datos
             memoria.url_memoria = `/documentos/memorias/${fileName}`;
             memoria.contenido_memoria = null; // Elimina el contenido binario
-        } else if (flag_adjunto === 'BIN' && memoriaFile) {
-            memoria.url_memoria = memoriaFile.originalname; // Almacena el nombre del archivo, si es necesario
-            memoria.contenido_memoria = fs.readFileSync(memoriaFile.path);
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
+            memoria.url_memoria = pdfFile.originalname; // Almacena el nombre del archivo, si es necesario
+            memoria.contenido_memoria = fs.readFileSync(pdfFile.path);
         }
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo
-        if (memoriaFile) {
-            fs.unlinkSync(memoriaFile.path);
+        if (pdfFile) {
+            fs.unlinkSync(pdfFile.path);
         }
 
         await memoria.save();
         return res.status(200).json({ mensaje: 'Memoria actualizada con éxito' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al modificar memoria', error: error.message });
     }
 };
 

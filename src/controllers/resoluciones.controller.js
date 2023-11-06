@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize';
-import {Resolucion} from '../models/Resolucion.js';
+import { Resolucion } from '../models/Resolucion.js';
+import path from 'path';
+import fs from 'fs';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -126,15 +128,18 @@ export const crearResolucion = async (req, res) => {
             abreviacion_area,
             creado_por,
             creado_fecha,
+            flag_adjunto, // Nuevo campo
         });
 
-        if (flag_adjunto === 'BIN') {
-            nuevaResolucion.contenido_documento_resolucion = req.file.buffer; // Usa req.file.buffer para obtener el contenido en formato binario
+      if (flag_adjunto === 'BIN' && req.file) {
+           const filePath = req.file.path;
+            nuevaResolucion.contenido_documento_resolucion = fs.readFileSync(filePath);
             nuevaResolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
-        } else if (flag_adjunto === 'URL') {
+            fs.unlinkSync(filePath); // Elimina el archivo temporal
+        } else if (flag_adjunto === 'URL' && req.file) {
             const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
             const fileName = `${req.file.originalname}-${uniqueSuffix}`;
-            nuevaResolucion.url_documento_resolucion = `\\resoluciones\\${fileName}`;
+            nuevaResolucion.url_documento_resolucion = path.join('documentos', 'resoluciones', fileName);
             nuevaResolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
         }
 
@@ -142,7 +147,7 @@ export const crearResolucion = async (req, res) => {
 
         res.json(nuevaResolucion);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear resolución', error: error.message });
     }
 };
 
@@ -185,22 +190,28 @@ export const actualizarResolucion = async (req, res) => {
 
         if (flag_adjunto === 'BIN') {
             if (req.file) {
-                resolucion.contenido_documento_resolucion = req.file.buffer; // Usa req.file.buffer para obtener el contenido en formato binario
+                const filePath = req.file.path;
+                resolucion.contenido_documento_resolucion = fs.readFileSync(filePath); // Lee el archivo en formato binario
                 resolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
+                fs.unlinkSync(filePath); // Elimina el archivo temporal
             }
         } else if (flag_adjunto === 'URL') {
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${req.file.originalname}-${uniqueSuffix}`;
-            resolucion.url_documento_resolucion = `\\resoluciones\\${fileName}`;
-            resolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
+            if (req.file) {
+                const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+                const fileName = `${req.file.originalname}-${uniqueSuffix}`;
+                // Construye la ruta de archivo utilizando path.join para que sea compatible con UNIX y Windows
+                resolucion.url_documento_resolucion = path.join('documentos', 'resoluciones', fileName);
+                resolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
+            }
         }
 
         await resolucion.save();
-         res.json({ mensaje: 'Resolución actualizada con éxito' });
+        res.json({ mensaje: 'Resolución actualizada con éxito' });
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
+        return res.status(500).json({ mensaje: 'Error al modificar resolución', error: error.message });
     }
-}
+};
+
 
 export const autorizarResolucion = async (req, res) =>{
   const { id } = req.params;
