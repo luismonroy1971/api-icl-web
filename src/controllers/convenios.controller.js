@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize';
 import {Convenio} from '../models/Convenio.js';
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+const baseUrl = process.env.BASE_URL; 
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -144,9 +146,10 @@ export const crearConvenio = async (req, res) => {
         let contenido_documento_convenio = null;
 
         if (flag_adjunto === 'URL' && pdfFile) {
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            url_documento_convenio = 'documentos/convenios/' + fileName;
+            // const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+            // const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
+            const fileName = `${pdfFile.originalname}`;
+            url_documento_convenio = `${baseUrl}/documentos/convenios/${fileName}`;
         } else if (flag_adjunto === 'BIN' && pdfFile) {
             // Mantén el nombre original del archivo al subirlo en formato binario
             url_documento_convenio = null;
