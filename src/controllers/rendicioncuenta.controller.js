@@ -1,5 +1,9 @@
 import { Sequelize } from 'sequelize';
 import {Rendicion} from '../models/Rendicionescuenta.js';
+import path from 'path';
+import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
+import dotenv from 'dotenv';
+const baseUrl = process.env.BASE_URL; 
 
 export const obtenerPeriodos = async (req, res) => {
     try {
@@ -105,18 +109,24 @@ export const crearRendicion = async (req, res) => {
             descripcion_rendicion,
             periodo_rendicion,
             creado_por,
-            creado_fecha
+            creado_fecha,
+            flag_adjunto
         });
 
         if (flag_adjunto === 'BIN' && rendicionFile) {
-            nuevaRendicion.url_rendicion = null; // Establece url_rendicion en null
-            nuevaRendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path); // Llena el campo contenido_rendicion con el archivo en binario
+          const filePath = req.file.path;
+          nuevaRendicion.contenido_rendicion = fs.readFileSync(filePath);
+          nuevaRendicion.url_rendicion = null; // Establece url_documento_resolucion en null
+          fs.unlinkSync(filePath); // Elimina el archivo temporal
         } else if (flag_adjunto === 'URL' && rendicionFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${rendicionFile.originalname}-${uniqueSuffix}`;
-            nuevaRendicion.url_rendicion = `\\rendiciones\\${fileName}`;
-            nuevaRendicion.contenido_rendicion = null; // Elimina el contenido binario
+          const fileName = `${req.file.originalname}`;
+          const url_rendicion= `${baseUrl}/documentos/rendiciones/${fileName}`;
+
+          // Mueve el archivo a la carpeta documentos/rendiciones
+          fs.renameSync(req.file.path, `documentos/rendiciones/${fileName}`);
+
+          nuevaRendicion.url_rendicion = url_rendicion; // Asigna la URL
+          nuevaRendicion.contenido_rendicion = null; // Establece el contenido en formato binario en null
         }
 
         // Elimina el archivo temporal creado por Multer
@@ -156,14 +166,19 @@ export const actualizarRendicion = async (req, res) => {
         rendicion.periodo_rendicion = periodo_rendicion;
 
         if (flag_adjunto === 'BIN' && rendicionFile) {
-            rendicion.url_rendicion = null; // Establece url_rendicion en null
-            rendicion.contenido_rendicion = fs.readFileSync(rendicionFile.path); // Llena el campo contenido_rendicion con el archivo en binario
+          const filePath = req.file.path;
+          rendicion.contenido_rendicion = fs.readFileSync(filePath);
+          rendicion.url_rendicion = null; // Establece url_documento_resolucion en null
+          fs.unlinkSync(filePath); // Elimina el archivo temporal
         } else if (flag_adjunto === 'URL' && rendicionFile) {
-            // Generar un nombre de archivo único
-            const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-            const fileName = `${rendicionFile.originalname}-${uniqueSuffix}`;
-            rendicion.url_rendicion = `\\rendiciones\\${fileName}`;
-            rendicion.contenido_rendicion = null; // Elimina el contenido binario
+          const fileName = `${req.file.originalname}`;
+          const url_rendicion= `${baseUrl}/documentos/rendiciones/${fileName}`;
+
+          // Mueve el archivo a la carpeta documentos/rendiciones
+          fs.renameSync(req.file.path, `documentos/rendiciones/${fileName}`);
+
+          rendicion.url_rendicion = url_rendicion; // Asigna la URL
+          rendicion.contenido_rendicion = null; // Establece el contenido en formato binario en null
         }
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo

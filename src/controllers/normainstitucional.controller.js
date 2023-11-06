@@ -84,23 +84,24 @@ export const crearNorma = async (req, res) => {
             tipo_norma,
             denominacion_norma,
             creado_por,
-            creado_fecha
+            creado_fecha,
+            flag_adjunto
         });
 
         if (flag_adjunto === 'URL' && pdfFile) {
-            const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            const uploadPath = path.join(process.cwd(), '/documentos/normas', fileName); // Ruta de destino del archivo
+          const fileName = `${req.file.originalname}`;
+          const url_norma= `${baseUrl}/documentos/normas/${fileName}`;
 
-            // Mueve el archivo a la carpeta de documentos/normas
-            fs.renameSync(pdfFile.path, uploadPath);
+          // Mueve el archivo a la carpeta documentos/normaes
+          fs.renameSync(req.file.path, `documentos/normas/${fileName}`);
 
-            // Guarda la URL del archivo en la base de datos
-            nuevaNorma.url_norma = `/documentos/normas/${fileName}`;
-            nuevaNorma.contenido_norma = null; // Elimina el contenido binario
+          nuevaNorma.url_norma = url_norma; // Asigna la URL
+          nuevaNorma.contenido_norma = null; // Establece el contenido en formato binario en null
         } else if (flag_adjunto === 'BIN' && pdfFile) {
-            nuevaNorma.url_norma = pdfFile.originalname; // Almacena el nombre del archivo, si es necesario
-            nuevaNorma.contenido_norma = fs.readFileSync(pdfFile.path);
+          const filePath = req.file.path;
+          nuevaNorma.contenido_rendicion = fs.readFileSync(filePath);
+          nuevaNorma.url_rendicion = null; // Establece url_documento_resolucion en null
+          fs.unlinkSync(filePath); // Elimina el archivo temporal
         }
 
         // Elimina el archivo temporal creado por Multer

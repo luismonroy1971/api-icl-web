@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
 import fs from 'fs';
 import path from 'path';
+import dotenv from 'dotenv';
+const baseUrl = process.env.BASE_URL; 
 import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
 
 export const obtenerPeriodos = async (req, res) => {
@@ -104,64 +106,63 @@ export const leerDirectiva = async (req, res) =>{
 
 
 export const crearDirectiva = async (req, res) => {
-    const {
-        periodo_resolucion,
-        id_area,
-        id_tipo_documento,
-        numero_resolucion,
-        adicional_resolucion,
-        sumilla_resolucion,
-        abreviacion_area,
-        creado_por,
-        creado_fecha,
-        flag_adjunto,
-    } = req.body;
+  const {
+      periodo_resolucion,
+      id_area,
+      id_tipo_documento,
+      numero_resolucion,
+      adicional_resolucion,
+      sumilla_resolucion,
+      abreviacion_area,
+      creado_por,
+      creado_fecha,
+      flag_adjunto,
+  } = req.body;
 
   const pdfFile = req.file; // Acceder al archivo cargado
-  
-  console.log(pdfFile)
 
-    try {
-        const nuevaDirectiva = await Directiva.create({
-            periodo_resolucion,
-            id_area,
-            id_tipo_documento,
-            numero_resolucion,
-            adicional_resolucion,
-            sumilla_resolucion,
-            abreviacion_area,
-            creado_por,
-            creado_fecha,
-        });
+  let url_documento_resolucion = null; // Define url_documento_resolucion antes de usarlo
+  let contenido_documento_resolucion = null;
 
-        if (flag_adjunto === 'BIN') {
-            if (pdfFile) {
-                nuevaDirectiva.contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
-            }
-        } else if (flag_adjunto === 'URL') {
-            if (pdfFile) {
-                const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-                const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-                const uploadPath = path.join(process.cwd(), 'documentos/directivas/', fileName); // Ruta de destino del archivo
+  console.log(pdfFile);
 
-                // Mueve el archivo a la carpeta de documentos/directivas
-                fs.renameSync(pdfFile.path, uploadPath);
+  try {
+      if (flag_adjunto === 'BIN') {
+          if (pdfFile) {
+              contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
+          }
+      } else if (flag_adjunto === 'URL') {
+          if (pdfFile) {
+              const fileName = `${pdfFile.originalname}`;
+              url_documento_resolucion = `${baseUrl}/documentos/directivas/${fileName}`;
 
-                // Guarda la URL del archivo en la base de datos
-                nuevaDirectiva.url_documento_resolucion = `documentos/directivas/${fileName}`;
-            }
-        }
+              // Mueve el archivo a la carpeta documentos/directivas
+              fs.renameSync(pdfFile.path, `documentos/directivas/${fileName}`);
+          }
+      }
 
-        // Elimina el archivo temporal creado por Multer
-        fs.unlinkSync(pdfFile.path);
+      const nuevaDirectiva = await Directiva.create({
+          periodo_resolucion,
+          id_area,
+          id_tipo_documento,
+          numero_resolucion,
+          adicional_resolucion,
+          sumilla_resolucion,
+          url_documento_resolucion, // Asigna url_documento_resolucion aquí
+          contenido_documento_resolucion, // Asigna contenido_documento_resolucion aquí
+          abreviacion_area,
+          creado_por,
+          creado_fecha,
+          flag_adjunto
+      });
 
-        await nuevaDirectiva.save();
-
-        return res.status(200).json({ mensaje: 'Directiva creada con éxito' });
-    } catch (error) {
-         return res.status(500).json({ mensaje: 'Error al crear directiva', error: error.message });
-    }
+      return res.status(200).json({ mensaje: 'Directiva creada con éxito' });
+  } catch (error) {
+      return res.status(500).json({ mensaje: 'Error al crear directiva', error: error.message });
+  }
 };
+
+
 
 
 export const actualizarDirectiva = async (req, res) => {
@@ -210,11 +211,9 @@ export const actualizarDirectiva = async (req, res) => {
           }
       } else if (flag_adjunto === 'URL') {
           if (pdfFile) {
-              const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-              const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-              directiva.url_documento_resolucion = '/documentos/convenios/' + fileName;
+              directiva.url_documento_resolucion = `${baseUrl}/documentos/directivas/${pdfFile.originalname}`;
               directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
-              fs.renameSync(pdfFile.path, filePath); // Mueve el archivo al directorio deseado
+              fs.renameSync(pdfFile.path, `documentos/directivas/${pdfFile.originalname}`); // Mueve el archivo al directorio deseado
           }
       }
 
@@ -229,6 +228,7 @@ export const actualizarDirectiva = async (req, res) => {
       return res.status(500).json({ mensaje: 'Error al modificar directiva', error: error.message });
   }
 };
+
 
 
 export const autorizarDirectiva = async (req, res) =>{

@@ -10,7 +10,7 @@ async function main() {
     // Lee el puerto desde las variables de entorno o utiliza el puerto 4000 por defecto
     const port = process.env.PORT || 4000;
 
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: true});
     app.listen(port, () => {
       console.log('Servidor está levantado en el puerto', port);
     });

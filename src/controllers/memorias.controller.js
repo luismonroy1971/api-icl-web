@@ -1,8 +1,11 @@
 import { Sequelize } from 'sequelize';
 import {Memoria} from '../models/Memorias.js';
 import fs from 'fs';
+import slugify from 'slugify';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
+import dotenv from 'dotenv';
+const baseUrl = process.env.BASE_URL; 
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -89,13 +92,14 @@ export const leerMemoria = async (req, res) =>{
 
 }
 
+
 export const crearMemoria = async (req, res) => {
     const {
         periodo_memoria,
         descripcion_memoria,
         flag_adjunto,
         creado_por,
-        creado_fecha,
+        creado_fecha
     } = req.body;
 
     const pdfFile = req.file;
@@ -114,24 +118,28 @@ export const crearMemoria = async (req, res) => {
             descripcion_memoria,
             creado_por,
             creado_fecha,
+            flag_adjunto
         });
 
         if (flag_adjunto === 'URL') {
-            const uniqueSuffix = uuidv4();
-            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            const uploadPath = path.join(process.cwd(), 'documentos', 'memorias', fileName);
+            const originalFileName = req.file.originalname;
+            const fileNameWithoutExtension = originalFileName.split('.').slice(0, -1).join('.'); // Elimina la extensión del archivo
+            const safeFileName = slugify(fileNameWithoutExtension, { lower: true }); // Convierte el nombre a una versión segura
 
-            fs.renameSync(pdfFile.path, uploadPath);
+            const fileExtension = originalFileName.split('.').pop(); // Obtiene la extensión del archivo
+            const fileName = `${safeFileName}.${fileExtension}`;
+            const url_memoria = `${baseUrl}/documentos/memorias/${fileName}`;
 
-            nuevaMemoria.contenido_memoria = null;
-            nuevaMemoria.url_memoria = `/documentos/memorias/${fileName}`;
+            // Mueve el archivo a la carpeta documentos/memorias
+            fs.renameSync(req.file.path, `documentos/memorias/${fileName}`);
+
+            nuevaMemoria.url_memoria = url_memoria; // Asigna la URL
+            nuevaMemoria.contenido_memoria = null; // Establece el contenido en formato binario en null
         } else if (flag_adjunto === 'BIN') {
-          nuevaMemoria.contenido_memoria = fs.readFileSync(pdfFile.path);
-          if (fs.existsSync(pdfFile.path)) {
-              fs.unlinkSync(pdfFile.path);
-          } else {
-            console.error('El archivo no existe en la ubicación especificada:', pdfFile.path);
-          }
+            const filePath = req.file.path;
+            nuevaMemoria.contenido_memoria = fs.readFileSync(filePath);
+            nuevaMemoria.url_memoria = null; // Establece url_documento_resolucion en null
+            fs.unlinkSync(filePath); // Elimina el archivo temporal
         }
         await nuevaMemoria.save();
 
@@ -140,6 +148,7 @@ export const crearMemoria = async (req, res) => {
         return res.status(500).json({ mensaje: 'Error al crear memoria', error: error.message });
     }
 };
+
 
 
 export const actualizarMemoria = async (req, res) => {
@@ -172,19 +181,19 @@ export const actualizarMemoria = async (req, res) => {
         memoria.activo = activo;
 
         if (flag_adjunto === 'URL' && pdfFile) {
-            const uniqueSuffix = uuidv4(); // Generar un nombre de archivo único
-            const fileName = `${uniqueSuffix}-${pdfFile.originalname}`;
-            const uploadPath = path.join(__dirname, '/documentos/memorias', fileName); // Ruta de destino del archivo
+          const fileName = `${req.file.originalname}`;
+          const url_memoria= `${baseUrl}/documentos/memorias/${fileName}`;
 
-            // Mueve el archivo a la carpeta de documentos/memorias
-            fs.renameSync(pdfFile.path, uploadPath);
+          // Mueve el archivo a la carpeta documentos/memoriaes
+          fs.renameSync(req.file.path, `documentos/memorias/${fileName}`);
 
-            // Guarda la URL del archivo en la base de datos
-            memoria.url_memoria = `/documentos/memorias/${fileName}`;
-            memoria.contenido_memoria = null; // Elimina el contenido binario
+          memoria.url_memoria = url_memoria; // Asigna la URL
+          memoria.contenido_memoria = null; // Establece el contenido en formato binario en null
         } else if (flag_adjunto === 'BIN' && pdfFile) {
-            memoria.url_memoria = pdfFile.originalname; // Almacena el nombre del archivo, si es necesario
-            memoria.contenido_memoria = fs.readFileSync(pdfFile.path);
+          const filePath = req.file.path;
+          memoria.contenido_memoria = fs.readFileSync(filePath);
+          memoria.url_memoria = null; // Establece url_documento_resolucion en null
+          fs.unlinkSync(filePath); // Elimina el archivo temporal
         }
 
         // Actualizar el campo BLOB si se proporciona un nuevo archivo

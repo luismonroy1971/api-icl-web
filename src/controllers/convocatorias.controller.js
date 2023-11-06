@@ -3,6 +3,7 @@ import {Convocatoria} from '../models/Convocatoria.js';
 import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
+import slugify from 'slugify';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -151,8 +152,6 @@ export const leerConvocatoria = async (req, res) =>{
 
 
 export const crearConvocatoria = async (req, res) => {
-     console.log('Campos en req.body:', Object.keys(req.body));
-    console.log('Campos de archivos en req.files:', Object.keys(req.files));
     const {
         descripcion_convocatoria,
         id_area,
