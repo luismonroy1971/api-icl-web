@@ -2,7 +2,7 @@ import { Sequelize } from 'sequelize';
 import {Menu} from '../models/Menu.js';
 
 export const buscarMenus = async (req, res) => {
-    const { primer_nivel, segundo_nivel, nombre_menu } = req.query;
+    const { primer_nivel, segundo_nivel, nombre_menu, tipo_menu } = req.query;
   
     try {
       const whereClause = {};
@@ -13,6 +13,10 @@ export const buscarMenus = async (req, res) => {
 
       if (segundo_nivel) {
         whereClause.segundo_nivel = segundo_nivel;
+      }
+
+      if (tipo_menu) {
+        whereClause.tipo_menu = tipo_menu;
       }
 
       if (nombre_menu) {

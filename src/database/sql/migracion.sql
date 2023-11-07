@@ -3401,3 +3401,4 @@ SELECT setval('tipodocumentos_id_seq', (SELECT MAX(id) FROM tipodocumentos));
 SELECT setval('uits_id_seq', (SELECT MAX(id) FROM uits));
 SELECT setval('videos_id_seq', (SELECT MAX(id) FROM videos));
 SELECT setval('popups_id_seq', (SELECT MAX(id) FROM popups));
+SELECT setval('opcionesusuarios_id_seq', (SELECT MAX(id) FROM opcionesusuarios));
