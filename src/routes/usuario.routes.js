@@ -9,7 +9,7 @@ router.get("/users", passport.authenticate("jwt", { session: false }), obtenerUs
 
 router.get("/users/:id",passport.authenticate("jwt", { session: false }), obtenerUsuarioPorId);
 
-router.post("/signup", registrarUsuario);
+router.post("/signup", passport.authenticate("jwt", { session: false }), registrarUsuario);
 router.post("/signin", iniciarSesion);
 router.put("/users/:id", passport.authenticate("jwt", { session: false }),actualizarUsuario);
 
