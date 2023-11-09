@@ -275,7 +275,7 @@ export const obtenerValorDeServicio = async (req, res) => {
       return res.json({ valor_servicio: valorServicio });
     }
 
-    return res.status(404).json({ error: 'No se encontró un servicio válido.' });
+    return res.status(404).json({ valor_servicio: 0 });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Error en el servidor.' });
