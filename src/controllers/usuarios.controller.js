@@ -68,16 +68,25 @@ export const iniciarSesion = async (req, res) => {
     }
   };
 
-// Función para obtener todos los usuarios
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.findAll();
+    const usuarios = await Usuario.findAll({
+      attributes: { exclude: ['password'] }, // Excluye la propiedad 'password' del modelo Usuario
+      include: [
+        {
+          model: OpcionesUsuario,
+          attributes: ['id_menu'], // Incluye solo los campos deseados del modelo OpcionesUsuario
+        },
+      ],
+    });
+
     res.status(200).json(usuarios);
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 // Función para obtener un usuario por su ID
 export const obtenerUsuarioPorId = async (req, res) => {
