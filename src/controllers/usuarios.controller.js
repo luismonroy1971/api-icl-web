@@ -1,10 +1,11 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { Usuario } from '../models/Usuario.js'; // Ajusta la importación según tu estructura de archivos
+import { Usuario } from '../models/Usuario.js';
 import { OpcionesUsuario } from '../models/OpcionesUsuario.js';
 
-// Función para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
+  const t = await Usuario.sequelize.transaction();
+
   try {
     const { name, email, password, profile, opcionesusuarios } = req.body;
 
@@ -14,21 +15,29 @@ export const registrarUsuario = async (req, res) => {
     }
 
     // Registrar el usuario
-    const nuevoUsuario = await Usuario.create({ name, email, password, profile });
+    const nuevoUsuario = await Usuario.create({ name, email, password, profile }, { transaction: t });
 
     if (opcionesusuarios && opcionesusuarios.length > 0) {
       // Crear instancias de OpcionesUsuario relacionadas con el nuevo usuario
       await OpcionesUsuario.bulkCreate(
-        opcionesusuarios.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion }))
+        opcionesusuarios.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion })),
+        { transaction: t }
       );
     }
 
+    // Confirmar la transacción
+    await t.commit();
+
     res.status(201).json({ message: 'Usuario registrado con éxito' });
   } catch (error) {
+    // Revertir la transacción en caso de error
+    await t.rollback();
+
     console.error('Error al registrar usuario:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 
 
@@ -97,12 +106,10 @@ export const obtenerUsuarioPorId = async (req, res) => {
   }
 };
 
-
-
 export const actualizarUsuario = async (req, res) => {
   try {
     const usuarioId = req.params.id; // ID del usuario a actualizar
-    const { name, profile, email, password, opciones } = req.body; // Nuevos datos del usuario y opciones
+    const { name, profile, email, password, opcionesusuarios } = req.body; // Nuevos datos del usuario y opciones
 
     // Busca el usuario en la base de datos por su ID
     const usuario = await Usuario.findByPk(usuarioId);
@@ -124,14 +131,14 @@ export const actualizarUsuario = async (req, res) => {
 
     await usuario.save(); // Guarda los cambios en la base de datos
 
-    // Actualiza las opciones de usuario
-    if (opciones && opciones.length > 0) {
+    // Actualiza las opciones de usuario si se proporcionan en la solicitud
+    if (opcionesusuarios && opcionesusuarios.length > 0) {
       // Elimina las opciones actuales del usuario
       await OpcionesUsuario.destroy({ where: { id_usuario: usuario.id } });
 
       // Crea instancias de OpcionesUsuario relacionadas con el usuario
       await OpcionesUsuario.bulkCreate(
-        opciones.map((opcion) => ({ id_usuario: usuario.id, ...opcion }))
+        opcionesusuarios.map((opcion) => ({ id_usuario: usuario.id, ...opcion }))
       );
     }
 
