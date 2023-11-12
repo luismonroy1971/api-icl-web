@@ -6,7 +6,7 @@ import { OpcionesUsuario } from '../models/OpcionesUsuario.js';
 // Función para registrar un nuevo usuario
 export const registrarUsuario = async (req, res) => {
   try {
-    const { name, email, password, profile, opciones } = req.body;
+    const { name, email, password, profile, opcionesusuarios } = req.body;
 
     const usuarioExistente = await Usuario.findOne({ where: { email } });
     if (usuarioExistente) {
@@ -16,10 +16,10 @@ export const registrarUsuario = async (req, res) => {
     // Registrar el usuario
     const nuevoUsuario = await Usuario.create({ name, email, password, profile });
 
-    if (opciones && opciones.length > 0) {
+    if (opcionesusuarios && opcionesusuarios.length > 0) {
       // Crear instancias de OpcionesUsuario relacionadas con el nuevo usuario
       await OpcionesUsuario.bulkCreate(
-        opciones.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion }))
+        opcionesusuarios.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion }))
       );
     }
 
@@ -29,6 +29,7 @@ export const registrarUsuario = async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 
 // Función para iniciar sesión y generar un token JWT
