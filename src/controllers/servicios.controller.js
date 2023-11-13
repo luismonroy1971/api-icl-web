@@ -209,28 +209,35 @@ export const desactivarServicio = async (req, res) => {
 
 export const obtenerValorDeServicio = async (req, res) => {
   try {
-    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio,periodo_servicio } = req.query;
+    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio, periodo_servicio } = req.query;
 
-    if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion ) {
-      return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
+    if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion) {
+      if (res && res.status && res.json) {
+        // Devuelve una respuesta JSON válida en caso de error
+        return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
+      } else {
+        // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+        console.error('Error: res no es una respuesta HTTP válida.');
+        return { error: 'Error en el servidor.' };
+      }
     }
 
     // Define las condiciones iniciales para la búsqueda
     let condiciones;
-    if (sub_nivel_servicio && periodo_servicio === '0'){
-          condiciones = {
-            tipo_servicio,
-            numero_servicio,
-            flag_calculo: '1',
-          };
-      }else{
-        condiciones = {
-          tipo_servicio,
-          numero_servicio,
-          sub_nivel_servicio
-        };  
-      }
-    
+    if (sub_nivel_servicio && periodo_servicio === '0') {
+      condiciones = {
+        tipo_servicio,
+        numero_servicio,
+        flag_calculo: '1',
+      };
+    } else {
+      condiciones = {
+        tipo_servicio,
+        numero_servicio,
+        sub_nivel_servicio,
+      };
+    }
+
     const servicios = await Servicio.findAll({
       where: condiciones,
       attributes: ['flag_construccion', 'sub_nivel_servicio', 'flag_metraje', 'metraje_inicial', 'metraje_final', 'monto_soles'],
@@ -239,83 +246,88 @@ export const obtenerValorDeServicio = async (req, res) => {
     let valorServicio = null;
 
     // Itera sobre los servicios para encontrar el valor correcto
-  
     for (const servicio of servicios) {
-      if (sub_nivel_servicio === '0' && periodo_servicio !=='0'){
-          valorServicio = servicio.monto_soles;
-          break;
+      if (sub_nivel_servicio === '0' && periodo_servicio !== '0') {
+        valorServicio = parseFloat(servicio.monto_soles);
+        break;
       }
-      if (servicio.flag_metraje === 'NO' && periodo_servicio !=='0'){
-          valorServicio = servicio.monto_soles;
-          break;
-      }
-      else
-      {
+      if (servicio.flag_metraje === 'NO' && periodo_servicio !== '0') {
+        valorServicio = parseFloat(servicio.monto_soles);
+        break;
+      } else {
         const metrajeInicial = parseFloat(servicio.metraje_inicial);
         const metrajeFinal = parseFloat(servicio.metraje_final);
-        if (numero_servicio > 6 ){
+        if (numero_servicio > 6) {
           if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
-            valorServicio = servicio.monto_soles;
+            valorServicio = parseFloat(servicio.monto_soles);
             break;
-            }
-        }
-        
-        else if (servicio.flag_construccion === flag_construccion ){
+          }
+        } else if (servicio.flag_construccion === flag_construccion) {
           if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
-            valorServicio = servicio.monto_soles;
+            valorServicio = parseFloat(servicio.monto_soles);
             break;
-            }
+          }
         }
-      
       }
-
     }
 
-    if (valorServicio !== null) {
-      return res.json({ valor_servicio: valorServicio });
+    if (res && res.status && res.json) {
+      // Devuelve una respuesta JSON válida en todos los casos
+      return res.status(200).json({ valor_servicio: valorServicio || 0, message: valorServicio !== null ? 'Valor encontrado' : 'No se encontró ningún valor para los parámetros proporcionados.' });
+    } else {
+      console.error('Error: res no es una respuesta HTTP válida.');
+      // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+      return { error: 'Error en el servidor.' };
     }
-
-    return res.json({ valor_servicio: 0, message: 'No se encontró ningún valor para los parámetros proporcionados.' });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Error en el servidor.' });
+    if (res && res.status && res.json) {
+      return res.status(500).json({ error: 'Error en el servidor.' });
+    } else {
+      return { error: 'Error en el servidor.' };
+    }
   }
 };
+
+
 
 export const acumularValoresDeServicio = async (req, res) => {
   try {
     const { tipo_servicio, numero_servicio, metraje, flag_construccion, periodo_servicio } = req.query;
 
     if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion) {
-      return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
+      return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios' });
     }
 
-    let sumaValores = 0;
+    let sumaTotal = 0;
+    let resultados = [];
 
+    // Itera sobre el rango de sub_nivel_servicio de 1 a 10
     for (let sub_nivel_servicio = 1; sub_nivel_servicio <= 10; sub_nivel_servicio++) {
-      const result = await obtenerValorDeServicio({
+      const respuestaObtenerValor = await obtenerValorDeServicio({
         query: {
           tipo_servicio,
-          numero_servicio,
+          numero_servicio, // Usa el valor parseado
           metraje,
           flag_construccion,
           sub_nivel_servicio,
           periodo_servicio,
         },
+        // Pasa directamente el objeto req para asegurarte de que todos los parámetros sean pasados correctamente
+        req,
       });
 
-      // Verifica si el resultado es válido antes de sumarlo
-      if (result && result.valor_servicio !== null && !isNaN(result.valor_servicio)) {
-        sumaValores += parseFloat(result.valor_servicio);
+      if (respuestaObtenerValor.valor_servicio !== null) {
+        sumaTotal += parseFloat(respuestaObtenerValor.valor_servicio);
+        resultados.push(respuestaObtenerValor);
       }
     }
 
-    return res.json({ suma_valores: sumaValores });
+    return res.json({ suma_total: sumaTotal, resultados });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: 'Error en el servidor.' });
   }
 };
-
 
 

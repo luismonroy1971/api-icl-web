@@ -172,3 +172,43 @@ const generarTokenJWT = (usuario) => {
 
   return token;
 };
+
+
+export const activarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    usuario.activo = '1'; // Establecer activo en '1'
+    await usuario.save();
+
+    res.json({ mensaje: 'Usuario activado correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
+export const desactivarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const usuario = await Usuario.findByPk(id);
+
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    }
+
+    usuario.activo = '0'; // Establecer activo en '0'
+    await usuario.save();
+
+    res.json({ mensaje: 'Usuario desactivado correctamente' });
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
