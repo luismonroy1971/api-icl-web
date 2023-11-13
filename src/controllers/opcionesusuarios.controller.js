@@ -4,32 +4,33 @@ import { Menu } from '../models/Menu.js';
 import { CamposTablas } from '../models/CamposTablas.js';
 
 export const buscarOpcionesUsuarios = async (req, res) => {
-    const { id_usuario } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (id_usuario) {
-        whereClause.id_usuario = id_usuario;
-      }
+    const { id_usuario } = req.params; // Utiliza req.params en lugar de req.query
 
-      const opcionesusuarios = await OpcionesUsuario.findAll({
-          where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-          include: [
-            {
+    try {
+        if (!id_usuario) {
+            return res.status(400).json({ error: true, message: 'El parámetro id_usuario es obligatorio.' });
+        }
+
+        const opcionesusuarios = await OpcionesUsuario.findAll({
+            where: {
+                id_usuario: id_usuario,
+            },
+            include: [
+                {
                     model: Menu,
-                    required: true, // Cambia esto según tus necesidades, si quieres un inner join
-                    
+                    required: true,
                 },
             ],
-      });
-  
-      res.json(opcionesusuarios);
+        });
+
+        res.json(opcionesusuarios );
     } catch (error) {
-      return res.status(500).json({ message: error.message });
+        console.error(error);
+        res.status(500).json({ error: true, message: 'Error al buscar opciones de usuario.' });
     }
-  };
-  
+};
+
+
 
 export const leerOpcionesUsuario = async (req, res) =>{
     const { id } = req.params;

@@ -5,5 +5,5 @@ const router = Router();
 router.post('/opcionesusuarios', crearOpcionesUsuario);
 router.put('/opcionesusuarios/:id',actualizarOpcionesUsuario);
 router.delete('/opcionesusuarios/:id',eliminarOpcionesUsuario);
-router.get('/opcionesusuarios/:id', buscarOpcionesUsuarios);
+router.get('/opcionesusuarios/:id_usuario', buscarOpcionesUsuarios);
 export default router
