@@ -1,5 +1,6 @@
 import {DataTypes} from 'sequelize';
 import {sequelize} from '../database/database.js';
+import { Area } from './Area.js';
 
 export const Resolucion = sequelize.define('resoluciones',{
     id:{
@@ -28,6 +29,9 @@ export const Resolucion = sequelize.define('resoluciones',{
     // Campos para almacenar PDF en formato binario
     contenido_documento_resolucion: {
         type: DataTypes.BLOB('long'),
+    },
+    id_area: {
+        type: DataTypes.SMALLINT,
     },
     abreviacion_area: {
         type: DataTypes.CHAR(2),
@@ -59,3 +63,15 @@ export const Resolucion = sequelize.define('resoluciones',{
         defaultValue: '1'
     }
 },{timestamps: false})
+
+Resolucion.beforeCreate(async (resolucion, options) => {
+    const area = await Area.findByPk(resolucion.id_area);
+    resolucion.abreviacion_area = area ? area.abreviacion_area : null;
+});
+
+Resolucion.beforeUpdate(async (resolucion, options) => {
+    if (resolucion.changed('id_area')) {
+        const area = await Area.findByPk(resolucion.id_area);
+        resolucion.abreviacion_area = area ? area.abreviacion_area : null;
+    }
+});

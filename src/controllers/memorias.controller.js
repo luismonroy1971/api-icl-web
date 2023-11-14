@@ -204,14 +204,19 @@ export const actualizarMemoria = async (req, res) => {
                 await fs.copyFile(pdfFile.path, filePath);
                 memoria.url_memoria = `${baseUrl}/documentos/memorias/${safeFileName}`;
                 memoria.contenido_memoria = null;
+                memoria.flag_adjunto = 'URL';
             } else if (flag_adjunto === 'BIN') {
                 memoria.url_memoria = null;
                 memoria.contenido_memoria = await fs.readFile(pdfFile.path);
+                memoria.flag_adjunto = 'BIN';
             }
         }
 
         await memoria.save();
-        return res.status(200).json({ mensaje: 'Memoria actualizada con éxito' });
+        res.status(200).json({ 
+          mensaje: 'Memoria actualizada con éxito', 
+          memoriaActualizada: memoria  // Incluye el objeto actualizado aquí
+      });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ mensaje: 'Error al modificar memoria', error: error.message });

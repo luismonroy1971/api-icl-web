@@ -231,14 +231,19 @@ export const actualizarResolucion = async (req, res) => {
                 await fs.copyFile(req.file.path, filePath);
                 resolucion.url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
                 resolucion.contenido_documento_resolucion = null;
+                resolucion.flag_adjunto = 'URL'; 
             } else if (flag_adjunto === 'BIN') {
                 resolucion.url_documento_resolucion = null;
                 resolucion.contenido_documento_resolucion = await fs.readFile(req.file.path);
+                resolucion.flag_adjunto = 'BIN';
             }
         }
 
         await resolucion.save();
-        return res.json({ mensaje: 'Resolución actualizada con éxito' });
+        res.status(200).json({ 
+          mensaje: 'Resolución actualizada con éxito', 
+          resolucionActualizada: resolucion  // Incluye el objeto actualizado aquí
+      });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ mensaje: 'Error al modificar resolución', error: error.message });

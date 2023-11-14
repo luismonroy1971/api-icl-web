@@ -188,14 +188,19 @@ export const actualizarRendicion = async (req, res) => {
                 await fs.copyFile(rendicionFile.path, filePath);
                 rendicion.url_rendicion = `${baseUrl}/documentos/rendiciones/${safeFileName}`;
                 rendicion.contenido_rendicion = null;
+                rendicion.flag_adjunto = 'URL';
             } else if (flag_adjunto === 'BIN') {
                 rendicion.url_rendicion = null;
                 rendicion.contenido_rendicion = await fs.readFile(rendicionFile.path);
-            }
+                rendicion.flag_adjunto = 'BIN';
+              }
         }
 
         await rendicion.save();
-        res.json({ mensaje: 'Rendición actualizada con éxito' });
+        res.status(200).json({ 
+          mensaje: 'Rendición actualizada con éxito', 
+          rendicionActualizada: rendicion  // Incluye el objeto actualizado aquí
+      });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ mensaje: error.message });
