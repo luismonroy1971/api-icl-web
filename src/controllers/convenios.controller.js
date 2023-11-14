@@ -130,119 +130,139 @@ export const leerConvenio = async (req, res) =>{
 
 
 export const crearConvenio = async (req, res) => {
-    const {
-        descripcion_convenio,
-        fecha_convenio,
-        creado_por,
-        creado_fecha,
-        id_departamento,
-        id_provincia,
-        id_distrito,
-        flag_adjunto
-    } = req.body;
-    const pdfFile = req.file;
+  const {
+      descripcion_convenio,
+      fecha_convenio,
+      creado_por,
+      creado_fecha,
+      id_departamento,
+      id_provincia,
+      id_distrito,
+      flag_adjunto
+  } = req.body;
 
-    try {
-        if (!pdfFile || pdfFile.size > 10000000) {
-            return res.status(400).json({ message: 'Archivo no proporcionado o demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-        }
+  const pdfFile = req.file;
 
-        const __dirname = path.dirname(fileURLToPath(import.meta.url));
-        const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
-        const originalFileName = pdfFile.originalname;
-        const filePath = path.join(documentosDir, originalFileName);
+  try {
+      let url_documento_convenio = null;
+      let contenido_documento_convenio = null;
 
-        let url_documento_convenio = null;
-        let contenido_documento_convenio = null;
+      // Validar el tamaño del archivo adjunto
+      if (pdfFile && pdfFile.size > 10000000) {
+          return res.status(400).json({ mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
 
-        if (flag_adjunto === 'URL') {
-            await fs.mkdir(documentosDir, { recursive: true });
-            await fs.copyFile(pdfFile.path, filePath);
-            url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`; // baseUrl debe ser la URL base de tu servidor web
-        } else if (flag_adjunto === 'BIN') {
-            contenido_documento_convenio = await fs.readFile(pdfFile.path);
-        }
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (flag_adjunto === 'URL' && pdfFile) {
+          const __dirname = path.dirname(fileURLToPath(import.meta.url));
+          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
+          const originalFileName = pdfFile.originalname;
+          const filePath = path.join(documentosDir, originalFileName);
 
-        const nuevoConvenio = await Convenio.create({
-            descripcion_convenio,
-            fecha_convenio,
-            creado_por,
-            creado_fecha,
-            id_departamento,
-            id_provincia,
-            id_distrito,
-            flag_adjunto,
-            url_documento_convenio,
-            contenido_documento_convenio
-        });
+          // Crear el directorio si no existe y copiar el archivo
+          await fs.mkdir(documentosDir, { recursive: true });
+          await fs.copyFile(pdfFile.path, filePath);
+          url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`;
+      } else if (flag_adjunto === 'BIN' && pdfFile) {
+          // Leer el contenido del archivo
+          contenido_documento_convenio = await fs.readFile(pdfFile.path);
+      }
 
-        res.status(201).json(nuevoConvenio);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear convenio', error: error.message });
-    }
+      // Crear un nuevo convenio en la base de datos
+      const nuevoConvenio = await Convenio.create({
+          descripcion_convenio,
+          fecha_convenio,
+          creado_por,
+          creado_fecha,
+          id_departamento,
+          id_provincia,
+          id_distrito,
+          flag_adjunto,
+          url_documento_convenio,
+          contenido_documento_convenio
+      });
+
+      // Responder con el nuevo convenio creado
+      return res.status(201).json({ mensaje: 'Convenio creado con éxito', nuevoConvenio });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al crear convenio', error: error.message });
+  }
 };
 
 
+
 export const actualizarConvenio = async (req, res) => {
-    const { id } = req.params;
-    const {
-        descripcion_convenio,
-        fecha_convenio,
-        id_departamento,
-        id_provincia,
-        id_distrito,
-        modificado_por,
-        modificado_fecha,
-        activo,
-        flag_adjunto
-    } = req.body;
+  const { id } = req.params;
+  const {
+      descripcion_convenio,
+      fecha_convenio,
+      id_departamento,
+      id_provincia,
+      id_distrito,
+      modificado_por,
+      modificado_fecha,
+      activo,
+      flag_adjunto
+  } = req.body;
 
-    const pdfFile = req.file;
+  const pdfFile = req.file;
 
-    try {
-        const convenio = await Convenio.findByPk(id);
+  try {
+      // Buscar el convenio por su ID
+      const convenio = await Convenio.findByPk(id);
 
-        if (!convenio) {
-            return res.status(404).json({ message: 'Convenio no encontrado' });
-        }
+      // Verificar si el convenio existe
+      if (!convenio) {
+          return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+      }
 
-        if (pdfFile && pdfFile.size > 10000000) { // 10 MB en bytes
-            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-        }
+      // Validar el tamaño del archivo adjunto
+      if (pdfFile && pdfFile.size > 10000000) { // 10 MB en bytes
+          return res.status(400).json({ mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
 
-        convenio.descripcion_convenio = descripcion_convenio;
-        convenio.fecha_convenio = fecha_convenio;
-        convenio.id_departamento = id_departamento;
-        convenio.id_provincia = id_provincia;
-        convenio.id_distrito = id_distrito;
-        convenio.modificado_por = modificado_por;
-        convenio.modificado_fecha = modificado_fecha;
-        convenio.activo = activo;
+      // Actualizar las propiedades del convenio
+      convenio.descripcion_convenio = descripcion_convenio;
+      convenio.fecha_convenio = fecha_convenio;
+      convenio.id_departamento = id_departamento;
+      convenio.id_provincia = id_provincia;
+      convenio.id_distrito = id_distrito;
+      convenio.modificado_por = modificado_por;
+      convenio.modificado_fecha = modificado_fecha;
+      convenio.activo = activo;
 
-        if (pdfFile) {
-            const __dirname = path.dirname(fileURLToPath(import.meta.url));
-            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
-            const originalFileName = pdfFile.originalname;
-            const filePath = path.join(documentosDir, originalFileName);
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (pdfFile) {
+          const __dirname = path.dirname(fileURLToPath(import.meta.url));
+          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
+          const originalFileName = pdfFile.originalname;
+          const filePath = path.join(documentosDir, originalFileName);
 
-            if (flag_adjunto === 'URL') {
-                await fs.mkdir(documentosDir, { recursive: true });
-                await fs.copyFile(pdfFile.path, filePath);
-                convenio.url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`;
-                convenio.contenido_documento_convenio = null;
-            } else if (flag_adjunto === 'BIN') {
-                convenio.url_documento_convenio = null;
-                convenio.contenido_documento_convenio = await fs.readFile(pdfFile.path);
-            }
-        }
+          if (flag_adjunto === 'URL') {
+              // Crear el directorio si no existe y copiar el archivo
+              await fs.mkdir(documentosDir, { recursive: true });
+              await fs.copyFile(pdfFile.path, filePath);
+              convenio.url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`;
+              convenio.contenido_documento_convenio = null;
+          } else if (flag_adjunto === 'BIN') {
+              // Leer el contenido del archivo
+              convenio.url_documento_convenio = null;
+              convenio.contenido_documento_convenio = await fs.readFile(pdfFile.path);
+          }
+      }
 
-        await convenio.save();
-        res.status(200).json({ message: 'Convenio actualizado correctamente' });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al modificar convenio', error: error.message });
-    }
+      // Guardar los cambios en la base de datos
+      await convenio.save();
+
+      // Responder con un mensaje de éxito
+      return res.status(200).json({ mensaje: 'Convenio actualizado correctamente', convenio });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al modificar convenio', error: error.message });
+  }
 };
 
 
