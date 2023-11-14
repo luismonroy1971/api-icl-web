@@ -90,8 +90,8 @@ export const buscarConvenios = async (req, res) => {
       id_departamento: convenio.id_departamento,
       id_provincia: convenio.id_provincia,
       id_distrito: convenio.id_distrito,
-      url_documento_convenio: convenio.url_documento_convenio,
-      contenido_documento_convenio: convenio.contenido_documento_convenio,
+      url_documento: convenio.url_documento,
+      contenido_documento: convenio.contenido_documento,
       fecha_convenio: convenio.fecha_convenio,
       periodo_convenio: convenio.periodo_convenio,
       periodo_mes: convenio.periodo_mes,
@@ -144,8 +144,8 @@ export const crearConvenio = async (req, res) => {
   const pdfFile = req.file;
 
   try {
-      let url_documento_convenio = null;
-      let contenido_documento_convenio = null;
+      let url_documento = null;
+      let contenido_documento = null;
 
       // Validar el tamaño del archivo adjunto
       if (pdfFile && pdfFile.size > 10000000) {
@@ -162,10 +162,10 @@ export const crearConvenio = async (req, res) => {
           // Crear el directorio si no existe y copiar el archivo
           await fs.mkdir(documentosDir, { recursive: true });
           await fs.copyFile(pdfFile.path, filePath);
-          url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`;
+          url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
       } else if (flag_adjunto === 'BIN' && pdfFile) {
           // Leer el contenido del archivo
-          contenido_documento_convenio = await fs.readFile(pdfFile.path);
+          contenido_documento = await fs.readFile(pdfFile.path);
       }
 
       // Crear un nuevo convenio en la base de datos
@@ -178,8 +178,8 @@ export const crearConvenio = async (req, res) => {
           id_provincia,
           id_distrito,
           flag_adjunto,
-          url_documento_convenio,
-          contenido_documento_convenio
+          url_documento,
+          contenido_documento
       });
 
       // Responder con el nuevo convenio creado
@@ -244,12 +244,12 @@ export const actualizarConvenio = async (req, res) => {
               // Crear el directorio si no existe y copiar el archivo
               await fs.mkdir(documentosDir, { recursive: true });
               await fs.copyFile(pdfFile.path, filePath);
-              convenio.url_documento_convenio = `${baseUrl}/documentos/convenios/${originalFileName}`;
-              convenio.contenido_documento_convenio = null;
+              convenio.url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
+              convenio.contenido_documento = null;
           } else if (flag_adjunto === 'BIN') {
               // Leer el contenido del archivo
-              convenio.url_documento_convenio = null;
-              convenio.contenido_documento_convenio = await fs.readFile(pdfFile.path);
+              convenio.url_documento = null;
+              convenio.contenido_documento = await fs.readFile(pdfFile.path);
           }
       }
 

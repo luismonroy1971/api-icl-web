@@ -124,8 +124,8 @@ export const crearDirectiva = async (req, res) => {
     const pdfFile = req.file;
 
     try {
-        let url_documento_resolucion = null;
-        let contenido_documento_resolucion = null;
+        let url_documento = null;
+        let contenido_documento = null;
 
         if (pdfFile && pdfFile.size > 10000000) {
             return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
@@ -139,9 +139,9 @@ export const crearDirectiva = async (req, res) => {
 
             await fs.mkdir(documentosDir, { recursive: true });
             await fs.copyFile(pdfFile.path, filePath);
-            url_documento_resolucion = `${baseUrl}/documentos/directivas/${originalFileName}`;
+            url_documento = `${baseUrl}/documentos/directivas/${originalFileName}`;
         } else if (flag_adjunto === 'BIN' && pdfFile) {
-            contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+            contenido_documento = await fs.readFile(pdfFile.path);
         }
 
         const nuevaDirectiva = await Directiva.create({
@@ -155,8 +155,8 @@ export const crearDirectiva = async (req, res) => {
             creado_por,
             creado_fecha,
             flag_adjunto,
-            url_documento_resolucion,
-            contenido_documento_resolucion
+            url_documento,
+            contenido_documento
         });
 
         return res.status(201).json({ mensaje: 'Directiva creada con éxito', nuevaDirectiva });
@@ -216,12 +216,12 @@ export const actualizarDirectiva = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 await fs.mkdir(documentosDir, { recursive: true });
                 await fs.copyFile(pdfFile.path, filePath);
-                directiva.url_documento_resolucion = `${baseUrl}/documentos/directivas/${originalFileName}`;
-                directiva.contenido_documento_resolucion = null;
+                directiva.url_documento = `${baseUrl}/documentos/directivas/${originalFileName}`;
+                directiva.contenido_documento = null;
                 directiva.flag_adjunto = 'URL'; 
               } else if (flag_adjunto === 'BIN') {
-                directiva.url_documento_resolucion = null;
-                directiva.contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+                directiva.url_documento = null;
+                directiva.contenido_documento = await fs.readFile(pdfFile.path);
                 directiva.flag_adjunto = 'BIN'; 
               }
         }

@@ -16,11 +16,11 @@ export const Norma = sequelize.define('normasinstitucionales', {
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },    
-    url_norma: {
+    url_documento: {
         type: DataTypes.STRING,
     },
     // Campo BLOB para el PDF
-    contenido_norma: {
+    contenido_documento: {
         type: DataTypes.BLOB('long'),
     },
     creado_por: {

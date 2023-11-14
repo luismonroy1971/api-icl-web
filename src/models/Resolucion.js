@@ -23,11 +23,11 @@ export const Resolucion = sequelize.define('resoluciones',{
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },
-    url_documento_resolucion:{
+    url_documento:{
         type: DataTypes.STRING
     },
     // Campos para almacenar PDF en formato binario
-    contenido_documento_resolucion: {
+    contenido_documento: {
         type: DataTypes.BLOB('long'),
     },
     id_area: {

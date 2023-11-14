@@ -16,11 +16,11 @@ export const Rendicion = sequelize.define('rendiciones', {
      flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },   
-    url_rendicion: {
+    url_documento: {
         type: DataTypes.STRING,
     },
     // Campo BLOB para el PDF
-    contenido_rendicion: {
+    contenido_documento: {
         type: DataTypes.BLOB('long'),
     },
     creado_por: {

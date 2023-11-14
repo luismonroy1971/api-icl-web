@@ -112,12 +112,12 @@ export const crearNorma = async (req, res) => {
               await fs.copyFile(pdfFile.path, filePath);
               
               // Actualizar las propiedades de la Norma
-              nuevaNorma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
-              nuevaNorma.contenido_norma = null;
+              nuevaNorma.url_documento = `${baseUrl}/documentos/normas/${safeFileName}`;
+              nuevaNorma.contenido_documento = null;
           } else if (flag_adjunto === 'BIN') {
               // Leer el contenido del archivo
-              nuevaNorma.contenido_norma = await fs.readFile(pdfFile.path);
-              nuevaNorma.url_norma = null;
+              nuevaNorma.contenido_documento = await fs.readFile(pdfFile.path);
+              nuevaNorma.url_documento = null;
           }
       }
 
@@ -184,13 +184,13 @@ export const actualizarNorma = async (req, res) => {
               await fs.copyFile(pdfFile.path, filePath);
               
               // Actualizar las propiedades de la Norma
-              norma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
-              norma.contenido_norma = null;
+              norma.url_documento = `${baseUrl}/documentos/normas/${safeFileName}`;
+              norma.contenido_documento = null;
               norma.flag_adjunto = 'URL';
           } else if (flag_adjunto === 'BIN') {
               // Leer el contenido del archivo
-              norma.url_norma = null;
-              norma.contenido_norma = await fs.readFile(pdfFile.path);
+              norma.url_documento = null;
+              norma.contenido_documento = await fs.readFile(pdfFile.path);
               norma.flag_adjunto = 'BIN';
           }
       }

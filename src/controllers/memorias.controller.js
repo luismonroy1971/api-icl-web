@@ -131,15 +131,15 @@ export const crearMemoria = async (req, res) => {
         const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
         const filePath = path.join(documentosDir, safeFileName);
 
-        let url_memoria = null;
-        let contenido_memoria = null;
+        let url_documento = null;
+        let contenido_documento = null;
 
         if (flag_adjunto === 'URL') {
             await fs.mkdir(documentosDir, { recursive: true });
             await fs.copyFile(pdfFile.path, filePath);
-            url_memoria = `${baseUrl}/documentos/memorias/${safeFileName}`;
+            url_documento = `${baseUrl}/documentos/memorias/${safeFileName}`;
         } else if (flag_adjunto === 'BIN') {
-            contenido_memoria = await fs.readFile(pdfFile.path);
+            contenido_documento = await fs.readFile(pdfFile.path);
         }
 
         const nuevaMemoria = await Memoria.create({
@@ -148,8 +148,8 @@ export const crearMemoria = async (req, res) => {
             creado_por,
             creado_fecha,
             flag_adjunto,
-            url_memoria,
-            contenido_memoria
+            url_documento,
+            contenido_documento
         });
 
         return res.status(201).json({ mensaje: 'Memoria creada con éxito', nuevaMemoria });
@@ -202,12 +202,12 @@ export const actualizarMemoria = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 await fs.mkdir(documentosDir, { recursive: true });
                 await fs.copyFile(pdfFile.path, filePath);
-                memoria.url_memoria = `${baseUrl}/documentos/memorias/${safeFileName}`;
-                memoria.contenido_memoria = null;
+                memoria.url_documento = `${baseUrl}/documentos/memorias/${safeFileName}`;
+                memoria.contenido_documento = null;
                 memoria.flag_adjunto = 'URL';
             } else if (flag_adjunto === 'BIN') {
-                memoria.url_memoria = null;
-                memoria.contenido_memoria = await fs.readFile(pdfFile.path);
+                memoria.url_documento = null;
+                memoria.contenido_documento = await fs.readFile(pdfFile.path);
                 memoria.flag_adjunto = 'BIN';
             }
         }

@@ -13,11 +13,11 @@ export const Popup = sequelize.define('popup', {
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },    
-    url_popup: {
+    url_documento: {
         type: DataTypes.STRING,
     },
     // Campo BLOB para el PDF
-    contenido_popup: {
+    contenido_documento: {
         type: DataTypes.BLOB('long'),
     },
     fecha_inicial: {

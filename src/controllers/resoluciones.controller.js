@@ -150,15 +150,15 @@ export const crearResolucion = async (req, res) => {
         const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
         const filePath = path.join(documentosDir, safeFileName);
 
-        let url_documento_resolucion = null;
-        let contenido_documento_resolucion = null;
+        let url_documento = null;
+        let contenido_documento = null;
 
         if (flag_adjunto === 'URL') {
             await fs.mkdir(documentosDir, { recursive: true });
             await fs.copyFile(pdfFile.path, filePath);
-            url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
+            url_documento = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
         } else if (flag_adjunto === 'BIN') {
-            contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+            contenido_documento = await fs.readFile(pdfFile.path);
         }
 
         const nuevaResolucion = await Resolucion.create({
@@ -172,8 +172,8 @@ export const crearResolucion = async (req, res) => {
             creado_por,
             creado_fecha,
             flag_adjunto,
-            url_documento_resolucion,
-            contenido_documento_resolucion
+            url_documento,
+            contenido_documento
         });
 
         return res.status(201).json({ mensaje: 'Resolución creada con éxito', nuevaResolucion });
@@ -229,12 +229,12 @@ export const actualizarResolucion = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 await fs.mkdir(documentosDir, { recursive: true });
                 await fs.copyFile(req.file.path, filePath);
-                resolucion.url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
-                resolucion.contenido_documento_resolucion = null;
+                resolucion.url_documento = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
+                resolucion.contenido_documento = null;
                 resolucion.flag_adjunto = 'URL'; 
             } else if (flag_adjunto === 'BIN') {
-                resolucion.url_documento_resolucion = null;
-                resolucion.contenido_documento_resolucion = await fs.readFile(req.file.path);
+                resolucion.url_documento = null;
+                resolucion.contenido_documento = await fs.readFile(req.file.path);
                 resolucion.flag_adjunto = 'BIN';
             }
         }

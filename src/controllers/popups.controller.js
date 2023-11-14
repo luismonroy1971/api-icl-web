@@ -27,10 +27,10 @@ export const crearPopup = async (req, res) => {
 
     if (flag_adjunto === 'URL' && imgFile) {
       // Guardar la URL del archivo en el registro
-      nuevoPopup.url_popup = `${baseUrl}/documentos/popups/${imgFile.filename}`;
+      nuevoPopup.url_documento = `${baseUrl}/documentos/popups/${imgFile.filename}`;
     } else if (flag_adjunto === 'BIN' && imgFile) {
       // Si es BIN, guarda el contenido del archivo
-      nuevoPopup.contenido_popup = fs.readFileSync(imgFile.path);
+      nuevoPopup.contenido_documento = fs.readFileSync(imgFile.path);
     }
 
     nuevoPopup = await Popup.create(nuevoPopup);
@@ -73,12 +73,12 @@ export const actualizarPopup = async (req, res) => {
 
     if (flag_adjunto === 'URL' && imgFile) {
       // Guardar la URL del archivo en el registro
-      popup.url_popup = `${baseUrl}/documentos/popups/${imgFile.filename}`;
-      popup.contenido_popup = null; // Elimina el contenido binario
+      popup.url_documento = `${baseUrl}/documentos/popups/${imgFile.filename}`;
+      popup.contenido_documento = null; // Elimina el contenido binario
     } else if (flag_adjunto === 'BIN' && imgFile) {
       // Almacena el nombre del archivo, si es necesario
-      popup.url_popup = imgFile.originalname;
-      popup.contenido_popup = fs.readFileSync(imgFile.path);
+      popup.url_documento = imgFile.originalname;
+      popup.contenido_documento = fs.readFileSync(imgFile.path);
     }
 
     // Actualizar el campo BLOB si se proporciona un nuevo archivo

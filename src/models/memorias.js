@@ -16,11 +16,11 @@ export const Memoria = sequelize.define('memorias', {
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },    
-    url_memoria: {
+    url_documento: {
         type: DataTypes.STRING,
     },
     // Campo BLOB para el PDF
-    contenido_memoria: {
+    contenido_documento: {
         type: DataTypes.BLOB('long'),
     },
     creado_por: {
