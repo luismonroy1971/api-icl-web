@@ -1,9 +1,12 @@
 import { Sequelize } from 'sequelize';
 import { Resolucion } from '../models/Resolucion.js';
+import fs from 'fs/promises';
 import path from 'path';
-import fs from 'fs';
+import slugify from 'slugify';
+import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 const baseUrl = process.env.BASE_URL; 
+
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -105,120 +108,141 @@ export const leerResolucion = async (req, res) =>{
 
 }
 
+
 export const crearResolucion = async (req, res) => {
-  const {
-      periodo_resolucion,
-      id_area,
-      id_tipo_documento,
-      numero_resolucion,
-      adicional_resolucion,
-      sumilla_resolucion,
-      abreviacion_area,
-      creado_por,
-      creado_fecha,
-      flag_adjunto, // Nuevo campo
-  } = req.body;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        creado_por,
+        creado_fecha,
+        flag_adjunto
+    } = req.body;
 
-  try {
-      const nuevaResolucion = await Resolucion.create({
-          periodo_resolucion,
-          id_area,
-          id_tipo_documento,
-          numero_resolucion,
-          adicional_resolucion,
-          sumilla_resolucion,
-          abreviacion_area,
-          creado_por,
-          creado_fecha,
-          flag_adjunto, // Nuevo campo
-      });
+    const pdfFile = req.file;
 
-      if (flag_adjunto === 'BIN' && req.file) {
-          const filePath = req.file.path;
-          nuevaResolucion.contenido_documento_resolucion = fs.readFileSync(filePath);
-          nuevaResolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
-          fs.unlinkSync(filePath); // Elimina el archivo temporal
-      } else if (flag_adjunto === 'URL' && req.file) {
-          const fileName = `${req.file.originalname}`;
-          const url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${fileName}`;
+    try {
+        if (!pdfFile) {
+            return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });
+        }
 
-          // Mueve el archivo a la carpeta documentos/directivas
-          fs.renameSync(req.file.path, `documentos/resoluciones/${fileName}`);
+        if (pdfFile.size > 10000000) { // 10 MB en bytes
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
 
-          nuevaResolucion.url_documento_resolucion = url_documento_resolucion; // Asigna la URL
-      }
+        if (!pdfFile.mimetype.includes("pdf")) {
+            return res.status(400).json({ message: 'Tipo de archivo no permitido. Solo se aceptan archivos PDF.' });
+        }
 
-      await nuevaResolucion.save();
+        if (flag_adjunto !== 'URL' && flag_adjunto !== 'BIN') {
+            return res.status(400).json({ mensaje: 'El valor de flag_adjunto no es válido' });
+        }
 
-      res.json(nuevaResolucion);
-  } catch (error) {
-      return res.status(500).json({ mensaje: 'Error al crear resolución', error: error.message });
-  }
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'resoluciones');
+        const fileNameParts = pdfFile.originalname.split('.');
+        const fileExtension = fileNameParts.pop();
+        const baseFileName = fileNameParts.join('.');
+        const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+        const filePath = path.join(documentosDir, safeFileName);
+
+        let url_documento_resolucion = null;
+        let contenido_documento_resolucion = null;
+
+        if (flag_adjunto === 'URL') {
+            await fs.mkdir(documentosDir, { recursive: true });
+            await fs.copyFile(pdfFile.path, filePath);
+            url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
+        } else if (flag_adjunto === 'BIN') {
+            contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+        }
+
+        const nuevaResolucion = await Resolucion.create({
+            periodo_resolucion,
+            id_area,
+            id_tipo_documento,
+            numero_resolucion,
+            adicional_resolucion,
+            sumilla_resolucion,
+            abreviacion_area,
+            creado_por,
+            creado_fecha,
+            flag_adjunto,
+            url_documento_resolucion,
+            contenido_documento_resolucion
+        });
+
+        return res.status(201).json({ mensaje: 'Resolución creada con éxito', nuevaResolucion });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al crear resolución', error: error.message });
+    }
 };
 
 
-
 export const actualizarResolucion = async (req, res) => {
-  const { id } = req.params;
-  const {
-      periodo_resolucion,
-      id_area,
-      id_tipo_documento,
-      numero_resolucion,
-      adicional_resolucion,
-      sumilla_resolucion,
-      abreviacion_area,
-      modificado_por,
-      modificado_fecha,
-      activo,
-      flag_adjunto, // Nuevo campo
-  } = req.body;
+    const { id } = req.params;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        modificado_por,
+        modificado_fecha,
+        activo,
+        flag_adjunto
+    } = req.body;
 
-  try {
-      const resolucion = await Resolucion.findByPk(id);
-      if (!resolucion) {
-          return res.status(404).json({ mensaje: 'Resolución no encontrada' });
-      }
+    try {
+        const resolucion = await Resolucion.findByPk(id);
+        if (!resolucion) {
+            return res.status(404).json({ mensaje: 'Resolución no encontrada' });
+        }
 
-      resolucion.periodo_resolucion = periodo_resolucion;
-      resolucion.id_area = id_area;
-      resolucion.id_tipo_documento = id_tipo_documento;
-      resolucion.numero_resolucion = numero_resolucion;
-      resolucion.adicional_resolucion = adicional_resolucion;
-      resolucion.sumilla_resolucion = sumilla_resolucion;
-      resolucion.abreviacion_area = abreviacion_area;
-      resolucion.modificado_por = modificado_por;
-      resolucion.modificado_fecha = modificado_fecha;
-      resolucion.autorizado = '0';
-      resolucion.autorizado_por = null;
-      resolucion.autorizado_fecha = null;
-      resolucion.activo = activo;
+        resolucion.periodo_resolucion = periodo_resolucion;
+        resolucion.id_area = id_area;
+        resolucion.id_tipo_documento = id_tipo_documento;
+        resolucion.numero_resolucion = numero_resolucion;
+        resolucion.adicional_resolucion = adicional_resolucion;
+        resolucion.sumilla_resolucion = sumilla_resolucion;
+        resolucion.abreviacion_area = abreviacion_area;
+        resolucion.modificado_por = modificado_por;
+        resolucion.modificado_fecha = modificado_fecha;
+        resolucion.activo = activo;
 
-      if (flag_adjunto === 'BIN') {
-          if (req.file) {
-              const filePath = req.file.path;
-              resolucion.contenido_documento_resolucion = fs.readFileSync(filePath);
-              resolucion.url_documento_resolucion = null; // Establece url_documento_resolucion en null
-              fs.unlinkSync(filePath); // Elimina el archivo temporal
-          }
-      } else if (flag_adjunto === 'URL') {
-          if (req.file) {
-              const fileName = `${req.file.originalname}`;
-              const url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${fileName}`;
+        if (req.file) {
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'resoluciones');
+            const fileNameParts = req.file.originalname.split('.');
+            const fileExtension = fileNameParts.pop();
+            const baseFileName = fileNameParts.join('.');
+            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+            const filePath = path.join(documentosDir, safeFileName);
 
-              // Mueve el archivo a la carpeta documentos/resoluciones
-              fs.renameSync(req.file.path, `documentos/resoluciones/${fileName}`);
+            if (flag_adjunto === 'URL') {
+                await fs.mkdir(documentosDir, { recursive: true });
+                await fs.copyFile(req.file.path, filePath);
+                resolucion.url_documento_resolucion = `${baseUrl}/documentos/resoluciones/${safeFileName}`;
+                resolucion.contenido_documento_resolucion = null;
+            } else if (flag_adjunto === 'BIN') {
+                resolucion.url_documento_resolucion = null;
+                resolucion.contenido_documento_resolucion = await fs.readFile(req.file.path);
+            }
+        }
 
-              resolucion.url_documento_resolucion = url_documento_resolucion; // Asigna la URL
-              resolucion.contenido_documento_resolucion = null; // Establece el contenido en formato binario en null
-          }
-      }
-
-      await resolucion.save();
-      res.json({ mensaje: 'Resolución actualizada con éxito' });
-  } catch (error) {
-      return res.status(500).json({ mensaje: 'Error al modificar resolución', error: error.message });
-  }
+        await resolucion.save();
+        return res.json({ mensaje: 'Resolución actualizada con éxito' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al modificar resolución', error: error.message });
+    }
 };
 
 

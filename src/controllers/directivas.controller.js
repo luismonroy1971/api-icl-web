@@ -1,7 +1,9 @@
 import { Sequelize } from 'sequelize';
 import {Directiva} from '../models/Directiva.js';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
 import dotenv from 'dotenv';
 const baseUrl = process.env.BASE_URL; 
 import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
@@ -106,127 +108,128 @@ export const leerDirectiva = async (req, res) =>{
 
 
 export const crearDirectiva = async (req, res) => {
-  const {
-      periodo_resolucion,
-      id_area,
-      id_tipo_documento,
-      numero_resolucion,
-      adicional_resolucion,
-      sumilla_resolucion,
-      abreviacion_area,
-      creado_por,
-      creado_fecha,
-      flag_adjunto,
-  } = req.body;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        creado_por,
+        creado_fecha,
+        flag_adjunto
+    } = req.body;
 
-  const pdfFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file;
 
-  let url_documento_resolucion = null; // Define url_documento_resolucion antes de usarlo
-  let contenido_documento_resolucion = null;
+    try {
+        let url_documento_resolucion = null;
+        let contenido_documento_resolucion = null;
 
-  console.log(pdfFile);
+        if (pdfFile && pdfFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
 
-  try {
-      if (flag_adjunto === 'BIN') {
-          if (pdfFile) {
-              contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
-          }
-      } else if (flag_adjunto === 'URL') {
-          if (pdfFile) {
-              const fileName = `${pdfFile.originalname}`;
-              url_documento_resolucion = `${baseUrl}/documentos/directivas/${fileName}`;
+        if (flag_adjunto === 'URL' && pdfFile) {
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'directivas');
+            const originalFileName = pdfFile.originalname;
+            const filePath = path.join(documentosDir, originalFileName);
 
-              // Mueve el archivo a la carpeta documentos/directivas
-              fs.renameSync(pdfFile.path, `documentos/directivas/${fileName}`);
-          }
-      }
+            await fs.mkdir(documentosDir, { recursive: true });
+            await fs.copyFile(pdfFile.path, filePath);
+            url_documento_resolucion = `${baseUrl}/documentos/directivas/${originalFileName}`;
+        } else if (flag_adjunto === 'BIN' && pdfFile) {
+            contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+        }
 
-      const nuevaDirectiva = await Directiva.create({
-          periodo_resolucion,
-          id_area,
-          id_tipo_documento,
-          numero_resolucion,
-          adicional_resolucion,
-          sumilla_resolucion,
-          url_documento_resolucion, // Asigna url_documento_resolucion aquí
-          contenido_documento_resolucion, // Asigna contenido_documento_resolucion aquí
-          abreviacion_area,
-          creado_por,
-          creado_fecha,
-          flag_adjunto
-      });
+        const nuevaDirectiva = await Directiva.create({
+            periodo_resolucion,
+            id_area,
+            id_tipo_documento,
+            numero_resolucion,
+            adicional_resolucion,
+            sumilla_resolucion,
+            abreviacion_area,
+            creado_por,
+            creado_fecha,
+            flag_adjunto,
+            url_documento_resolucion,
+            contenido_documento_resolucion
+        });
 
-      return res.status(200).json({ mensaje: 'Directiva creada con éxito' });
-  } catch (error) {
-      return res.status(500).json({ mensaje: 'Error al crear directiva', error: error.message });
-  }
+        return res.status(201).json({ mensaje: 'Directiva creada con éxito', nuevaDirectiva });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al crear directiva', error: error.message });
+    }
 };
 
 
-
-
 export const actualizarDirectiva = async (req, res) => {
-  const { id } = req.params;
-  const {
-      periodo_resolucion,
-      id_area,
-      id_tipo_documento,
-      numero_resolucion,
-      adicional_resolucion,
-      sumilla_resolucion,
-      abreviacion_area,
-      modificado_por,
-      modificado_fecha,
-      activo,
-      flag_adjunto,
-  } = req.body;
+    const { id } = req.params;
+    const {
+        periodo_resolucion,
+        id_area,
+        id_tipo_documento,
+        numero_resolucion,
+        adicional_resolucion,
+        sumilla_resolucion,
+        abreviacion_area,
+        modificado_por,
+        modificado_fecha,
+        activo,
+        flag_adjunto
+    } = req.body;
 
-  const pdfFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file;
 
-  try {
-      const directiva = await Directiva.findByPk(id);
+    try {
+        const directiva = await Directiva.findByPk(id);
 
-      if (!directiva) {
-          return res.status(404).json({ mensaje: 'Directiva no encontrada' });
-      }
+        if (!directiva) {
+            return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+        }
 
-      directiva.periodo_resolucion = periodo_resolucion;
-      directiva.id_area = id_area;
-      directiva.id_tipo_documento = id_tipo_documento;
-      directiva.numero_resolucion = numero_resolucion;
-      directiva.adicional_resolucion = adicional_resolucion;
-      directiva.sumilla_resolucion = sumilla_resolucion;
-      directiva.abreviacion_area = abreviacion_area;
-      directiva.modificado_por = modificado_por;
-      directiva.modificado_fecha = modificado_fecha;
-      directiva.autorizado = '0';
-      directiva.autorizado_por = null;
-      directiva.autorizado_fecha = null;
-      directiva.activo = activo;
+        if (pdfFile && pdfFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
 
-      if (flag_adjunto === 'BIN') {
-          if (pdfFile) {
-              directiva.url_documento_resolucion = null; // Elimina la URL del documento
-              directiva.contenido_documento_resolucion = fs.readFileSync(pdfFile.path);
-          }
-      } else if (flag_adjunto === 'URL') {
-          if (pdfFile) {
-              directiva.url_documento_resolucion = `${baseUrl}/documentos/directivas/${pdfFile.originalname}`;
-              directiva.contenido_documento_resolucion = null; // Elimina el contenido binario
-              fs.renameSync(pdfFile.path, `documentos/directivas/${pdfFile.originalname}`); // Mueve el archivo al directorio deseado
-          }
-      }
+        directiva.periodo_resolucion = periodo_resolucion;
+        directiva.id_area = id_area;
+        directiva.id_tipo_documento = id_tipo_documento;
+        directiva.numero_resolucion = numero_resolucion;
+        directiva.adicional_resolucion = adicional_resolucion;
+        directiva.sumilla_resolucion = sumilla_resolucion;
+        directiva.abreviacion_area = abreviacion_area;
+        directiva.modificado_por = modificado_por;
+        directiva.modificado_fecha = modificado_fecha;
+        directiva.activo = activo;
 
-      // Actualiza el campo BLOB si se proporciona un nuevo archivo
-      if (pdfFile) {
-          fs.unlinkSync(pdfFile.path);
-      }
+        if (pdfFile) {
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'directivas');
+            const originalFileName = pdfFile.originalname;
+            const filePath = path.join(documentosDir, originalFileName);
 
-      await directiva.save();
-      res.json({ mensaje: 'Directiva actualizada con éxito' });
-  } catch (error) {
-      return res.status(500).json({ mensaje: 'Error al modificar directiva', error: error.message });
-  }
+            if (flag_adjunto === 'URL') {
+                await fs.mkdir(documentosDir, { recursive: true });
+                await fs.copyFile(pdfFile.path, filePath);
+                directiva.url_documento_resolucion = `${baseUrl}/documentos/directivas/${originalFileName}`;
+                directiva.contenido_documento_resolucion = null;
+            } else if (flag_adjunto === 'BIN') {
+                directiva.url_documento_resolucion = null;
+                directiva.contenido_documento_resolucion = await fs.readFile(pdfFile.path);
+            }
+        }
+
+        await directiva.save();
+        res.status(200).json({ mensaje: 'Directiva actualizada con éxito' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al modificar directiva', error: error.message });
+    }
 };
 
 

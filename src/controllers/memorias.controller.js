@@ -1,8 +1,10 @@
 import { Sequelize } from 'sequelize';
 import {Memoria} from '../models/Memorias.js';
-import fs from 'fs';
-import slugify from 'slugify';
+import fs from 'fs/promises';
 import path from 'path';
+import slugify from 'slugify';
+import { fileURLToPath } from 'url';
+
 import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
 import dotenv from 'dotenv';
 const baseUrl = process.env.BASE_URL; 
@@ -109,8 +111,35 @@ export const crearMemoria = async (req, res) => {
             return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });
         }
 
+        if (pdfFile.size > 10000000) { // 10 MB en bytes
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
+
+        if (!pdfFile.mimetype.includes("pdf")) {
+            return res.status(400).json({ message: 'Tipo de archivo no permitido. Solo se aceptan archivos PDF.' });
+        }
+
         if (flag_adjunto !== 'URL' && flag_adjunto !== 'BIN') {
             return res.status(400).json({ mensaje: 'El valor de flag_adjunto no es válido' });
+        }
+
+        const __dirname = path.dirname(fileURLToPath(import.meta.url));
+        const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'memorias');
+        const fileNameParts = pdfFile.originalname.split('.');
+        const fileExtension = fileNameParts.pop();
+        const baseFileName = fileNameParts.join('.');
+        const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+        const filePath = path.join(documentosDir, safeFileName);
+
+        let url_memoria = null;
+        let contenido_memoria = null;
+
+        if (flag_adjunto === 'URL') {
+            await fs.mkdir(documentosDir, { recursive: true });
+            await fs.copyFile(pdfFile.path, filePath);
+            url_memoria = `${baseUrl}/documentos/memorias/${safeFileName}`;
+        } else if (flag_adjunto === 'BIN') {
+            contenido_memoria = await fs.readFile(pdfFile.path);
         }
 
         const nuevaMemoria = await Memoria.create({
@@ -118,37 +147,17 @@ export const crearMemoria = async (req, res) => {
             descripcion_memoria,
             creado_por,
             creado_fecha,
-            flag_adjunto
+            flag_adjunto,
+            url_memoria,
+            contenido_memoria
         });
 
-        if (flag_adjunto === 'URL') {
-            const originalFileName = req.file.originalname;
-            const fileNameWithoutExtension = originalFileName.split('.').slice(0, -1).join('.'); // Elimina la extensión del archivo
-            const safeFileName = slugify(fileNameWithoutExtension, { lower: true }); // Convierte el nombre a una versión segura
-
-            const fileExtension = originalFileName.split('.').pop(); // Obtiene la extensión del archivo
-            const fileName = `${safeFileName}.${fileExtension}`;
-            const url_memoria = `${baseUrl}/documentos/memorias/${fileName}`;
-
-            // Mueve el archivo a la carpeta documentos/memorias
-            fs.renameSync(req.file.path, `documentos/memorias/${fileName}`);
-
-            nuevaMemoria.url_memoria = url_memoria; // Asigna la URL
-            nuevaMemoria.contenido_memoria = null; // Establece el contenido en formato binario en null
-        } else if (flag_adjunto === 'BIN') {
-            const filePath = req.file.path;
-            nuevaMemoria.contenido_memoria = fs.readFileSync(filePath);
-            nuevaMemoria.url_memoria = null; // Establece url_documento_resolucion en null
-            fs.unlinkSync(filePath); // Elimina el archivo temporal
-        }
-        await nuevaMemoria.save();
-
-        return res.status(200).json(nuevaMemoria);
+        return res.status(201).json({ mensaje: 'Memoria creada con éxito', nuevaMemoria });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ mensaje: 'Error al crear memoria', error: error.message });
     }
 };
-
 
 
 export const actualizarMemoria = async (req, res) => {
@@ -159,10 +168,10 @@ export const actualizarMemoria = async (req, res) => {
         modificado_por,
         modificado_fecha,
         activo,
-        flag_adjunto, // Nuevo campo
+        flag_adjunto
     } = req.body;
 
-    const pdfFile = req.file; // Acceder al archivo cargado
+    const pdfFile = req.file;
 
     try {
         const memoria = await Memoria.findByPk(id);
@@ -171,42 +180,44 @@ export const actualizarMemoria = async (req, res) => {
             return res.status(404).json({ mensaje: 'Memoria no encontrada' });
         }
 
+        if (pdfFile && pdfFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
+
         memoria.periodo_memoria = periodo_memoria;
         memoria.descripcion_memoria = descripcion_memoria;
         memoria.modificado_por = modificado_por;
         memoria.modificado_fecha = modificado_fecha;
-        memoria.autorizado = '0';
-        memoria.autorizado_por = null;
-        memoria.autorizado_fecha = null;
         memoria.activo = activo;
 
-        if (flag_adjunto === 'URL' && pdfFile) {
-          const fileName = `${req.file.originalname}`;
-          const url_memoria= `${baseUrl}/documentos/memorias/${fileName}`;
-
-          // Mueve el archivo a la carpeta documentos/memoriaes
-          fs.renameSync(req.file.path, `documentos/memorias/${fileName}`);
-
-          memoria.url_memoria = url_memoria; // Asigna la URL
-          memoria.contenido_memoria = null; // Establece el contenido en formato binario en null
-        } else if (flag_adjunto === 'BIN' && pdfFile) {
-          const filePath = req.file.path;
-          memoria.contenido_memoria = fs.readFileSync(filePath);
-          memoria.url_memoria = null; // Establece url_documento_resolucion en null
-          fs.unlinkSync(filePath); // Elimina el archivo temporal
-        }
-
-        // Actualizar el campo BLOB si se proporciona un nuevo archivo
         if (pdfFile) {
-            fs.unlinkSync(pdfFile.path);
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'memorias');
+            const fileNameParts = pdfFile.originalname.split('.');
+            const fileExtension = fileNameParts.pop();
+            const baseFileName = fileNameParts.join('.');
+            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+            const filePath = path.join(documentosDir, safeFileName);
+
+            if (flag_adjunto === 'URL') {
+                await fs.mkdir(documentosDir, { recursive: true });
+                await fs.copyFile(pdfFile.path, filePath);
+                memoria.url_memoria = `${baseUrl}/documentos/memorias/${safeFileName}`;
+                memoria.contenido_memoria = null;
+            } else if (flag_adjunto === 'BIN') {
+                memoria.url_memoria = null;
+                memoria.contenido_memoria = await fs.readFile(pdfFile.path);
+            }
         }
 
         await memoria.save();
         return res.status(200).json({ mensaje: 'Memoria actualizada con éxito' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ mensaje: 'Error al modificar memoria', error: error.message });
     }
 };
+
 
 export const autorizarMemoria = async (req, res) =>{
   const { id } = req.params;
