@@ -1,6 +1,9 @@
 import { Sequelize } from 'sequelize';
 import {Rendicion} from '../models/Rendicionescuenta.js';
+import fs from 'fs/promises';
 import path from 'path';
+import slugify from 'slugify';
+import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid'; // Para generar un nombre de archivo único
 import dotenv from 'dotenv';
 const baseUrl = process.env.BASE_URL; 
@@ -91,7 +94,6 @@ export const leerRendicion = async (req, res) =>{
 
 }
 
-import fs from 'fs';
 
 export const crearRendicion = async (req, res) => {
     const {
@@ -102,7 +104,7 @@ export const crearRendicion = async (req, res) => {
         creado_fecha,
     } = req.body;
 
-    const rendicionFile = req.file; // Acceder al archivo cargado
+    const rendicionFile = req.file;
 
     try {
         const nuevaRendicion = await Rendicion.create({
@@ -113,47 +115,47 @@ export const crearRendicion = async (req, res) => {
             flag_adjunto
         });
 
-        if (flag_adjunto === 'BIN' && rendicionFile) {
-          const filePath = req.file.path;
-          nuevaRendicion.contenido_rendicion = fs.readFileSync(filePath);
-          nuevaRendicion.url_rendicion = null; // Establece url_documento_resolucion en null
-          fs.unlinkSync(filePath); // Elimina el archivo temporal
-        } else if (flag_adjunto === 'URL' && rendicionFile) {
-          const fileName = `${req.file.originalname}`;
-          const url_rendicion= `${baseUrl}/documentos/rendiciones/${fileName}`;
-
-          // Mueve el archivo a la carpeta documentos/rendiciones
-          fs.renameSync(req.file.path, `documentos/rendiciones/${fileName}`);
-
-          nuevaRendicion.url_rendicion = url_rendicion; // Asigna la URL
-          nuevaRendicion.contenido_rendicion = null; // Establece el contenido en formato binario en null
-        }
-
-        // Elimina el archivo temporal creado por Multer
         if (rendicionFile) {
-            fs.unlinkSync(rendicionFile.path);
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'rendiciones');
+            const fileNameParts = rendicionFile.originalname.split('.');
+            const fileExtension = fileNameParts.pop();
+            const baseFileName = fileNameParts.join('.');
+            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+            const filePath = path.join(documentosDir, safeFileName);
+
+            if (flag_adjunto === 'URL') {
+                await fs.mkdir(documentosDir, { recursive: true });
+                await fs.copyFile(rendicionFile.path, filePath);
+                nuevaRendicion.url_rendicion = `${baseUrl}/documentos/rendiciones/${safeFileName}`;
+                nuevaRendicion.contenido_rendicion = null;
+            } else if (flag_adjunto === 'BIN') {
+                nuevaRendicion.url_rendicion = null;
+                nuevaRendicion.contenido_rendicion = await fs.readFile(rendicionFile.path);
+            }
         }
 
         await nuevaRendicion.save();
         res.json(nuevaRendicion);
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ mensaje: error.message });
     }
 };
+
 
 export const actualizarRendicion = async (req, res) => {
     const { id } = req.params;
     const {
         descripcion_rendicion,
         periodo_rendicion,
-        url_rendicion,
         modificado_por,
         modificado_fecha,
         activo,
-        flag_adjunto, // Nuevo campo
+        flag_adjunto
     } = req.body;
 
-    const rendicionFile = req.file; // Acceder al archivo cargado
+    const rendicionFile = req.file;
 
     try {
         const rendicion = await Rendicion.findByPk(id);
@@ -162,43 +164,44 @@ export const actualizarRendicion = async (req, res) => {
             return res.status(404).json({ mensaje: 'Rendición no encontrada' });
         }
 
+        if (rendicionFile && rendicionFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
+
         rendicion.descripcion_rendicion = descripcion_rendicion;
         rendicion.periodo_rendicion = periodo_rendicion;
-
-        if (flag_adjunto === 'BIN' && rendicionFile) {
-          const filePath = req.file.path;
-          rendicion.contenido_rendicion = fs.readFileSync(filePath);
-          rendicion.url_rendicion = null; // Establece url_documento_resolucion en null
-          fs.unlinkSync(filePath); // Elimina el archivo temporal
-        } else if (flag_adjunto === 'URL' && rendicionFile) {
-          const fileName = `${req.file.originalname}`;
-          const url_rendicion= `${baseUrl}/documentos/rendiciones/${fileName}`;
-
-          // Mueve el archivo a la carpeta documentos/rendiciones
-          fs.renameSync(req.file.path, `documentos/rendiciones/${fileName}`);
-
-          rendicion.url_rendicion = url_rendicion; // Asigna la URL
-          rendicion.contenido_rendicion = null; // Establece el contenido en formato binario en null
-        }
-
-        // Actualizar el campo BLOB si se proporciona un nuevo archivo
-        if (rendicionFile) {
-            fs.unlinkSync(rendicionFile.path);
-        }
-
         rendicion.modificado_por = modificado_por;
         rendicion.modificado_fecha = modificado_fecha;
-        rendicion.autorizado = '0';
-        rendicion.autorizado_por = null;
-        rendicion.autorizado_fecha = null;
         rendicion.activo = activo;
 
+        if (rendicionFile) {
+            const __dirname = path.dirname(fileURLToPath(import.meta.url));
+            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'rendiciones');
+            const fileNameParts = rendicionFile.originalname.split('.');
+            const fileExtension = fileNameParts.pop();
+            const baseFileName = fileNameParts.join('.');
+            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+            const filePath = path.join(documentosDir, safeFileName);
+
+            if (flag_adjunto === 'URL') {
+                await fs.mkdir(documentosDir, { recursive: true });
+                await fs.copyFile(rendicionFile.path, filePath);
+                rendicion.url_rendicion = `${baseUrl}/documentos/rendiciones/${safeFileName}`;
+                rendicion.contenido_rendicion = null;
+            } else if (flag_adjunto === 'BIN') {
+                rendicion.url_rendicion = null;
+                rendicion.contenido_rendicion = await fs.readFile(rendicionFile.path);
+            }
+        }
+
         await rendicion.save();
-         res.json({ mensaje: 'Rendición actualizada con éxito' });
+        res.json({ mensaje: 'Rendición actualizada con éxito' });
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ mensaje: error.message });
     }
 };
+
 
 export const autorizarRendicion = async (req, res) =>{
   const { id } = req.params;
