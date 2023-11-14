@@ -1,4 +1,5 @@
 import {Area} from '../models/Area.js';
+import { Op } from 'sequelize';
 
 export const leerAreas = async (req, res) => {
     try {
@@ -32,42 +33,85 @@ export const leerArea = async (req, res) =>{
 
 }
 
-export const crearArea = async (req, res) =>{
-    const {descripcion_area, abreviacion_area} = req.body;
-    console.log(descripcion_area, abreviacion_area)
-    try {
-        const nuevaArea = await Area.create({
-            descripcion_area,
-            abreviacion_area,
-        })
-        res.json(nuevaArea);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
-}
+export const crearArea = async (req, res) => {
+  const { descripcion_area, abreviacion_area } = req.body;
+
+  try {
+      // Verificar si ya existe un área con la misma descripción o abreviación
+      const areaExistente = await Area.findOne({
+          where: {
+              [Op.or]: [
+                  { descripcion_area: descripcion_area },
+                  { abreviacion_area: abreviacion_area }
+              ]
+          }
+      });
+
+      // Si ya existe, enviar un mensaje de error
+      if (areaExistente) {
+          return res.status(400).json({ mensaje: 'La descripción o abreviación del área ya está registrada.' });
+      }
+
+      // Si no existe, crear el nuevo área
+      const nuevaArea = await Area.create({
+          descripcion_area,
+          abreviacion_area,
+      });
+
+      // Enviar mensaje de éxito
+      res.json({ mensaje: 'Área creada correctamente', nuevaArea });
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
+};
+
+
 
 export const actualizarArea = async (req, res) => {
-    const { id } = req.params;
-    const { descripcion_area, abreviacion_area, activo } = req.body;
+  const { id } = req.params;
+  const { descripcion_area, abreviacion_area, activo } = req.body;
 
-    try {
-        const area = await Area.findByPk(id);
+  try {
+      // Buscar el área por su ID
+      const area = await Area.findByPk(id);
 
-        if (!area) {
-            return res.status(404).json({ mensaje: 'Área no encontrada' });
-        }
+      if (!area) {
+          return res.status(404).json({ mensaje: 'Área no encontrada' });
+      }
 
-        area.descripcion_area = descripcion_area;
-        area.abreviacion_area = abreviacion_area;
-        area.activo = activo;
+      // Verificar si ya existe otro área con la misma descripción o abreviación
+      const areaExistente = await Area.findOne({
+          where: {
+              [Op.and]: [
+                  { [Op.not]: { id: area.id } }, // Excluir el área actual
+                  {
+                      [Op.or]: [
+                          { descripcion_area: descripcion_area },
+                          { abreviacion_area: abreviacion_area }
+                      ]
+                  }
+              ]
+          }
+      });
 
-        await area.save();
+      // Si se encuentra un área existente, enviar un mensaje de error
+      if (areaExistente) {
+          return res.status(400).json({ mensaje: 'La descripción o abreviación del área ya está registrada.' });
+      }
 
-        return res.json({ mensaje: 'Área actualizada con éxito' });
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
-    }
-}
+      // Actualizar el área si no hay conflictos
+      area.descripcion_area = descripcion_area;
+      area.abreviacion_area = abreviacion_area;
+      area.activo = activo;
+
+      await area.save();
+
+      return res.json({ mensaje: 'Área actualizada con éxito' });
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
+};
+
 
 
 export const eliminarArea = async (req, res) =>{

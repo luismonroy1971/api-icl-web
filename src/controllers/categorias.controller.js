@@ -1,4 +1,5 @@
 import {Categoria} from '../models/Categoria.js';
+import { Op } from 'sequelize';
 
 export const leerCategorias = async (req, res) => {
   try {
@@ -32,39 +33,74 @@ export const leerCategoria = async (req, res) =>{
 
 }
 
-export const crearCategoria = async (req, res) =>{
-    const {descripcion_categoria } = req.body;
-    try {
-        const nuevaCategoria = await Categoria.create({
-            descripcion_categoria
-        })
-        res.json(nuevaCategoria);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
-}
+export const crearCategoria = async (req, res) => {
+  const { descripcion_categoria } = req.body;
+
+  try {
+      // Verificar si ya existe una categoría con la misma descripción
+      const categoriaExistente = await Categoria.findOne({
+          where: {
+              descripcion_categoria: descripcion_categoria
+          }
+      });
+
+      // Si ya existe, enviar un mensaje de error
+      if (categoriaExistente) {
+          return res.status(400).json({ mensaje: 'La descripción de la categoría ya está registrada.' });
+      }
+
+      // Si no existe, crear la nueva categoría
+      const nuevaCategoria = await Categoria.create({
+          descripcion_categoria
+      });
+
+      // Enviar mensaje de éxito
+      res.json({ mensaje: 'Categoría creada correctamente', nuevaCategoria });
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
+};
+
 
 export const actualizarCategoria = async (req, res) => {
-    const { id } = req.params;
-    const { descripcion_categoria, activo } = req.body;
+  const { id } = req.params;
+  const { descripcion_categoria, activo } = req.body;
 
-    try {
-        const categoria = await Categoria.findByPk(id);
+  try {
+      // Buscar la categoría por su ID
+      const categoria = await Categoria.findByPk(id);
 
-        if (!categoria) {
-            return res.status(404).json({ mensaje: 'Categoría no encontrada' });
-        }
+      if (!categoria) {
+          return res.status(404).json({ mensaje: 'Categoría no encontrada' });
+      }
 
-        categoria.descripcion_categoria = descripcion_categoria;
-        categoria.activo = activo;
+      // Verificar si ya existe otra categoría con la misma descripción
+      const categoriaExistente = await Categoria.findOne({
+          where: {
+              [Op.and]: [
+                  { [Op.not]: { id: categoria.id } }, // Excluir la categoría actual
+                  { descripcion_categoria: descripcion_categoria }
+              ]
+          }
+      });
 
-        await categoria.save();
+      // Si se encuentra otra categoría existente, enviar un mensaje de error
+      if (categoriaExistente) {
+          return res.status(400).json({ mensaje: 'La descripción de la categoría ya está registrada.' });
+      }
 
-        return res.json({ mensaje: 'Categoría actualizada con éxito' });
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message });
-    }
-}
+      // Actualizar la categoría si no hay conflictos
+      categoria.descripcion_categoria = descripcion_categoria;
+      categoria.activo = activo;
+
+      await categoria.save();
+
+      return res.json({ mensaje: 'Categoría actualizada con éxito' });
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
+};
+
 
 
 export const eliminarCategoria = async (req, res) =>{
