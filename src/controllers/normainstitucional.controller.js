@@ -74,111 +74,139 @@ export const leerNorma = async (req, res) =>{
 
 
 export const crearNorma = async (req, res) => {
-    const {
-        tipo_norma,
-        denominacion_norma,
-        flag_adjunto,
-        creado_por,
-        creado_fecha
-    } = req.body;
+  const {
+      tipo_norma,
+      denominacion_norma,
+      flag_adjunto,
+      creado_por,
+      creado_fecha
+  } = req.body;
 
-    const pdfFile = req.file;
+  const pdfFile = req.file;
 
-    try {
-        const nuevaNorma = await Norma.create({
-            tipo_norma,
-            denominacion_norma,
-            creado_por,
-            creado_fecha,
-            flag_adjunto
-        });
+  try {
+      // Crear una instancia de Norma con las propiedades proporcionadas
+      const nuevaNorma = await Norma.create({
+          tipo_norma,
+          denominacion_norma,
+          creado_por,
+          creado_fecha,
+          flag_adjunto
+      });
 
-        if (pdfFile) {
-            const __dirname = path.dirname(fileURLToPath(import.meta.url));
-            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'normas');
-            const fileNameParts = pdfFile.originalname.split('.');
-            const fileExtension = fileNameParts.pop();
-            const baseFileName = fileNameParts.join('.');
-            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
-            const filePath = path.join(documentosDir, safeFileName);
+      // Verificar si se proporcionó un archivo adjunto
+      if (pdfFile) {
+          // Obtener información del archivo y definir rutas
+          const __dirname = path.dirname(fileURLToPath(import.meta.url));
+          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'normas');
+          const fileNameParts = pdfFile.originalname.split('.');
+          const fileExtension = fileNameParts.pop();
+          const baseFileName = fileNameParts.join('.');
+          const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+          const filePath = path.join(documentosDir, safeFileName);
 
-            if (flag_adjunto === 'URL') {
-                await fs.mkdir(documentosDir, { recursive: true });
-                await fs.copyFile(pdfFile.path, filePath);
-                nuevaNorma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
-                nuevaNorma.contenido_norma = null;
-            } else if (flag_adjunto === 'BIN') {
-                nuevaNorma.contenido_norma = await fs.readFile(pdfFile.path);
-                nuevaNorma.url_norma = null;
-            }
-        }
+          // Manejar la lógica según el tipo de adjunto (URL o BIN)
+          if (flag_adjunto === 'URL') {
+              // Crear el directorio si no existe y copiar el archivo
+              await fs.mkdir(documentosDir, { recursive: true });
+              await fs.copyFile(pdfFile.path, filePath);
+              
+              // Actualizar las propiedades de la Norma
+              nuevaNorma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
+              nuevaNorma.contenido_norma = null;
+          } else if (flag_adjunto === 'BIN') {
+              // Leer el contenido del archivo
+              nuevaNorma.contenido_norma = await fs.readFile(pdfFile.path);
+              nuevaNorma.url_norma = null;
+          }
+      }
 
-        await nuevaNorma.save();
-        return res.status(200).json(nuevaNorma);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear norma', error: error.message });
-    }
+      // Guardar los cambios en la base de datos
+      await nuevaNorma.save();
+
+      // Responder con un mensaje de éxito
+      return res.status(201).json({ mensaje: 'Grabación satisfactoria', nuevaNorma });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al crear norma', error: error.message });
+  }
 };
 
 
 export const actualizarNorma = async (req, res) => {
-    const { id } = req.params;
-    const {
-        tipo_norma,
-        denominacion_norma,
-        flag_adjunto,
-        modificado_por,
-        modificado_fecha,
-        activo
-    } = req.body;
+  const { id } = req.params;
+  const {
+      tipo_norma,
+      denominacion_norma,
+      flag_adjunto,
+      modificado_por,
+      modificado_fecha,
+      activo
+  } = req.body;
 
-    const pdfFile = req.file;
+  const pdfFile = req.file;
 
-    try {
-        const norma = await Norma.findByPk(id);
+  try {
+      // Buscar la norma por su ID
+      const norma = await Norma.findByPk(id);
 
-        if (!norma) {
-            return res.status(404).json({ mensaje: 'Norma no encontrada' });
-        }
+      // Verificar si la norma existe
+      if (!norma) {
+          return res.status(404).json({ mensaje: 'Norma no encontrada' });
+      }
 
-        if (pdfFile && pdfFile.size > 10000000) {
-            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-        }
+      // Verificar el tamaño del archivo adjunto
+      if (pdfFile && pdfFile.size > 10000000) {
+          return res.status(400).json({ mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
 
-        norma.tipo_norma = tipo_norma;
-        norma.denominacion_norma = denominacion_norma;
-        norma.modificado_por = modificado_por;
-        norma.modificado_fecha = modificado_fecha;
-        norma.activo = activo;
+      // Actualizar las propiedades de la norma
+      norma.tipo_norma = tipo_norma;
+      norma.denominacion_norma = denominacion_norma;
+      norma.modificado_por = modificado_por;
+      norma.modificado_fecha = modificado_fecha;
+      norma.activo = activo;
 
-        if (pdfFile) {
-            const __dirname = path.dirname(fileURLToPath(import.meta.url));
-            const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'normas');
-            const fileNameParts = pdfFile.originalname.split('.');
-            const fileExtension = fileNameParts.pop();
-            const baseFileName = fileNameParts.join('.');
-            const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
-            const filePath = path.join(documentosDir, safeFileName);
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (pdfFile) {
+          const __dirname = path.dirname(fileURLToPath(import.meta.url));
+          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'normas');
+          const fileNameParts = pdfFile.originalname.split('.');
+          const fileExtension = fileNameParts.pop();
+          const baseFileName = fileNameParts.join('.');
+          const safeFileName = `${slugify(baseFileName, { lower: true, strict: true })}.${fileExtension}`;
+          const filePath = path.join(documentosDir, safeFileName);
 
-            if (flag_adjunto === 'URL') {
-                await fs.mkdir(documentosDir, { recursive: true });
-                await fs.copyFile(pdfFile.path, filePath);
-                norma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
-                norma.contenido_norma = null;
-            } else if (flag_adjunto === 'BIN') {
-                norma.url_norma = null;
-                norma.contenido_norma = await fs.readFile(pdfFile.path);
-            }
-        }
+          if (flag_adjunto === 'URL') {
+              // Crear el directorio si no existe y copiar el archivo
+              await fs.mkdir(documentosDir, { recursive: true });
+              await fs.copyFile(pdfFile.path, filePath);
+              
+              // Actualizar las propiedades de la Norma
+              norma.url_norma = `${baseUrl}/documentos/normas/${safeFileName}`;
+              norma.contenido_norma = null;
+              norma.flag_adjunto = 'URL';
+          } else if (flag_adjunto === 'BIN') {
+              // Leer el contenido del archivo
+              norma.url_norma = null;
+              norma.contenido_norma = await fs.readFile(pdfFile.path);
+              norma.flag_adjunto = 'BIN';
+          }
+      }
 
-        await norma.save();
-        return res.status(200).json({ mensaje: 'Norma actualizada con éxito' });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al modificar norma', error: error.message });
-    }
+      // Guardar los cambios en la base de datos
+      await norma.save();
+
+      // Responder con un mensaje de éxito
+      return res.status(200).json({ mensaje: 'Actualización realizada con éxito', norma });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al modificar norma', error: error.message });
+  }
 };
+
 
 
 export const autorizarNorma = async (req, res) =>{
