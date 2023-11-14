@@ -162,12 +162,10 @@ export const crearConvenio = async (req, res) => {
           // Crear el directorio si no existe y copiar el archivo
           await fs.mkdir(documentosDir, { recursive: true });
           await fs.copyFile(pdfFile.path, filePath);
-          flag_adjunto = "URL"
           url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
       } else if (flag_adjunto === 'BIN' && pdfFile) {
           // Leer el contenido del archivo
           contenido_documento = await fs.readFile(pdfFile.path);
-          flag_adjunto = "BIN"
       }
 
       
