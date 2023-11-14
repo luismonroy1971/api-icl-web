@@ -162,21 +162,24 @@ export const crearConvenio = async (req, res) => {
           // Crear el directorio si no existe y copiar el archivo
           await fs.mkdir(documentosDir, { recursive: true });
           await fs.copyFile(pdfFile.path, filePath);
+          flag_adjunto = "URL"
           url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
       } else if (flag_adjunto === 'BIN' && pdfFile) {
           // Leer el contenido del archivo
           contenido_documento = await fs.readFile(pdfFile.path);
+          flag_adjunto = "BIN"
       }
 
-      // Crear un nuevo convenio en la base de datos
+      
+      // Crear un nuevo convenio en la base de datos, permitiendo valores nulos para id_provincia e id_distrito
       const nuevoConvenio = await Convenio.create({
           descripcion_convenio,
           fecha_convenio,
           creado_por,
           creado_fecha,
           id_departamento,
-          id_provincia,
-          id_distrito,
+          id_provincia: id_provincia || null,
+          id_distrito: id_distrito || null,
           flag_adjunto,
           url_documento,
           contenido_documento
@@ -227,8 +230,8 @@ export const actualizarConvenio = async (req, res) => {
       convenio.descripcion_convenio = descripcion_convenio;
       convenio.fecha_convenio = fecha_convenio;
       convenio.id_departamento = id_departamento;
-      convenio.id_provincia = id_provincia;
-      convenio.id_distrito = id_distrito;
+      convenio.id_provincia = id_provincia || null;
+      convenio.id_distrito = id_distrito || null;
       convenio.modificado_por = modificado_por;
       convenio.modificado_fecha = modificado_fecha;
       convenio.activo = activo;
@@ -246,10 +249,12 @@ export const actualizarConvenio = async (req, res) => {
               await fs.copyFile(pdfFile.path, filePath);
               convenio.url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
               convenio.contenido_documento = null;
+              convenio.flag_adjunto = "URL";
           } else if (flag_adjunto === 'BIN') {
               // Leer el contenido del archivo
               convenio.url_documento = null;
               convenio.contenido_documento = await fs.readFile(pdfFile.path);
+              convenio.flag_adjunto = "BIN";
           }
       }
 
