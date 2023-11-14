@@ -168,7 +168,7 @@ const generarTokenJWT = (usuario) => {
 
   const secretKey = 'Icl2023@vamos'; // Reemplaza con tu propia clave secreta
 
-  const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
+  const token = jwt.sign(payload, secretKey, { expiresIn: '5h' });
 
   return token;
 };
