@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
+import { Area } from './Area.js';
 
 export const Directiva = sequelize.define('directivas', {
     id: {
@@ -28,6 +29,9 @@ export const Directiva = sequelize.define('directivas', {
     // Campos para almacenar PDF en formato binario
     contenido_documento_resolucion: {
         type: DataTypes.BLOB('long'),
+    },
+    id_area: {
+        type: DataTypes.SMALLINT,
     },
     abreviacion_area: {
         type: DataTypes.CHAR(2),
@@ -59,3 +63,15 @@ export const Directiva = sequelize.define('directivas', {
         defaultValue: '1',
     }
 }, { timestamps: false });
+
+Directiva.beforeCreate(async (directiva, options) => {
+    const area = await Area.findByPk(directiva.id_area);
+    directiva.abreviacion_area = area ? area.abreviacion_area : null;
+});
+
+Directiva.beforeUpdate(async (directiva, options) => {
+    if (directiva.changed('id_area')) {
+        const area = await Area.findByPk(directiva.id_area);
+        directiva.abreviacion_area = area ? area.abreviacion_area : null;
+    }
+});

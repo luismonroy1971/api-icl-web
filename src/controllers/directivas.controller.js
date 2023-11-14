@@ -218,14 +218,19 @@ export const actualizarDirectiva = async (req, res) => {
                 await fs.copyFile(pdfFile.path, filePath);
                 directiva.url_documento_resolucion = `${baseUrl}/documentos/directivas/${originalFileName}`;
                 directiva.contenido_documento_resolucion = null;
-            } else if (flag_adjunto === 'BIN') {
+                directiva.flag_adjunto = 'URL'; 
+              } else if (flag_adjunto === 'BIN') {
                 directiva.url_documento_resolucion = null;
                 directiva.contenido_documento_resolucion = await fs.readFile(pdfFile.path);
-            }
+                directiva.flag_adjunto = 'BIN'; 
+              }
         }
 
         await directiva.save();
-        res.status(200).json({ mensaje: 'Directiva actualizada con éxito' });
+        res.status(200).json({ 
+          mensaje: 'Directiva actualizada con éxito', 
+          directivaActualizada: directiva  // Incluye el objeto actualizado aquí
+      });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ mensaje: 'Error al modificar directiva', error: error.message });
