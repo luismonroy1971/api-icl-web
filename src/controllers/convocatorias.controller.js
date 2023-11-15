@@ -150,16 +150,24 @@ export const leerConvocatoria = async (req, res) =>{
 
 }
 
-
 export const crearConvocatoria = async (req, res) => {
     const {
-        descripcion_convocatoria,
-        tipo_convocatoria,
-        numero_convocatoria,
-        periodo_convocatoria,
-        flag_adjunto,
-        // Añade más campos según tu modelo
-    } = req.body;
+      descripcion_convocatoria,
+      tipo_convocatoria,
+      numero_convocatoria,
+      periodo_convocatoria,
+      flag_adjunto,
+      pdfFile1,
+      pdfFile2,
+      pdfFile3,
+      pdfFile4,
+      pdfFile5,
+      pdfFile6,
+      pdfFile7,
+      pdfFile8,
+      pdfFile9,
+      pdfFile10,
+  } = req.body;
 
     try {
         // Validar si se han enviado archivos
@@ -190,17 +198,29 @@ export const crearConvocatoria = async (req, res) => {
 
         // Crear un nuevo registro de convocatoria en la base de datos
         const nuevaConvocatoria = await Convocatoria.create({
-            descripcion_convocatoria,
-            tipo_convocatoria,
-            numero_convocatoria,
-            periodo_convocatoria,
-            flag_adjunto,
-            // Asignar los archivos guardados a los campos correspondientes
-            // Ajusta estos campos según tu modelo
-            url_anexos: archivosGuardados[0]?.nombreCampo === 'pdfFile' ? archivosGuardados[0]?.valor : null,
-            contenido_anexos: archivosGuardados[0]?.nombreCampo === 'pdfFile' ? null : archivosGuardados[0]?.valor,
-            // Repite para otros campos de archivos según sea necesario
-        });
+          descripcion_convocatoria,
+          tipo_convocatoria,
+          numero_convocatoria,
+          periodo_convocatoria,
+          flag_adjunto,
+          url_anexos: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.valor || null,
+          url_comunicacion1: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.valor || null,
+          url_comunicacion2: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.valor || null,
+          url_comunicacion3: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.valor || null,
+          url_comunicaciones: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.valor || null,
+          url_aviso: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.valor || null,
+          url_resultado_evaluacion_curricular: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.valor || null,
+          url_resultado_examen: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.valor || null,
+          contenido_anexos: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.valor,
+          contenido_comunicacion1: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.valor,
+          contenido_comunicacion2: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.valor,
+          contenido_comunicacion3: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.valor,
+          contenido_comunicaciones: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.valor,
+          contenido_aviso: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.valor,
+          contenido_resultado_evaluacion_curricular: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.valor,
+          contenido_resultado_examen: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.valor,
+      });
+      
 
         return res.status(201).json({ mensaje: 'Convocatoria creada con éxito', nuevaConvocatoria });
     } catch (error) {
@@ -209,154 +229,84 @@ export const crearConvocatoria = async (req, res) => {
     }
 };
 
-
-
-
 export const actualizarConvocatoria = async (req, res) => {
-    const { id } = req.params;
-    const {
+  const {
+    descripcion_convocatoria,
+    tipo_convocatoria,
+    numero_convocatoria,
+    periodo_convocatoria,
+    flag_adjunto,
+    pdfFile1,
+    pdfFile2,
+    pdfFile3,
+    pdfFile4,
+    pdfFile5,
+    pdfFile6,
+    pdfFile7,
+    pdfFile8,
+    pdfFile9,
+    pdfFile10,
+} = req.body;
+
+  try {
+      // Validar si se han enviado archivos
+      if (!req.files || req.files.length === 0) {
+          return res.status(400).json({ mensaje: 'Debes adjuntar al menos un archivo' });
+      }
+
+      // Procesar y guardar archivos según el tipo de adjunto
+      const archivosGuardados = await Promise.all(req.files.map(async (archivo) => {
+          const { originalname, buffer } = archivo;
+
+          // Crear el directorio si no existe
+          const documentosDir = path.join(__dirname, '..', 'documentos', 'convocatorias');
+          await fs.mkdir(documentosDir, { recursive: true });
+
+          // Crear la ruta completa del archivo
+          const filePath = path.join(documentosDir, originalname);
+
+          // Guardar el archivo en el sistema de archivos
+          await fs.writeFile(filePath, buffer);
+
+          // Devolver la URL o el contenido según el tipo de adjunto
+          return {
+              nombreCampo: originalname, // Nombre del campo en tu modelo
+              valor: flag_adjunto === 'URL' ? `${baseUrl}/documentos/convocatorias/${originalname}` : buffer,
+          };
+      }));
+
+      // Crear un nuevo registro de convocatoria en la base de datos
+      const nuevaConvocatoria = await Convocatoria.create({
         descripcion_convocatoria,
-        id_area,
         tipo_convocatoria,
         numero_convocatoria,
         periodo_convocatoria,
-        estado_convocatoria,
-        modificado_por,
-        modificado_fecha,
-        activo,
-        flag_adjunto
-    } = req.body;
+        flag_adjunto,
+        url_anexos: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.valor || null,
+        url_comunicacion1: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.valor || null,
+        url_comunicacion2: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.valor || null,
+        url_comunicacion3: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.valor || null,
+        url_comunicaciones: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.valor || null,
+        url_aviso: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.valor || null,
+        url_resultado_evaluacion_curricular: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.valor || null,
+        url_resultado_examen: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.valor || null,
+        contenido_anexos: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile1')?.valor,
+        contenido_comunicacion1: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile2')?.valor,
+        contenido_comunicacion2: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile3')?.valor,
+        contenido_comunicacion3: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile4')?.valor,
+        contenido_comunicaciones: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile5')?.valor,
+        contenido_aviso: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile6')?.valor,
+        contenido_resultado_evaluacion_curricular: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile7')?.valor,
+        contenido_resultado_examen: archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.nombreCampo === 'pdfFile' ? null : archivosGuardados.find((archivo) => archivo.nombreCampo === 'pdfFile8')?.valor,
+    });
+    
 
-    const {
-      url_anexos,
-      url_comunicacion1,
-      url_comunicacion2,
-      url_comunicacion3,
-      url_comunicaciones,
-      url_aviso,
-      url_resultado_evaluacion_curricular,
-      url_resultado_examen,
-      url_resultado_entrevista,
-      url_puntaje_final,
-      contenido_anexos,
-      contenido_comunicacion1,
-      contenido_comunicacion2,
-      contenido_comunicacion3,
-      contenido_comunicaciones,
-      contenido_aviso,
-      contenido_resultado_evaluacion_curricular,
-      contenido_resultado_examen,
-      contenido_resultado_entrevista,
-      contenido_puntaje_final
-    } = req.files;
-
-    let todosArchivosVacios = true;
-
-    const generarNombreUnico = (archivo) => {
-        const uniqueSuffix = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
-        const nombreArchivo = archivo.originalname.replace(/\s+/g, '_');
-        return `${nombreArchivo}_${uniqueSuffix}`;
-    };
-
-    // Verifica si al menos un campo tiene un archivo adjunto
-    for (const key in req.files) {
-      if (req.files[key]) {
-          todosArchivosVacios = false; // Al menos un campo tiene un archivo
-          break; // Sal del bucle ya que no es necesario seguir verificando
-      }
-    }
-
-    const urls = {};
-
-    if (flag_adjunto === 'URL' && !todosArchivosVacios) {
-      const camposUrl = ['url_anexos', 'url_comunicacion1', 'url_comunicacion2', 'url_comunicacion3', 'url_comunicaciones', 'url_aviso', 'url_resultado_evaluacion_curricular', 'url_resultado_examen', 'url_resultado_entrevista', 'url_puntaje_final'];
-
-        camposUrl.forEach((campo) => {
-            if (req.files[campo]) {
-                const fileName = generarNombreUnico(req.files[campo][0]);
-                const ruta = path.join('/', 'documentos', 'convocatorias', fileName); // Utiliza path.join para crear la ruta
-                urls[campo] = ruta;
-            }
-        });
-        
-    }
-
-    const contenidoBinario = {};
-
-    if (flag_adjunto === 'BIN' && !todosArchivosVacios) {
-      const camposBinarios = ['contenido_anexos', 'contenido_comunicacion1', 'contenido_comunicacion2', 'contenido_comunicacion3', 'contenido_comunicaciones', 'contenido_aviso', 'contenido_resultado_evaluacion_curricular', 'contenido_resultado_examen', 'contenido_resultado_entrevista', 'contenido_puntaje_final'];
-
-        camposBinarios.forEach((campo) => {
-            if (req.files[campo]) {
-                contenidoBinario[campo] = fs.readFileSync(req.files[campo][0].path);
-            }
-        });
-    }
-
-    try {
-        const convocatoria = await Convocatoria.findByPk(id);
-
-        if (!convocatoria) {
-            return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
-        }
-
-        convocatoria.descripcion_convocatoria = descripcion_convocatoria;
-        convocatoria.id_area = id_area;
-        convocatoria.tipo_convocatoria = tipo_convocatoria;
-        convocatoria.numero_convocatoria = numero_convocatoria;
-        convocatoria.periodo_convocatoria = periodo_convocatoria;
-        convocatoria.estado_convocatoria = estado_convocatoria;
-        convocatoria.modificado_por = modificado_por;
-        convocatoria.modificado_fecha = modificado_fecha;
-        convocatoria.autorizado = '0';
-        convocatoria.autorizado_por = null;
-        convocatoria.autorizado_fecha = null;
-        convocatoria.activo = activo;
-
-        if (flag_adjunto === 'URL' && !todosArchivosVacios) {
-            // Actualiza las URLs desde los archivos
-            convocatoria.url_anexos = urls.url_anexos || null;
-            convocatoria.url_comunicacion1 = urls.url_comunicacion1 || null;
-            convocatoria.url_comunicacion2 = urls.url_comunicacion2 || null;
-            convocatoria.url_comunicacion3 = urls.url_comunicacion3 || null;
-            convocatoria.url_comunicaciones = urls.url_comunicaciones || null;
-            convocatoria.url_aviso = urls.url_aviso || null;
-            convocatoria.url_resultado_evaluacion_curricular = urls.url_resultado_evaluacion_curricular || null;
-            convocatoria.url_resultado_examen = urls.url_resultado_examen || null;
-            convocatoria.url_resultado_entrevista = urls.url_resultado_entrevista || null;
-            convocatoria.url_puntaje_final = urls.url_puntaje_final || null;
-        } else if (flag_adjunto === 'BIN' && !todosArchivosVacios) {
-            // Actualiza el contenido binario desde los archivos
-            convocatoria.contenido_anexos = contenidoBinario.contenido_anexos || null;
-            convocatoria.contenido_comunicacion1 = contenidoBinario.contenido_comunicacion1 || null;
-            convocatoria.contenido_comunicacion2 = contenidoBinario.contenido_comunicacion2 || null;
-            convocatoria.contenido_comunicacion3 = contenidoBinario.contenido_comunicacion3 || null;
-            convocatoria.contenido_comunicaciones = contenidoBinario.contenido_comunicaciones || null;
-            convocatoria.contenido_aviso = contenidoBinario.contenido_aviso || null;
-            convocatoria.contenido_resultado_evaluacion_curricular = contenidoBinario.contenido_resultado_evaluacion_curricular || null;
-            convocatoria.contenido_resultado_examen = contenidoBinario.contenido_resultado_examen || null;
-            convocatoria.contenido_resultado_entrevista = contenidoBinario.contenido_resultado_entrevista || null;
-            convocatoria.contenido_puntaje_final = contenidoBinario.contenido_puntaje_final || null;
-        }
-
-        await convocatoria.save();
-
-        // Elimina los archivos temporales creados por Multer
-        const archivosTemporales = ['contenido_anexos', 'contenido_comunicacion1', 'contenido_comunicacion2', 'contenido_comunicacion3', 'contenido_comunicaciones', 'contenido_aviso', 'contenido_resultado_evaluacion_curricular', 'contenido_resultado_examen', 'contenido_resultado_entrevista', 'contenido_puntaje_final'];
-
-        archivosTemporales.forEach((campo) => {
-            if (req.files[campo] && req.files[campo].length > 0) {
-                fs.unlinkSync(req.files[campo][0].path);
-            }
-        });
-
-        res.json({ mensaje: 'Convocatoria actualizada con éxito' });
-    } catch (error) {
-        res.status(500).json({ message: `Error al modificar la convocatoria: ${error.message}` });
-    }
+      return res.status(201).json({ mensaje: 'Convocatoria creada con éxito', nuevaConvocatoria });
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al crear convocatoria', error: error.message });
+  }
 };
-
-
 export const autorizarConvocatoria = async (req, res) =>{
   const { id } = req.params;
   const { autorizado, autorizado_por, autorizado_fecha } = req.body;
