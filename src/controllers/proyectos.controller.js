@@ -74,7 +74,7 @@ export const leerProyecto = async (req, res) =>{
 
 
 export const crearProyecto = async (req, res) => {
-  const { title, content, link, flag_adjunto, creado_por, creado_fecha, activo } = req.body;
+  const { title, content, link, flag_adjunto, creado_por, creado_fecha } = req.body;
   const imgFile = req.file;
 
   try {
@@ -104,8 +104,7 @@ export const crearProyecto = async (req, res) => {
           url_documento,
           contenido_documento,
           creado_por,
-          creado_fecha, // Puedes ajustar la fecha según tus necesidades
-          activo // Otra opción predeterminada según tus necesidades
+          creado_fecha
       });
 
       // Responder con el nuevo proyecto creado
@@ -164,7 +163,9 @@ export const actualizarProyecto = async (req, res) => {
               url_documento,
               contenido_documento,
               modificado_por,
-              modificado_fecha          },
+              modificado_fecha,
+              activo          
+          },
           {
               where: { id },
           }

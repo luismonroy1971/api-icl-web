@@ -22,7 +22,7 @@ export const crearPopup = async (req, res) => {
       fecha_final,
       descripcion_popup,
       creado_por,
-      creado_fecha,
+      creado_fecha
     };
 
     if (flag_adjunto === 'URL' && imgFile) {

@@ -108,8 +108,7 @@ export const crearCurso = async (req, res) => {
             content,
             link,
             creado_por,
-            creado_fecha,
-            activo
+            creado_fecha
         });
 
         // Responder con el nuevo curso creado

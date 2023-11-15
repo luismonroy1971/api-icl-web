@@ -163,7 +163,7 @@ const guardarArchivo = async (entidadDir, imgFile) => {
 
 export const actualizarNoticia = async (req, res) => {
     const { id } = req.params; // Suponiendo que el ID de la noticia se pasa como un parámetro en la URL
-    const { titulo_noticia, descripcion_noticia, fecha_noticia, flag_adjunto, id_categoria_noticia, creado_por, creado_fecha } = req.body;
+    const { titulo_noticia, descripcion_noticia, fecha_noticia, flag_adjunto, id_categoria_noticia, modificado_por, modificado_fecha, activo } = req.body;
     const imgFile = req.file;
 
     try {
@@ -202,8 +202,9 @@ export const actualizarNoticia = async (req, res) => {
                 url_documento,
                 contenido_documento,
                 id_categoria_noticia,
-                creado_por,
-                creado_fecha,
+                modificado_por,
+                modificado_fecha,
+                activo
             },
             {
                 where: { id },  // Condición para actualizar el registro con el ID específico

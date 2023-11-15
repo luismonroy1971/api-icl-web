@@ -55,11 +55,11 @@ export const actualizarUit = async (req, res) =>{
     try{
     const uit = await Uit.findByPk(id);
     
-    area.periodo_uit = periodo_uit;
-    area.moneda_uit = moneda_uit;
-    area.valor_uit = valor_uit;
-    area.base_legal = base_legal;
-    area.activo = activo;
+    uit.periodo_uit = periodo_uit;
+    uit.moneda_uit = moneda_uit;
+    uit.valor_uit = valor_uit;
+    uit.base_legal = base_legal;
+    uit.activo = activo;
     await uit.save(); 
      res.json({ mensaje: 'UIT actualizada con éxito' });
     }
