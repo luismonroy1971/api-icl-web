@@ -7,9 +7,15 @@ export const ImagenNoticia = sequelize.define('imagenes',{
         primaryKey: true,
         autoIncrement: true
     },
-    url_imagen:{
+    flag_adjunto:{
+        type: DataTypes.ENUM(['URL', 'BIN']),
+    },
+    url_documento:{
         type: DataTypes.STRING
     }, 
+    contenido_documento:{
+        type: DataTypes.BLOB('long')
+    },
     activo:{
         type:DataTypes.CHAR(1),
         defaultValue: '1'

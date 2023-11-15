@@ -5,7 +5,7 @@ const router = Router();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'documentos/funcionarios/'); // Ruta donde se guardarán los archivos
+      cb(null, 'documentos/noticias/'); // Ruta donde se guardarán los archivos
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname); // Usa el nombre original del archivo

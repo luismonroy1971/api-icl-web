@@ -23,42 +23,52 @@ export const leerFuncionarios = async (req, res) =>{
 
 
 export const buscarFuncionarios = async (req, res) => {
-    const { name, position, autorizado, activo } = req.query;
-  
-    try {
+  const { name, position, autorizado, activo } = req.query;
+
+  try {
       const whereClause = {};
-  
+
       if (autorizado) {
-        whereClause.autorizado = autorizado;
+          whereClause.autorizado = autorizado;
       }
 
       if (name) {
-        whereClause.name = name;
+          whereClause.name = name;
       }
-  
-      if (position) {
-        whereClause.position = {
-          [Sequelize.Op.like]: `%${position}%`
-        };
-      }
-  
-      if (activo) {
-        whereClause.activo = activo;
-      }
-      
-      const funcionarios = await Funcionario.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['id', 'ASC'],
-        ]
 
+      if (position) {
+          whereClause.position = {
+              [Sequelize.Op.like]: `%${position}%`
+          };
+      }
+
+      if (activo) {
+          whereClause.activo = activo;
+      }
+
+      const funcionarios = await Funcionario.findAll({
+          attributes: ['name', 'position', 'link', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+          where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+          order: [['id', 'ASC']]
       });
-  
-      res.json(funcionarios);
-    } catch (error) {
+
+      // Mapear los resultados para agregar el campo virtual 'image'
+      const funcionariosConImagen = funcionarios.map((funcionario) => {
+          const { flag_adjunto, url_documento, contenido_documento } = funcionario;
+          
+          // Asegurarse de que contenido_documento no sea null antes de acceder a 'toString'
+          const image = flag_adjunto === 'URL' ? url_documento : contenido_documento ? `data:image/png;base64,${contenido_documento.toString('base64')}` : null;
+
+          return { ...funcionario.toJSON(), image };
+      });
+
+      res.json(funcionariosConImagen);
+  } catch (error) {
       return res.status(500).json({ message: error.message });
-    }
-  };
+  }
+};
+
+
   
 
 export const leerFuncionario = async (req, res) =>{
@@ -93,7 +103,7 @@ export const crearFuncionario = async (req, res) => {
         if (imgFile) {
             if (flag_adjunto === 'URL') {
               const __dirname = path.dirname(fileURLToPath(import.meta.url));
-              const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'funcionarios');
+              const documentosDir = path.join(__dirname, '..', 'documentos', 'funcionarios');
               const originalFileName = imgFile.originalname;
               const filePath = path.join(documentosDir, originalFileName);
               await fs.mkdir(documentosDir, { recursive: true });
@@ -159,7 +169,7 @@ export const actualizarFuncionario = async (req, res) => {
         // Manejar la lógica según el tipo de adjunto (URL o BIN)
         if (imgFile) {
           const __dirname = path.dirname(fileURLToPath(import.meta.url));
-          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'funcionarios');
+          const documentosDir = path.join(__dirname, '..','documentos', 'funcionarios');
           const originalFileName = imgFile.originalname;
           const filePath = path.join(documentosDir, originalFileName);
 
