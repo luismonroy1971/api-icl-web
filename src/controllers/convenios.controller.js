@@ -155,7 +155,7 @@ export const crearConvenio = async (req, res) => {
       // Manejar la lógica según el tipo de adjunto (URL o BIN)
       if (flag_adjunto === 'URL' && pdfFile) {
           const __dirname = path.dirname(fileURLToPath(import.meta.url));
-          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
+          const documentosDir = path.join(__dirname, 'documentos', 'convenios');
           const originalFileName = pdfFile.originalname;
           const filePath = path.join(documentosDir, originalFileName);
 

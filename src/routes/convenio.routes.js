@@ -16,8 +16,8 @@ const upload = multer({ storage: storage });
 
 // router.get('/convenios',leerConvenios);
 router.get('/convenios',buscarConvenios);
-router.post('/convenios', upload.single('pdfFile'),  crearConvenio);
-router.put('/convenios/:id', upload.single('pdfFile'), actualizarConvenio);
+router.post('/convenios', upload.fields([{ name: 'pdfFile', maxCount: 10 }]), crearConvenio);
+router.put('/convenios', upload.fields([{ name: 'pdfFile', maxCount: 10 }]), actualizarConvenio);
 router.delete('/convenios/:id',eliminarConvenio);
 router.get('/convenios/:id', leerConvenio);
 router.get('/conveniosperiodo', obtenerPeriodos);

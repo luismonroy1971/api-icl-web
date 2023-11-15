@@ -133,7 +133,7 @@ const guardarArchivo = async (entidadDir, imgFile) => {
 
 export const actualizarProyecto = async (req, res) => {
   const { id } = req.params;
-  const { title, content, link, flag_adjunto, modificado_por } = req.body;
+  const { title, content, link, flag_adjunto, modificado_por, modificado_fecha } = req.body;
   const imgFile = req.file;
 
   try {
@@ -164,8 +164,7 @@ export const actualizarProyecto = async (req, res) => {
               url_documento,
               contenido_documento,
               modificado_por,
-              modificado_fecha: new Date(), // Puedes ajustar la fecha según tus necesidades
-          },
+              modificado_fecha          },
           {
               where: { id },
           }

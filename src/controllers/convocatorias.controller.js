@@ -152,114 +152,63 @@ export const leerConvocatoria = async (req, res) =>{
 
 
 export const crearConvocatoria = async (req, res) => {
-  // Desestructurar propiedades del body
-  const {
-      flag_adjunto,
-      creado_por,
-      creado_fecha,
-      estado_convocatoria,
-      modificado_por,
-      modificado_fecha,
-      autorizado,
-      autorizado_por,
-      autorizado_fecha,
-      activo,
-      // Otras propiedades según tu modelo
-  } = req.body;
+    const {
+        descripcion_convocatoria,
+        tipo_convocatoria,
+        numero_convocatoria,
+        periodo_convocatoria,
+        flag_adjunto,
+        // Añade más campos según tu modelo
+    } = req.body;
 
-  // Obtener archivos subidos
-  const pdfFiles = req.files;  // Supongamos que req.files contiene la lista de archivos
+    try {
+        // Validar si se han enviado archivos
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ mensaje: 'Debes adjuntar al menos un archivo' });
+        }
 
-  try {
-      // Verificar archivos subidos
-      if (pdfFiles) {
-          for (const pdfFile of pdfFiles) {
-              // Obtener propiedades de contenido dependiendo de flag_adjunto
-              const contenidoProps = flag_adjunto === 'BIN'
-                  ? {
-                        contenido_anexos: await fs.readFile(pdfFile.path),
-                        // Otras propiedades relacionadas con BIN
-                    }
-                  : {
-                        url_anexos: `${baseUrl}/documentos/convenios/${pdfFile.originalname}`,
-                        // Otras propiedades relacionadas con URL
-                    };
+        // Procesar y guardar archivos según el tipo de adjunto
+        const archivosGuardados = await Promise.all(req.files.map(async (archivo) => {
+            const { originalname, buffer } = archivo;
 
-              // Crear Convocatoria con las propiedades correspondientes
-              const nuevaConvocatoria = await Convocatoria.create({
-                  flag_adjunto,
-                  creado_por,
-                  creado_fecha,
-                  estado_convocatoria,
-                  modificado_por,
-                  modificado_fecha,
-                  autorizado,
-                  autorizado_por,
-                  autorizado_fecha,
-                  activo,
-                  ...contenidoProps,
-              });
+            // Crear el directorio si no existe
+            const documentosDir = path.join(__dirname, '..', 'documentos', 'convocatorias');
+            await fs.mkdir(documentosDir, { recursive: true });
 
-              // Puedes seguir el mismo patrón para otras acciones relacionadas con los archivos
-          }
+            // Crear la ruta completa del archivo
+            const filePath = path.join(documentosDir, originalname);
 
-          // Respuesta si todo es exitoso
-          return res.status(201).json({ mensaje: 'Convocatoria creada con éxito' });
-      } else {
-          // Respuesta si no hay archivos subidos
-          return res.status(400).json({ mensaje: 'No se proporcionaron archivos' });
-      }
-  } catch (error) {
-      console.error(error);
-      return res.status(500).json({ mensaje: 'Error al crear convocatoria', error: error.message });
-  }
+            // Guardar el archivo en el sistema de archivos
+            await fs.writeFile(filePath, buffer);
+
+            // Devolver la URL o el contenido según el tipo de adjunto
+            return {
+                nombreCampo: originalname, // Nombre del campo en tu modelo
+                valor: flag_adjunto === 'URL' ? `${baseUrl}/documentos/convocatorias/${originalname}` : buffer,
+            };
+        }));
+
+        // Crear un nuevo registro de convocatoria en la base de datos
+        const nuevaConvocatoria = await Convocatoria.create({
+            descripcion_convocatoria,
+            tipo_convocatoria,
+            numero_convocatoria,
+            periodo_convocatoria,
+            flag_adjunto,
+            // Asignar los archivos guardados a los campos correspondientes
+            // Ajusta estos campos según tu modelo
+            url_anexos: archivosGuardados[0]?.nombreCampo === 'pdfFile' ? archivosGuardados[0]?.valor : null,
+            contenido_anexos: archivosGuardados[0]?.nombreCampo === 'pdfFile' ? null : archivosGuardados[0]?.valor,
+            // Repite para otros campos de archivos según sea necesario
+        });
+
+        return res.status(201).json({ mensaje: 'Convocatoria creada con éxito', nuevaConvocatoria });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al crear convocatoria', error: error.message });
+    }
 };
 
-const generateUrls = (urls, flagAdjunto) => {
-    const campos = [
-        'url_anexos',
-        'url_comunicacion1',
-        'url_comunicacion2',
-        'url_comunicacion3',
-        'url_comunicaciones',
-        'url_aviso',
-        'url_resultado_evaluacion_curricular',
-        'url_resultado_examen',
-        'url_resultado_entrevista',
-        'url_puntaje_final'
-    ];
-
-    const result = {};
-
-    campos.forEach((campo) => {
-        result[campo] = flagAdjunto === 'URL' && urls[campo] ? urls[campo] : null;
-    });
-
-    return result;
-};
-
-const generateBinaryContent = (contenidoBinario, flagAdjunto) => {
-    const campos = [
-        'contenido_anexos',
-        'contenido_comunicacion1',
-        'contenido_comunicacion2',
-        'contenido_comunicacion3',
-        'contenido_comunicaciones',
-        'contenido_aviso',
-        'contenido_resultado_evaluacion_curricular',
-        'contenido_resultado_examen',
-        'contenido_resultado_entrevista',
-        'contenido_puntaje_final'
-    ];
-
-    const result = {};
-
-    campos.forEach((campo) => {
-        result[campo] = flagAdjunto === 'BIN' && contenidoBinario[campo] ? contenidoBinario[campo] : null;
-    });
-
-    return result;
-};
 
 
 
