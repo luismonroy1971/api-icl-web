@@ -3160,6 +3160,7 @@ insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_c
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','image','Imagen del curso','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','video','Video del curso','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','title','Tìtulo','character','',255,'');
+insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','imgFile','Imagen','bytea','',10000,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','content','Descripción del Curso','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (13,'curso','/cursos','link','Link para más información','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (14,'directiva','/directivas','periodo_resolucion','Año resolución','number','',10,'');
@@ -3187,6 +3188,7 @@ insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_c
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','image','Imagen proyecto','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','video','Video del proyecto','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','title','Tìtulo del proyecto','character','',255,'');
+insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','imgFile','Imagen','bytea','',10000,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','content','Descripción','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (19,'proyecto','/proyectos','link','Link del proyecto','character','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (20,'rendicion','/rendiciones','descripcion_rendicion','Descripción rendición','character','',255,'');
