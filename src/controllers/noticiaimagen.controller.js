@@ -147,7 +147,7 @@ export const eliminarImagen = async (req, res) =>{
 
 const guardarArchivo = async (entidadDir, imgFile) => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const documentosDir = path.join(__dirname, '..', 'documentos', entidadDir);
+    const documentosDir = path.join(__dirname, 'documentos', entidadDir);
     const originalFileName = imgFile.originalname;
     const filePath = path.join(documentosDir, originalFileName);
   

@@ -1,5 +1,9 @@
 import { Sequelize } from 'sequelize';
 import {Proyecto} from '../models/Proyecto.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
+const baseUrl = process.env.BASE_URL; 
 
 export const leerProyectos = async (req, res) =>{
     try {
@@ -68,49 +72,121 @@ export const leerProyecto = async (req, res) =>{
 
 }
 
-export const crearProyecto = async (req, res) =>{
-    const {image, video, title, content, link } = req.body;
-    try {
-        const nuevoProyecto = await Proyecto.create({
-          image,
-          video,
+
+export const crearProyecto = async (req, res) => {
+  const { title, content, link, flag_adjunto, creado_por, creado_fecha, activo } = req.body;
+  const imgFile = req.file;
+
+  try {
+      // Validar el tamaño del archivo adjunto
+      if (imgFile && imgFile.size > 10000000) {
+          return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
+
+      let url_documento = null;
+      let contenido_documento = null;
+
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (imgFile) {
+          if (flag_adjunto === 'URL') {
+              url_documento = await guardarArchivo('proyectos', imgFile);
+          } else if (flag_adjunto === 'BIN') {
+              contenido_documento = await fs.readFile(imgFile.path);
+          }
+      }
+
+      // Crear un nuevo proyecto en la base de datos
+      const nuevoProyecto = await Proyecto.create({
           title,
           content,
           link,
-          creado_por, 
-          creado_fecha
-        })
-        res.json(nuevoProyecto);
-    } catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
+          flag_adjunto,
+          url_documento,
+          contenido_documento,
+          creado_por,
+          creado_fecha, // Puedes ajustar la fecha según tus necesidades
+          activo // Otra opción predeterminada según tus necesidades
+      });
 
-export const actualizarProyecto = async (req, res) =>{
-    const { id } = req.params;
-    const { image, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
+      // Responder con el nuevo proyecto creado
+      return res.status(201).json({ mensaje: 'Proyecto creado con éxito', nuevoProyecto });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al crear proyecto', error: error.message });
+  }
+};
 
-    try{
-    const proyecto = await Proyecto.findByPk(id);
-    
-    proyecto.image = image;
-    proyecto.video = video;
-    proyecto.title = title;
-    proyecto.content = content;
-    proyecto.link = link
-    proyecto.modificado_por = modificado_por;
-    proyecto.modificado_fecha = modificado_fecha;
-    proyecto.autorizado = '0';
-    proyecto.autorizado_por = null;
-    proyecto.autorizado_fecha = null;
-    proyecto.activo = activo;
-    await proyecto.save(); 
-     res.json({ mensaje: 'Proyecto actualizado con éxito' });
-    }
-    catch(error){
-         return res.status(500).json({ mensaje: error.message })
-    }
-}
+// Función para guardar archivos en un directorio específico
+const guardarArchivo = async (entidadDir, imgFile) => {
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const documentosDir = path.join(__dirname, 'documentos', entidadDir);
+  const originalFileName = imgFile.originalname;
+  const filePath = path.join(documentosDir, originalFileName);
+
+  await fs.mkdir(documentosDir, { recursive: true });
+  await fs.copyFile(imgFile.path, filePath);
+
+  return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
+};
+
+
+export const actualizarProyecto = async (req, res) => {
+  const { id } = req.params;
+  const { title, content, link, flag_adjunto, modificado_por } = req.body;
+  const imgFile = req.file;
+
+  try {
+      // Validar el tamaño del archivo adjunto
+      if (imgFile && imgFile.size > 10000000) {
+          return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
+
+      let url_documento = null;
+      let contenido_documento = null;
+
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (imgFile) {
+          if (flag_adjunto === 'URL') {
+              url_documento = await guardarArchivo('proyectos', imgFile);
+          } else if (flag_adjunto === 'BIN') {
+              contenido_documento = await fs.readFile(imgFile.path);
+          }
+      }
+
+      // Actualizar el proyecto en la base de datos
+      const proyectoActualizado = await Proyecto.update(
+          {
+              title,
+              content,
+              link,
+              flag_adjunto,
+              url_documento,
+              contenido_documento,
+              modificado_por,
+              modificado_fecha: new Date(), // Puedes ajustar la fecha según tus necesidades
+          },
+          {
+              where: { id },
+          }
+      );
+
+      if (proyectoActualizado[0] === 0) {
+          return res.status(404).json({ mensaje: 'No se encontró el proyecto con el ID proporcionado' });
+      }
+
+      // Obtener el proyecto actualizado después de la operación de actualización
+      const proyecto = await Proyecto.findByPk(id);
+
+      // Responder con el proyecto actualizado
+      return res.json({ mensaje: 'Proyecto actualizado con éxito', proyecto });
+  } catch (error) {
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al actualizar proyecto', error: error.message });
+  }
+};
+
 
 export const autorizarProyecto = async (req, res) =>{
   const { id } = req.params;

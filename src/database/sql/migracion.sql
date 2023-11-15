@@ -3384,3 +3384,5 @@ SELECT setval('videos_id_seq', (SELECT MAX(id) FROM videos));
 SELECT setval('popups_id_seq', (SELECT MAX(id) FROM popups));
 SELECT setval('opcionesusuarios_id_seq', (SELECT MAX(id) FROM opcionesusuarios));
 SELECT setval('usuarios_id_seq', (SELECT MAX(id) FROM usuarios));
+SELECT setval('proyectos_id_seq', (SELECT MAX(id) FROM proyectos));
+SELECT setval('cursos_id_seq', (SELECT MAX(id) FROM cursos));

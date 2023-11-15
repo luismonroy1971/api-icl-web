@@ -1,10 +1,13 @@
 import { Sequelize } from 'sequelize';
 import {Curso} from '../models/Curso.js';
-import fs from 'fs';
 import path from 'path';
-import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import fs from 'fs/promises';
 const baseUrl = process.env.BASE_URL; 
+import { dirname } from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const leerCursos = async (req, res) =>{
     try {
@@ -73,95 +76,123 @@ export const leerCurso = async (req, res) =>{
 
 }
 
-
 export const crearCurso = async (req, res) => {
-  const { image, video, title, content, link, creado_por, creado_fecha } = req.body;
+    const { flag_adjunto, video, title, content, link, creado_por,creado_fecha, activo} = req.body;
+    const imgFile = req.file;
+
+    try {
+        // Validar el tamaño del archivo adjunto
+        if (imgFile && imgFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
+
+        let url_documento = null;
+        let contenido_documento = null;
+
+        // Manejar la lógica según el tipo de adjunto (URL o BIN)
+        if (imgFile) {
+            if (flag_adjunto === 'URL') {
+                url_documento = await guardarArchivo('cursos', imgFile);
+            } else if (flag_adjunto === 'BIN') {
+                contenido_documento = await fs.readFile(imgFile.path);
+            }
+        }
+
+        // Crear un nuevo curso en la base de datos
+        const nuevoCurso = await Curso.create({
+            flag_adjunto,
+            url_documento,
+            contenido_documento,
+            video,
+            title,
+            content,
+            link,
+            creado_por,
+            creado_fecha,
+            activo
+        });
+
+        // Responder con el nuevo curso creado
+        return res.status(201).json({ mensaje: 'Curso creado con éxito', nuevoCurso });
+    } catch (error) {
+        // Manejar errores y responder con un mensaje de error
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al crear curso', error: error.message });
+    }
+};
+
+
+const guardarArchivo = async (entidadDir, imgFile) => {
+  const documentosDir = path.join(__dirname, 'documentos', entidadDir);
+  const originalFileName = imgFile.originalname;
+  const filePath = path.join(documentosDir, originalFileName);
+
   try {
-    console.log(req.file)
-      let imageUrl = image;
-      let videoUrl = video;
-      console.log(req.file)
-      if (req.file) {
-          if (req.file.fieldname === 'image') {
-              const imgFile = req.file;
-              const imgFileName = `${imgFile.originalname}`;
-              imageUrl = `${baseUrl}/documentos/cursos/${imgFileName}`;
-          } else if (req.file.fieldname === 'video') {
-              const vidFile = req.file;
-              const vidFileName = `${vidFile.originalname}`;
-              videoUrl = `${baseUrl}/documentos/cursos/${vidFileName}`;
-          }
-      }
+      await fs.mkdir(documentosDir, { recursive: true });
+      await fs.copyFile(imgFile.path, filePath);
 
-      const nuevoCurso = await Curso.create({
-          image: imageUrl,
-          video: videoUrl,
-          title,
-          content,
-          link,
-          creado_por,
-          creado_fecha,
-      });
-
-      res.json(nuevoCurso);
+      return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
   } catch (error) {
-      return res.status(500).json({ message: error.message });
+      console.error(error);
+      throw error;
   }
-}
-
-
-
-
+};
 
 
 export const actualizarCurso = async (req, res) => {
   const { id } = req.params;
-  const { image, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
+  const { flag_adjunto, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
+  const imgFile = req.file;
 
   try {
-      const curso = await Curso.findByPk(id);
+      // Validar el tamaño del archivo adjunto
+      if (imgFile && imgFile.size > 10000000) {
+          return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+      }
 
-      if (!curso) {
+      let url_documento = null;
+      let contenido_documento = null;
+
+      // Manejar la lógica según el tipo de adjunto (URL o BIN)
+      if (imgFile) {
+          if (flag_adjunto === 'URL') {
+              url_documento = await guardarArchivo('cursos', imgFile);
+          } else if (flag_adjunto === 'BIN') {
+              contenido_documento = await fs.readFile(imgFile.path);
+          }
+      }
+
+      // Actualizar el curso en la base de datos
+      const cursoActualizado = await Curso.update({
+          flag_adjunto,
+          url_documento,
+          contenido_documento,
+          video,
+          title,
+          content,
+          link,
+          modificado_por,
+          modificado_fecha,
+          activo
+      }, {
+          where: { id },
+          returning: true, // Para obtener el curso actualizado en la respuesta
+      });
+
+      if (!cursoActualizado[0]) {
+          // Si no se actualizó ningún curso, devolver un mensaje de error
           return res.status(404).json({ mensaje: 'Curso no encontrado' });
       }
 
-      let imageUrl = curso.image; // Mantén la imagen existente por defecto
-      let videoUrl = curso.video; // Mantén el video existente por defecto
-
-      // Si se envía una nueva imagen, actualiza imageUrl
-      if (req.fileImage) {
-          const imgFile = req.file;
-          const fileName = `${imgFile.originalname}`;
-          imageUrl = `${baseUrl}/documentos/cursos/${fileName}`;
-      }
-
-      // Si se envía un nuevo video, actualiza videoUrl
-      if (req.fileVideo) {
-          const vidFile = req.file;
-          const fileName = `${vidFile.originalname}`;
-          videoUrl = `${baseUrl}/documentos/cursos/${fileName}`;
-      }
-
-      curso.image = imageUrl;
-      curso.video = videoUrl;
-      curso.title = title;
-      curso.content = content;
-      curso.link = link;
-      curso.modificado_por = modificado_por;
-      curso.modificado_fecha = modificado_fecha;
-      curso.autorizado = '0';
-      curso.autorizado_por = null;
-      curso.autorizado_fecha = null;
-      curso.activo = activo;
-
-      await curso.save();
-
-      // Devuelve una respuesta JSON en lugar de enviar un mensaje de texto
-      return res.json({ mensaje: 'Curso actualizado con éxito' });
+      // Responder con el curso actualizado
+      return res.json({ mensaje: 'Curso actualizado con éxito', curso: cursoActualizado[1][0] });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+      // Manejar errores y responder con un mensaje de error
+      console.error(error);
+      return res.status(500).json({ mensaje: 'Error al actualizar curso', error: error.message });
   }
 };
+
 
 export const autorizarCurso = async (req, res) =>{
   const { id } = req.params;

@@ -143,16 +143,21 @@ export const crearNoticia = async (req, res) => {
 };
 
 // Función para guardar archivos en un directorio específico
+// Función para guardar archivos en un directorio específico
 const guardarArchivo = async (entidadDir, imgFile) => {
-  const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const documentosDir = path.join(__dirname, '..', 'documentos', entidadDir);
+  const documentosDir = path.join(__dirname, 'documentos', entidadDir);
   const originalFileName = imgFile.originalname;
   const filePath = path.join(documentosDir, originalFileName);
 
-  await fs.mkdir(documentosDir, { recursive: true });
-  await fs.copyFile(imgFile.path, filePath);
+  try {
+      await fs.mkdir(documentosDir, { recursive: true });
+      await fs.copyFile(imgFile.path, filePath);
 
-  return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
+      return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
+  } catch (error) {
+      console.error(error);
+      throw error;
+  }
 };
 
 
