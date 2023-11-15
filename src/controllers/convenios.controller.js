@@ -193,83 +193,6 @@ export const crearConvenio = async (req, res) => {
 };
 
 
-
-export const actualizarConvenio = async (req, res) => {
-  const { id } = req.params;
-  const {
-      descripcion_convenio,
-      fecha_convenio,
-      id_departamento,
-      id_provincia,
-      id_distrito,
-      modificado_por,
-      modificado_fecha,
-      activo,
-      flag_adjunto
-  } = req.body;
-
-  const pdfFile = req.file;
-
-  try {
-      // Buscar el convenio por su ID
-      const convenio = await Convenio.findByPk(id);
-
-      // Verificar si el convenio existe
-      if (!convenio) {
-          return res.status(404).json({ mensaje: 'Convenio no encontrado' });
-      }
-
-      // Validar el tamaño del archivo adjunto
-      if (pdfFile && pdfFile.size > 10000000) { // 10 MB en bytes
-          return res.status(400).json({ mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-      }
-
-      // Actualizar las propiedades del convenio
-      convenio.descripcion_convenio = descripcion_convenio;
-      convenio.fecha_convenio = fecha_convenio;
-      convenio.id_departamento = id_departamento;
-      convenio.id_provincia = id_provincia || null;
-      convenio.id_distrito = id_distrito || null;
-      convenio.modificado_por = modificado_por;
-      convenio.modificado_fecha = modificado_fecha;
-      convenio.activo = activo;
-
-      // Manejar la lógica según el tipo de adjunto (URL o BIN)
-      if (pdfFile) {
-          const __dirname = path.dirname(fileURLToPath(import.meta.url));
-          const documentosDir = path.join(__dirname, '..', 'public', 'documentos', 'convenios');
-          const originalFileName = pdfFile.originalname;
-          const filePath = path.join(documentosDir, originalFileName);
-
-          if (flag_adjunto === 'URL') {
-              // Crear el directorio si no existe y copiar el archivo
-              await fs.mkdir(documentosDir, { recursive: true });
-              await fs.copyFile(pdfFile.path, filePath);
-              convenio.url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
-              convenio.contenido_documento = null;
-              convenio.flag_adjunto = "URL";
-          } else if (flag_adjunto === 'BIN') {
-              // Leer el contenido del archivo
-              convenio.url_documento = null;
-              convenio.contenido_documento = await fs.readFile(pdfFile.path);
-              convenio.flag_adjunto = "BIN";
-          }
-      }
-
-      // Guardar los cambios en la base de datos
-      await convenio.save();
-
-      // Responder con un mensaje de éxito
-      return res.status(200).json({ mensaje: 'Convenio actualizado correctamente', convenio });
-  } catch (error) {
-      // Manejar errores y responder con un mensaje de error
-      console.error(error);
-      return res.status(500).json({ mensaje: 'Error al modificar convenio', error: error.message });
-  }
-};
-
-
-
 export const autorizarConvenio = async (req, res) =>{
   const { id } = req.params;
   const { autorizado, autorizado_por, autorizado_fecha } = req.body;
@@ -340,5 +263,86 @@ export const activarConvenio = async (req, res) => {
       res.json({ mensaje: 'Convenio desactivado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
+    }
+  };
+
+  const guardarArchivo = async (entidadDir, pdfFile) => {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const documentosDir = path.join(__dirname, 'documentos', entidadDir);
+    const originalFileName = pdfFile.originalname;
+    const filePath = path.join(documentosDir, originalFileName);
+  
+    await fs.mkdir(documentosDir, { recursive: true });
+    await fs.copyFile(pdfFile.path, filePath);
+  
+    return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
+  };
+  
+  
+  export const actualizarConvenio = async (req, res) => {
+    const { id } = req.params;
+    const { descripcion_convenio,
+      fecha_convenio,
+      id_departamento,
+      id_provincia,
+      id_distrito,
+      flag_adjunto, 
+      modificado_por,
+      modificado_fecha  
+     } = req.body;
+
+    const pdfFile = req.file;
+
+    console.log(pdfFile);
+  
+    try {
+        // Validar el tamaño del archivo adjunto
+        if (pdfFile && pdfFile.size > 10000000) {
+            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
+        }
+  
+        let url_documento = null;
+        let contenido_documento = null;
+  
+        // Manejar la lógica según el tipo de adjunto (URL o BIN)
+        if (pdfFile) {
+            if (flag_adjunto === 'URL') {
+                url_documento = await guardarArchivo('convenios', pdfFile);
+            } else if (flag_adjunto === 'BIN') {
+                contenido_documento = await fs.readFile(pdfFile.path);
+            }
+        }
+  
+        // Actualizar el convenio en la base de datos
+        const convenioActualizado = await Convenio.update(
+            {
+                descripcion_convenio,
+                fecha_convenio,
+                id_departamento,
+                id_provincia,
+                id_distrito,
+                flag_adjunto,
+                url_documento,
+                contenido_documento,
+                modificado_por,
+                modificado_fecha          },
+            {
+                where: { id },
+            }
+        );
+  
+        if (convenioActualizado[0] === 0) {
+            return res.status(404).json({ mensaje: 'No se encontró el convenio con el ID proporcionado' });
+        }
+  
+        // Obtener el convenio actualizado después de la operación de actualización
+        const convenio = await Convenio.findByPk(id);
+  
+        // Responder con el convenio actualizado
+        return res.json({ mensaje: 'Convenio actualizado con éxito', convenio });
+    } catch (error) {
+        // Manejar errores y responder con un mensaje de error
+        console.error(error);
+        return res.status(500).json({ mensaje: 'Error al actualizar convenio', error: error.message });
     }
   };
