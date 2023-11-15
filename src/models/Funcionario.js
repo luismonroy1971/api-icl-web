@@ -13,9 +13,17 @@ export const Funcionario = sequelize.define('funcionarios',{
     position:{
         type: DataTypes.STRING
     },
-    image:{
-        type: DataTypes.STRING
+    flag_adjunto:{
+        type: DataTypes.ENUM(['URL', 'BIN']),
+    },    
+    url_documento: {
+        type: DataTypes.STRING,
     },
+      // Campo BLOB para la imagen
+    contenido_documento: {
+        type: DataTypes.BLOB('long'),
+    }
+    ,
     link:{
         type: DataTypes.TEXT
     },

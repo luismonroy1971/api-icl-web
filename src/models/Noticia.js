@@ -17,9 +17,16 @@ export const Noticia = sequelize.define('noticias',{
     fecha_noticia:{
         type: DataTypes.STRING
     },
-    url_imagen_portada:{
-        type: DataTypes.STRING
-    },
+    flag_adjunto:{
+        type: DataTypes.ENUM(['URL', 'BIN']),
+      },    
+      url_documento: {
+          type: DataTypes.STRING,
+      },
+      // Campo BLOB para el PDF
+      contenido_documento: {
+          type: DataTypes.BLOB('long'),
+      },
     orden:{
         type: DataTypes.INTEGER
     },
