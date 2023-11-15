@@ -7,9 +7,16 @@ export const Proyecto = sequelize.define('proyectos',{
         primaryKey: true,
         autoIncrement: true
     },
-    image:{
-        type: DataTypes.STRING
-    },
+    flag_adjunto:{
+        type: DataTypes.ENUM(['URL', 'BIN']),
+      },    
+      url_documento: {
+          type: DataTypes.STRING,
+      },
+      // Campo BLOB para el PDF
+      contenido_documento: {
+          type: DataTypes.BLOB('long'),
+      },
     video:{
         type: DataTypes.STRING
     },

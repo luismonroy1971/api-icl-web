@@ -15,7 +15,7 @@ export const Noticia = sequelize.define('noticias',{
         type: DataTypes.STRING(2000)
     },
     fecha_noticia:{
-        type: DataTypes.STRING
+        type: DataTypes.DATE
     },
     flag_adjunto:{
         type: DataTypes.ENUM(['URL', 'BIN']),

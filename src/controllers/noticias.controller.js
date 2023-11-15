@@ -56,7 +56,7 @@ export const buscarNoticias = async (req, res) => {
       }
 
       const noticias = await Noticia.findAll({
-          attributes: ['fecha_noticia', 'id_categoria_noticia', 'titulo_noticia', 'descripcion_noticia', 'autorizado', 'activo', 'url_documento', 'contenido_documento'],
+          attributes: ['id','fecha_noticia', 'id_categoria_noticia', 'titulo_noticia', 'descripcion_noticia', 'autorizado', 'activo', 'url_documento', 'contenido_documento'],
           where: Object.keys(whereClause).length === 0 ? {} : whereClause,
           order: [
               ['orden', 'DESC'],
@@ -74,7 +74,7 @@ export const buscarNoticias = async (req, res) => {
       });
 
       res.json(noticiasConUrlImagenPortada);
-      
+
   } catch (error) {
       return res.status(500).json({ mensaje: error.message });
   }
@@ -189,6 +189,7 @@ export const actualizarNoticia = async (req, res) => {
         // Actualizar la noticia en la base de datos
         const [numRowsUpdated, [noticiaActualizada]] = await Noticia.update(
             {
+                
                 titulo_noticia,
                 descripcion_noticia,
                 fecha_noticia,
