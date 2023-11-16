@@ -261,8 +261,6 @@ export const actualizarConvenio = async (req, res) => {
       const __dirname = path.dirname(fileURLToPath(import.meta.url));
       const documentosDir = path.join(
         __dirname,
-        '..',
-        'public',
         'documentos',
         'convenios'
       );

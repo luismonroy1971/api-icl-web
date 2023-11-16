@@ -7,95 +7,115 @@ import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 const baseUrl = process.env.BASE_URL; 
 
-export const leerNoticias = async (req, res) =>{
+export const leerNoticias = async (req, res) => {
     try {
         const noticias = await Noticia.findAll({
             where: {
-              activo: '1', 
+                activo: '1',
             },
-          });
+            include: [{
+                model: ImagenNoticia,
+                where: { activo: '1' }, // Puedes agregar condiciones adicionales si es necesario
+                required: false, // Utiliza false si quieres obtener noticias incluso si no tienen imágenes asociadas
+            }],
+        });
+
         res.json(noticias);
     } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
+        return res.status(500).json({ mensaje: error.message });
     }
-
-}
+};
 
 export const buscarNoticias = async (req, res) => {
-  const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia, autorizado, activo } = req.query;
+    const { fecha_noticia, id_categoria_noticia, titulo_noticia, descripcion_noticia, autorizado, activo } = req.query;
 
-  try {
-      const whereClause = {};
+    try {
+        const whereClause = {};
 
-      if (fecha_noticia) {
-          whereClause.fecha_noticia = fecha_noticia;
-      }
+        if (fecha_noticia) {
+            whereClause.fecha_noticia = fecha_noticia;
+        }
 
-      if (autorizado) {
-          whereClause.autorizado = autorizado;
-      }
+        if (autorizado) {
+            whereClause.autorizado = autorizado;
+        }
 
-      if (id_categoria_noticia) {
-          whereClause.id_categoria_noticia = id_categoria_noticia;
-      }
+        if (id_categoria_noticia) {
+            whereClause.id_categoria_noticia = id_categoria_noticia;
+        }
 
-      if (titulo_noticia) {
-          whereClause.titulo_noticia = {
-              [Sequelize.Op.like]: `%${titulo_noticia}%`
-          };
-      }
+        if (titulo_noticia) {
+            whereClause.titulo_noticia = {
+                [Sequelize.Op.like]: `%${titulo_noticia}%`
+            };
+        }
 
-      if (descripcion_noticia) {
-          whereClause.descripcion_noticia = {
-              [Sequelize.Op.like]: `%${descripcion_noticia}%`
-          };
-      }
+        if (descripcion_noticia) {
+            whereClause.descripcion_noticia = {
+                [Sequelize.Op.like]: `%${descripcion_noticia}%`
+            };
+        }
 
-      if (activo) {
-          whereClause.activo = activo;
-      }
+        if (activo) {
+            whereClause.activo = activo;
+        }
 
-      const noticias = await Noticia.findAll({
-          attributes: ['id','fecha_noticia', 'id_categoria_noticia', 'titulo_noticia', 'descripcion_noticia', 'autorizado', 'activo', 'url_documento', 'contenido_documento'],
-          where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-          order: [
-              ['orden', 'DESC'],
-          ]
-      });
+        const noticias = await Noticia.findAll({
+            attributes: ['id', 'fecha_noticia', 'id_categoria_noticia', 'titulo_noticia', 'descripcion_noticia', 'autorizado', 'activo', 'url_documento', 'contenido_documento'],
+            where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+            order: [
+                ['orden', 'DESC'],
+            ],
+            include: [{
+                model: ImagenNoticia,
+                where: { activo: '1' }, // Puedes agregar condiciones adicionales si es necesario
+                required: false, // Utiliza false si quieres obtener noticias incluso si no tienen imágenes asociadas
+            }],
+        });
 
-      // Mapear los resultados para agregar el campo virtual 'url_imagen_portada'
-      const noticiasConUrlImagenPortada = noticias.map((noticia) => {
-          const { url_documento, contenido_documento } = noticia;
-          
-          // Asegurarse de que contenido_documento no sea null antes de acceder a 'toString'
-          const url_imagen_portada = contenido_documento ? `data:image/png;base64,${contenido_documento.toString('base64')}` : url_documento;
+        // Mapear los resultados para agregar el campo virtual 'url_imagen_portada'
+        const noticiasConUrlImagenPortada = noticias.map((noticia) => {
+            const { url_documento, contenido_documento } = noticia;
 
-          return { ...noticia.toJSON(), url_imagen_portada };
-      });
+            // Asegurarse de que contenido_documento no sea null antes de acceder a 'toString'
+            const url_imagen_portada = contenido_documento ? `data:image/png;base64,${contenido_documento.toString('base64')}` : url_documento;
 
-      res.json(noticiasConUrlImagenPortada);
+            return { ...noticia.toJSON(), url_imagen_portada };
+        });
 
-  } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
-  }
+        res.json(noticiasConUrlImagenPortada);
+
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
+    }
 };
 
 
-
-export const leerNoticia = async (req, res) =>{
+export const leerNoticia = async (req, res) => {
     const { id } = req.params;
     try {
         const noticia = await Noticia.findOne({
-            where:{
+            where: {
                 id
-            }
-        })
-        res.json(noticia);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
+            },
+            include: [{
+                model: ImagenNoticia,
+                where: { activo: '1' }, // Puedes agregar condiciones adicionales si es necesario
+                required: false, // Utiliza false si quieres obtener la noticia incluso si no tiene imágenes asociadas
+            }],
+        });
 
-}
+        // Mapear los resultados para agregar el campo virtual 'url_imagen_portada'
+        const { url_documento, contenido_documento } = noticia;
+        const url_imagen_portada = contenido_documento ? `data:image/png;base64,${contenido_documento.toString('base64')}` : url_documento;
+        const noticiaConUrlImagenPortada = { ...noticia.toJSON(), url_imagen_portada };
+
+        res.json(noticiaConUrlImagenPortada);
+    } catch (error) {
+        return res.status(500).json({ mensaje: error.message });
+    }
+};
+
 
 
 export const crearNoticia = async (req, res) => {

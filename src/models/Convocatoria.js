@@ -1,5 +1,16 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/database.js';
+import { Anexo } from './Anexo.js';
+import { Curriculo } from './Curriculo.js';
+import { Comunicacion1 } from './Comunicacion1.js';
+import { Comunicacion2 } from './Comunicacion2.js';
+import { Comunicacion3 } from './Comunicacion3.js';
+import { Comunicacion } from './Comunicacion.js';
+import { Aviso } from './Aviso.js';
+import { Examen } from './Examen.js';
+import { Entrevista } from './Entrevista.js';
+import { Final } from './Final.js';
+
 
 export const Convocatoria = sequelize.define('convocatorias', {
     id: {
@@ -22,67 +33,6 @@ export const Convocatoria = sequelize.define('convocatorias', {
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },   
-    url_anexos: {
-        type: DataTypes.STRING,
-    },
-    url_comunicacion1: {
-        type: DataTypes.STRING,
-    },
-    url_comunicacion2: {
-        type: DataTypes.STRING,
-    },
-    url_comunicacion3: {
-        type: DataTypes.STRING,
-    },
-    url_comunicaciones: {
-        type: DataTypes.STRING,
-    },
-    url_aviso: {
-        type: DataTypes.STRING,
-    },
-    url_resultado_evaluacion_curricular: {
-        type: DataTypes.STRING,
-    },
-    url_resultado_examen: {
-        type: DataTypes.STRING,
-    },
-    url_resultado_entrevista: {
-        type: DataTypes.STRING,
-    },
-    url_puntaje_final: {
-        type: DataTypes.STRING,
-    },
-    // Nuevos campos con tipo BLOB
-    contenido_anexos: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_comunicacion1: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_comunicacion2: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_comunicacion3: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_comunicaciones: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_aviso: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_resultado_evaluacion_curricular: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_resultado_examen: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_resultado_entrevista: {
-        type: DataTypes.BLOB('long'),
-    },
-    contenido_puntaje_final: {
-        type: DataTypes.BLOB('long'),
-    },
     estado_convocatoria: {
         type: DataTypes.ENUM(['Cancelado', 'Cerrado', 'Desierto']),
     },
@@ -113,3 +63,55 @@ export const Convocatoria = sequelize.define('convocatorias', {
         defaultValue: '1',
     }
 }, { timestamps: false });
+
+Convocatoria.hasMany(Anexo,{
+    foreignKey: 'id_convocatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Comunicacion1,{
+    foreignKey: 'id_convocatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Comunicacion2,{
+    foreignKey: 'id_convocatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Comunicacion3,{
+    foreignKey: 'id_convocatoria',
+    sourceKey: 'id'
+})
+
+
+
+Convocatoria.hasMany(Comunicacion,{
+    foreignKey: 'id_convocatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Aviso,{
+    foreignKey: 'id_convoatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Curriculo,{
+    foreignKey: 'id_convoatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Examen,{
+    foreignKey: 'id_convoatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Entrevista,{
+    foreignKey: 'id_convoatoria',
+    sourceKey: 'id'
+})
+
+Convocatoria.hasMany(Final,{
+    foreignKey: 'id_convoatoria',
+    sourceKey: 'id'
+})
