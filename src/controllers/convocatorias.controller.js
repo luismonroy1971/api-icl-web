@@ -4,6 +4,16 @@ import fs from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import slugify from 'slugify';
+import { Anexo } from '../models/Anexo.js';
+import { Comunicacion1 } from '../models/Comunicacion1.js';
+import { Comunicacion2 } from '../models/Comunicacion2.js';
+import { Comunicacion3 } from '../models/Comunicacion3.js';
+import { Comunicacion } from '../models/Comunicacion.js';
+import { Aviso } from '../models/Aviso.js';
+import { Examen } from '../models/Examen.js';
+import { Final } from '../models/Final.js';
+import { Curriculo } from '../models/Curriculo.js';
+import { Entrevista } from '../models/Entrevista.js';
 
 export const obtenerPeriodos = async (req, res) => {
   try {
@@ -24,60 +34,105 @@ export const obtenerPeriodos = async (req, res) => {
   }
 };
 
+
+
 export const buscarConvocatorias = async (req, res) => {
-    const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (tipo_convocatoria) {
-        whereClause.tipo_convocatoria = tipo_convocatoria;
-      }
-      
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado, activo } = req.query;
 
-      if (id_area) {
-        whereClause.id_area = id_area;
-      }
-  
-      if (numero_convocatoria) {
-        whereClause.numero_convocatoria = numero_convocatoria;
-      }
-  
-      if (periodo_convocatoria) {
-        whereClause.periodo_convocatoria = periodo_convocatoria;
-      }
-  
-      if (estado_convocatoria) {
-        whereClause.estado_convocatoria = estado_convocatoria;
-      }
-  
-      if (descripcion_convocatoria) {
-        whereClause.descripcion_convocatoria = {
-          [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
-        };
-      }
+  try {
+    const whereClause = {};
 
-      if (activo) {
-        whereClause.activo = activo;
-      }
-  
-      const convocatorias = await Convocatoria.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['periodo_convocatoria', 'DESC'],
-          ['numero_convocatoria', 'DESC']
-        ]
-      });
-  
-      res.json(convocatorias);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+    if (tipo_convocatoria) {
+      whereClause.tipo_convocatoria = tipo_convocatoria;
     }
-  };
-  
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (id_area) {
+      whereClause.id_area = id_area;
+    }
+
+    if (numero_convocatoria) {
+      whereClause.numero_convocatoria = numero_convocatoria;
+    }
+
+    if (periodo_convocatoria) {
+      whereClause.periodo_convocatoria = periodo_convocatoria;
+    }
+
+    if (estado_convocatoria) {
+      whereClause.estado_convocatoria = estado_convocatoria;
+    }
+
+    if (descripcion_convocatoria) {
+      whereClause.descripcion_convocatoria = {
+        [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const convocatorias = await Convocatoria.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['periodo_convocatoria', 'DESC'],
+        ['numero_convocatoria', 'DESC']
+      ],
+      include: [
+        {
+          model: Anexo,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Comunicacion1,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Comunicacion2,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Comunicacion3,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Comunicacion,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Aviso,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Curriculo,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Entrevista,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Examen,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        {
+          model: Final,
+          attributes: ['id', 'flag_adjunto', 'url_documento', 'contenido_documento'],
+        },
+        // Repite esto para cada modelo relacionado
+      ],
+    });
+
+    res.json(convocatorias);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 
 

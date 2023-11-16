@@ -19,11 +19,11 @@ export const leerAvisos = async (req, res) =>{
 }
 
 export const leerAviso = async (req, res) =>{
-    const { id } = req.params;
+    const { id_convocatoria } = req.params;
     try {
         const aviso = await Aviso.findOne({
             where:{
-                id
+                id_convocatoria
             }
         })
         res.json(aviso);

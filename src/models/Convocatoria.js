@@ -92,26 +92,26 @@ Convocatoria.hasMany(Comunicacion,{
 })
 
 Convocatoria.hasMany(Aviso,{
-    foreignKey: 'id_convoatoria',
+    foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
 
 Convocatoria.hasMany(Curriculo,{
-    foreignKey: 'id_convoatoria',
+    foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
 
 Convocatoria.hasMany(Examen,{
-    foreignKey: 'id_convoatoria',
+    foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
 
 Convocatoria.hasMany(Entrevista,{
-    foreignKey: 'id_convoatoria',
+    foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
 
 Convocatoria.hasMany(Final,{
-    foreignKey: 'id_convoatoria',
+    foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
