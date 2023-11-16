@@ -141,7 +141,7 @@ export const eliminarImagen = async (req, res) =>{
                 id,
             }
         })
-        res.sendStatus(204);
+        return res.status(200).json({ mensaje: 'Imagen eliminada correctamente' });
     } catch (error) {
         return res.status(500).json({ mensaje: error.message})
     }

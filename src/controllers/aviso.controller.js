@@ -59,7 +59,8 @@ export const crearAviso = async (req, res) => {
         const nuevaAviso = await Aviso.create({
             url_documento,
             contenido_documento,
-            pdfFile,
+            id_convocatoria,
+            flag_adjunto,
         });
 
         // Responder con la nueva aviso creada
@@ -107,7 +108,8 @@ export const actualizarAviso = async (req, res) => {
             {
                 url_documento,
                 contenido_documento,
-                flag_adjunto
+                flag_adjunto,
+                id_convocatoria
             },
             {
                 where: { id },  // Condición para actualizar el registro con el ID específico
