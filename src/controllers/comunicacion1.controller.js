@@ -21,12 +21,12 @@ export const leerComunicaciones1 = async (req, res) =>{
 export const leerComunicacion1 = async (req, res) =>{
     const { id } = req.params;
     try {
-        const aviso = await Comunicacion1.findOne({
+        const comunicacion1 = await Comunicacion1.findOne({
             where:{
                 id
             }
         })
-        res.json(aviso);
+        res.json(comunicacion1);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
@@ -55,33 +55,34 @@ export const crearComunicacion1 = async (req, res) => {
             }
         }
 
-        // Crear una nueva aviso en la base de datos
+        // Crear una nueva comunicacion1 en la base de datos
         const nuevaComunicacion1 = await Comunicacion1.create({
             url_documento,
             contenido_documento,
-            flag_adjunto
+            id_convocatoria,
+            flag_adjunto,
         });
 
-        // Responder con la nueva aviso creada
+        // Responder con la nueva comunicacion1 creada
         return res.status(201).json({ mensaje: 'Comunicacion1 creado con éxito', nuevaComunicacion1 });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear aviso', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear comunicacion1', error: error.message });
     }
 };
 
 
 export const actualizarComunicacion1 = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la aviso se pasa como un parámetro en la URL
+    const { id } = req.params; // Suponiendo que el ID de la comunicacion1 se pasa como un parámetro en la URL
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
 
     try {
-        // Verificar si la aviso con el ID dado existe
-        const avisoExistente = await Comunicacion1.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        // Verificar si la comunicacion1 con el ID dado existe
+        const comunicacion1Existente = await Comunicacion1.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
 
-        if (!avisoExistente) {
+        if (!comunicacion1Existente) {
             return res.status(404).json({ mensaje: 'Comunicacion1 no encontrada' });
         }
 
@@ -102,12 +103,13 @@ export const actualizarComunicacion1 = async (req, res) => {
             }
         }
 
-        // Actualizar la aviso en la base de datos
-        const [numRowsUpdated, [avisoActualizada]] = await Comunicacion1.update(
+        // Actualizar la comunicacion1 en la base de datos
+        const [numRowsUpdated, [comunicacion1Actualizada]] = await Comunicacion1.update(
             {
                 url_documento,
                 contenido_documento,
-                flag_adjunto
+                flag_adjunto,
+                id_convocatoria
             },
             {
                 where: { id },  // Condición para actualizar el registro con el ID específico
@@ -117,15 +119,15 @@ export const actualizarComunicacion1 = async (req, res) => {
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró la aviso para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró la comunicacion1 para actualizar' });
         }
 
-        // Responder con la aviso actualizada
-        return res.status(200).json({ mensaje: 'Comunicacion1 actualizado con éxito', avisoActualizada });
+        // Responder con la comunicacion1 actualizada
+        return res.status(200).json({ mensaje: 'Comunicacion1 actualizado con éxito', comunicacion1Actualizada });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar aviso', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al actualizar comunicacion1', error: error.message });
     }
 };
 
@@ -139,7 +141,7 @@ export const eliminarComunicacion1 = async (req, res) =>{
                 id,
             }
         })
-        res.sendStatus(204);
+        return res.status(204).json({ mensaje: 'Comunicacion1 eliminado'});
     } catch (error) {
         return res.status(500).json({ mensaje: error.message})
     }
@@ -157,3 +159,41 @@ const guardarArchivo = async (entidadDir, pdfFile) => {
     return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
   };
   
+  export const activarComunicacion1 = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const comunicacion1 = await Comunicacion1.findByPk(id);
+  
+      if (!comunicacion1) {
+        return res.status(404).json({ mensaje: 'Comunicacion1 no encontrado' });
+      }
+  
+      comunicacion1.activo = '1'; // Establecer activo en '1'
+      await comunicacion1.save();
+  
+      res.json({ mensaje: 'Comunicacion1 activada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };
+  
+  
+  export const desactivarComunicacion1 = async (req, res) => {
+    try {
+      const { id } = req.params; 
+  
+      const comunicacion1 = await Comunicacion1.findByPk(id);
+  
+      if (!comunicacion1) {
+        return res.status(404).json({ mensaje: 'Comunicacion1 no encontrada' });
+      }
+  
+      comunicacion1.activo = '0'; // Establecer activo en '0'
+      await comunicacion1.save();
+  
+      res.json({ mensaje: 'Comunicacion1 desactivada correctamente' });
+    } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+    }
+  };

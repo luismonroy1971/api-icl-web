@@ -26,6 +26,12 @@ import menusRoutes from './routes/menu.routes.js'
 import opcionesRoutes from './routes/opcionesusuario.routes.js'
 import campostablaRoutes from './routes/campostablas.routes.js'
 import popupRoutes from './routes/popup.routes.js'
+import avisoRoutes from './routes/aviso.routes.js'
+import anexoRoutes from './routes/anexo.routes.js'
+import curriculoRoutes from './routes/curriculo.routes.js'
+import comunicacion1Routes from './routes/comunicacion1.routes.js'
+import entrevistaRoutes from './routes/entrevista.routes.js'
+
 
 const app = express();
 //middlewares
@@ -58,5 +64,10 @@ app.use(menusRoutes);
 app.use(opcionesRoutes);
 app.use(campostablaRoutes);
 app.use(popupRoutes);
+app.use(avisoRoutes);
+app.use(anexoRoutes);
+app.use(curriculoRoutes);
+app.use(comunicacion1Routes);
+app.use(entrevistaRoutes);
 
 export default app
