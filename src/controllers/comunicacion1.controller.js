@@ -1,45 +1,45 @@
-import {ImagenNoticia} from '../models/ImagenNoticia.js';
+import {Comunicacion1} from '../models/Comunicacion1.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 const baseUrl = process.env.BASE_URL; 
 
-export const leerImagenes = async (req, res) =>{
+export const leerComunicaciones1 = async (req, res) =>{
     try {
-        const imagenes = await ImagenNoticia.findAll({
+        const comunicaciones1 = await Comunicacion1.findAll({
             where: {
               activo: '1', 
             },
           });
-        res.json(imagenes);
+        res.json(comunicaciones1);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
 
 }
 
-export const leerImagen = async (req, res) =>{
+export const leerComunicacion1 = async (req, res) =>{
     const { id } = req.params;
     try {
-        const imagen = await ImagenNoticia.findOne({
+        const aviso = await Comunicacion1.findOne({
             where:{
                 id
             }
         })
-        res.json(imagen);
+        res.json(aviso);
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
 
 }
 
-export const crearImagen = async (req, res) => {
-    const { flag_adjunto, id_noticia } = req.body;
-    const imgFile = req.file;
+export const crearComunicacion1 = async (req, res) => {
+    const { flag_adjunto, id_convocatoria } = req.body;
+    const pdfFile = req.file;
 
     try {
         // Validar el tamaño del archivo adjunto
-        if (imgFile && imgFile.size > 10000000) {
+        if (pdfFile && pdfFile.size > 10000000) {
             return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
         }
 
@@ -47,47 +47,46 @@ export const crearImagen = async (req, res) => {
         let contenido_documento = null;
 
         // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (imgFile) {
+        if (pdfFile) {
             if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('imagenes', imgFile);
+                url_documento = await guardarArchivo('comunicaciones1', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(imgFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
-        // Crear una nueva imagen en la base de datos
-        const nuevaImagen = await ImagenNoticia.create({
+        // Crear una nueva aviso en la base de datos
+        const nuevaComunicacion1 = await Comunicacion1.create({
             url_documento,
             contenido_documento,
-            flag_adjunto,
-            id_noticia,
+            flag_adjunto
         });
 
-        // Responder con la nueva imagen creada
-        return res.status(201).json({ mensaje: 'Imagen creada con éxito', nuevaImagen });
+        // Responder con la nueva aviso creada
+        return res.status(201).json({ mensaje: 'Comunicacion1 creado con éxito', nuevaComunicacion1 });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear imagen', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear aviso', error: error.message });
     }
 };
 
 
-export const actualizarImagen = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la imagen se pasa como un parámetro en la URL
-    const { flag_adjunto, id_noticia } = req.body;
-    const imgFile = req.file;
+export const actualizarComunicacion1 = async (req, res) => {
+    const { id } = req.params; // Suponiendo que el ID de la aviso se pasa como un parámetro en la URL
+    const { flag_adjunto, id_convocatoria } = req.body;
+    const pdfFile = req.file;
 
     try {
-        // Verificar si la imagen con el ID dado existe
-        const imagenExistente = await ImagenNoticia.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        // Verificar si la aviso con el ID dado existe
+        const avisoExistente = await Comunicacion1.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
 
-        if (!imagenExistente) {
-            return res.status(404).json({ mensaje: 'Imagen no encontrada' });
+        if (!avisoExistente) {
+            return res.status(404).json({ mensaje: 'Comunicacion1 no encontrada' });
         }
 
         // Validar el tamaño del archivo adjunto si se proporciona uno nuevo
-        if (imgFile && imgFile.size > 10000000) {
+        if (pdfFile && pdfFile.size > 10000000) {
             return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
         }
 
@@ -95,21 +94,20 @@ export const actualizarImagen = async (req, res) => {
         let contenido_documento = null;
 
         // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (imgFile) {
+        if (pdfFile) {
             if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('imagenes', imgFile);
+                url_documento = await guardarArchivo('comunicaciones1', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(imgFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
-        // Actualizar la imagen en la base de datos
-        const [numRowsUpdated, [imagenActualizada]] = await ImagenNoticia.update(
+        // Actualizar la aviso en la base de datos
+        const [numRowsUpdated, [avisoActualizada]] = await Comunicacion1.update(
             {
                 url_documento,
                 contenido_documento,
-                flag_adjunto,
-                id_noticia,
+                flag_adjunto
             },
             {
                 where: { id },  // Condición para actualizar el registro con el ID específico
@@ -119,24 +117,24 @@ export const actualizarImagen = async (req, res) => {
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró la imagen para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró la aviso para actualizar' });
         }
 
-        // Responder con la imagen actualizada
-        return res.status(200).json({ mensaje: 'Imagen actualizada con éxito', imagenActualizada });
+        // Responder con la aviso actualizada
+        return res.status(200).json({ mensaje: 'Comunicacion1 actualizado con éxito', avisoActualizada });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar imagen', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al actualizar aviso', error: error.message });
     }
 };
 
 
-export const eliminarImagen = async (req, res) =>{
+export const eliminarComunicacion1 = async (req, res) =>{
 
     try {
         const { id } = req.params
-        await ImagenNoticia.destroy({
+        await Comunicacion1.destroy({
             where:{
                 id,
             }
@@ -147,14 +145,14 @@ export const eliminarImagen = async (req, res) =>{
     }
 }
 
-const guardarArchivo = async (entidadDir, imgFile) => {
+const guardarArchivo = async (entidadDir, pdfFile) => {
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const documentosDir = path.join(__dirname, 'documentos', entidadDir);
-    const originalFileName = imgFile.originalname;
+    const originalFileName = pdfFile.originalname;
     const filePath = path.join(documentosDir, originalFileName);
   
     await fs.mkdir(documentosDir, { recursive: true });
-    await fs.copyFile(imgFile.path, filePath);
+    await fs.copyFile(pdfFile.path, filePath);
   
     return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
   };
