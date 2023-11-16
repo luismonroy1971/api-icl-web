@@ -31,7 +31,8 @@ import anexoRoutes from './routes/anexo.routes.js'
 import curriculoRoutes from './routes/curriculo.routes.js'
 import comunicacion1Routes from './routes/comunicacion1.routes.js'
 import entrevistaRoutes from './routes/entrevista.routes.js'
-
+import resultadoRoutes from './routes/final.routes.js'
+import examenRoutes from './routes/examen.routes.js'
 
 const app = express();
 //middlewares
@@ -69,5 +70,7 @@ app.use(anexoRoutes);
 app.use(curriculoRoutes);
 app.use(comunicacion1Routes);
 app.use(entrevistaRoutes);
+app.use(resultadoRoutes);
+app.use(examenRoutes);
 
 export default app
