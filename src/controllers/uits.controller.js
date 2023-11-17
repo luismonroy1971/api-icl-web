@@ -2,7 +2,7 @@ import {Uit} from '../models/Uit.js'
 
 export const leerUits = async (req, res) => {
     try {
-      const { activo } = req.params;
+      const { activo } = req.query;
       const whereClause = activo ? { activo } : {};
   
       const uits = await Uit.findAll({

@@ -3,7 +3,7 @@ import { Op } from 'sequelize';
 
 export const leerAreas = async (req, res) => {
     try {
-      const { activo } = req.params;
+      const { activo } = req.query;
       const whereClause = activo ? { activo } : {};
   
       const areas = await Area.findAll({
