@@ -42,7 +42,7 @@ export const crearUit = async (req, res) =>{
             valor_uit, 
             base_legal
         })
-        res.json(nuevaUit);
+        res.status(201).json({ message: 'UIT registrada con éxito' })
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
