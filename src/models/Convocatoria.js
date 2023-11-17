@@ -34,7 +34,7 @@ export const Convocatoria = sequelize.define('convocatorias', {
       type: DataTypes.ENUM(['URL', 'BIN']),
     },   
     estado_convocatoria: {
-        type: DataTypes.ENUM(['Abierta','Cancelada', 'Cerrada', 'Desierta']),
+        type: DataTypes.ENUM(['Abierto','Cancelado', 'Cerrado', 'Desierto']),
     },
     creado_por: {
         type: DataTypes.STRING,
