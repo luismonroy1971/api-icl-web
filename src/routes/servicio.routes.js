@@ -3,6 +3,7 @@ import { crearServicio, actualizarServicio, acumularValoresDeServicio, obtenerVa
 const router = Router();
 // router.get('/servicios',leerServicios);
 router.get('/servicios',buscarServicios);
+router.get('/leerservicios',leerServicios);
 router.get('/calculoservicios',obtenerValorDeServicio);
 router.get('/sumarsubservicios',acumularValoresDeServicio);
 router.post('/servicios', crearServicio);

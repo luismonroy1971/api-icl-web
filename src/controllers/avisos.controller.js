@@ -51,38 +51,40 @@ export const crearAviso = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('avisos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
             }
         }
 
-        // Crear una nueva aviso en la base de datos
-        const nuevaAviso = await Aviso.create({
+        // Crear una nueva Aviso en la base de datos
+        const nuevaaviso = await Aviso.create({
             url_documento,
             contenido_documento,
             id_convocatoria,
             flag_adjunto,
         });
 
-        // Responder con la nueva aviso creada
-        return res.status(201).json({ mensaje: 'Aviso creado con éxito', nuevaAviso });
+        // Responder con la nueva Aviso creada
+        return res.status(201).json({ mensaje: 'Aviso creada con éxito', nuevaaviso });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear aviso', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear Aviso', error: error.message });
     }
 };
 
 
+
+
 export const actualizarAviso = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la aviso se pasa como un parámetro en la URL
+    const { id } = req.params;
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
 
     try {
-        // Verificar si la aviso con el ID dado existe
-        const avisoExistente = await Aviso.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        // Verificar si la Aviso con el ID dado existe
+        const AvisoExistente = await Aviso.findByPk(id);
 
-        if (!avisoExistente) {
+        if (!AvisoExistente) {
             return res.status(404).json({ mensaje: 'Aviso no encontrada' });
         }
 
@@ -99,12 +101,12 @@ export const actualizarAviso = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('avisos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
             }
         }
 
-        // Actualizar la aviso en la base de datos
-        const [numRowsUpdated, [avisoActualizada]] = await Aviso.update(
+        // Actualizar la Aviso en la base de datos
+        const [numRowsUpdated, [AvisoActualizada]] = await Aviso.update(
             {
                 url_documento,
                 contenido_documento,
@@ -112,22 +114,22 @@ export const actualizarAviso = async (req, res) => {
                 id_convocatoria
             },
             {
-                where: { id },  // Condición para actualizar el registro con el ID específico
-                returning: true,  // Para devolver el registro actualizado
+                where: { id },
+                returning: true,
             }
         );
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró la aviso para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró el aviso para actualizar' });
         }
 
-        // Responder con la aviso actualizada
-        return res.status(200).json({ mensaje: 'Aviso actualizado con éxito', avisoActualizada });
+        // Responder con la Aviso actualizada
+        return res.status(200).json({ mensaje: 'Aviso actualizado con éxito', AvisoActualizada });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar aviso', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al actualizar Aviso', error: error.message });
     }
 };
 

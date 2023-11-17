@@ -33,6 +33,7 @@ export const leerComunicacion1 = async (req, res) =>{
 
 }
 
+
 export const crearComunicacion1 = async (req, res) => {
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
@@ -51,7 +52,7 @@ export const crearComunicacion1 = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('comunicaciones1', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
             }
         }
 
@@ -64,26 +65,28 @@ export const crearComunicacion1 = async (req, res) => {
         });
 
         // Responder con la nueva comunicacion1 creada
-        return res.status(201).json({ mensaje: 'Comunicacion1 creado con éxito', nuevaComunicacion1 });
+        return res.status(201).json({ mensaje: 'Comunicación creada con éxito', nuevaComunicacion1 });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear comunicacion1', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear comunicación', error: error.message });
     }
 };
 
 
+
+
 export const actualizarComunicacion1 = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la comunicacion1 se pasa como un parámetro en la URL
+    const { id } = req.params;
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
 
     try {
         // Verificar si la comunicacion1 con el ID dado existe
-        const comunicacion1Existente = await Comunicacion1.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        const comunicacion1Existente = await Comunicacion1.findByPk(id);
 
         if (!comunicacion1Existente) {
-            return res.status(404).json({ mensaje: 'Comunicacion1 no encontrada' });
+            return res.status(404).json({ mensaje: 'Comunicación no encontrada' });
         }
 
         // Validar el tamaño del archivo adjunto si se proporciona uno nuevo
@@ -99,7 +102,7 @@ export const actualizarComunicacion1 = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('comunicaciones1', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
+                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
             }
         }
 
@@ -112,24 +115,25 @@ export const actualizarComunicacion1 = async (req, res) => {
                 id_convocatoria
             },
             {
-                where: { id },  // Condición para actualizar el registro con el ID específico
-                returning: true,  // Para devolver el registro actualizado
+                where: { id },
+                returning: true,
             }
         );
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró la comunicacion1 para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró la comunicación para actualizar' });
         }
 
         // Responder con la comunicacion1 actualizada
-        return res.status(200).json({ mensaje: 'Comunicacion1 actualizado con éxito', comunicacion1Actualizada });
+        return res.status(200).json({ mensaje: 'Comunicación actualizada con éxito', comunicacion1Actualizada });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
         return res.status(500).json({ mensaje: 'Error al actualizar comunicacion1', error: error.message });
     }
 };
+
 
 
 export const eliminarComunicacion1 = async (req, res) =>{
@@ -141,7 +145,7 @@ export const eliminarComunicacion1 = async (req, res) =>{
                 id,
             }
         })
-        return res.status(204).json({ mensaje: 'Comunicacion1 eliminado'});
+        return res.status(204).json({ mensaje: 'Comunicación eliminada'});
     } catch (error) {
         return res.status(500).json({ mensaje: error.message})
     }

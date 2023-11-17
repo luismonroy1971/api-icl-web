@@ -23,6 +23,10 @@ export const registrarUsuario = async (req, res) => {
         opcionesusuarios.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion })),
         { transaction: t }
       );
+    } else {
+      // Si no se proporcionan opcionesusuarios, revertir la transacción y devolver un mensaje de error
+      await t.rollback();
+      return res.status(400).json({ message: 'Debe proporcionar al menos una opción de usuario' });
     }
 
     // Confirmar la transacción
@@ -64,7 +68,7 @@ export const iniciarSesion = async (req, res) => {
       res.status(200).json({ token, usuario });
     } catch (error) {
       console.error('Error al iniciar sesión:', error);
-      res.status(500).json({ message: 'Error en el servidor' });
+      res.status(500).json({ message: 'Error en el servidor' , error });
     }
   };
 
