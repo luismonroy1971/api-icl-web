@@ -51,7 +51,7 @@ export const crearAnexo = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('anexos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
@@ -68,21 +68,19 @@ export const crearAnexo = async (req, res) => {
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear Anexo', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear anexo', error: error.message });
     }
 };
 
 
-
-
 export const actualizarAnexo = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // Suponiendo que el ID de la anexo se pasa como un parámetro en la URL
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
 
     try {
         // Verificar si la anexo con el ID dado existe
-        const anexoExistente = await Anexo.findByPk(id);
+        const anexoExistente = await Anexo.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
 
         if (!anexoExistente) {
             return res.status(404).json({ mensaje: 'Anexo no encontrado' });
@@ -101,7 +99,7 @@ export const actualizarAnexo = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('anexos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
@@ -114,14 +112,14 @@ export const actualizarAnexo = async (req, res) => {
                 id_convocatoria
             },
             {
-                where: { id },
-                returning: true,
+                where: { id },  // Condición para actualizar el registro con el ID específico
+                returning: true,  // Para devolver el registro actualizado
             }
         );
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró el anexo para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró la anexo para actualizar' });
         }
 
         // Responder con la anexo actualizada
@@ -132,7 +130,6 @@ export const actualizarAnexo = async (req, res) => {
         return res.status(500).json({ mensaje: 'Error al actualizar anexo', error: error.message });
     }
 };
-
 
 
 export const eliminarAnexo = async (req, res) =>{
@@ -175,7 +172,7 @@ const guardarArchivo = async (entidadDir, pdfFile) => {
       anexo.activo = '1'; // Establecer activo en '1'
       await anexo.save();
   
-      res.json({ mensaje: 'Anexo activada correctamente' });
+      res.json({ mensaje: 'Anexo activado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
@@ -189,13 +186,13 @@ const guardarArchivo = async (entidadDir, pdfFile) => {
       const anexo = await Anexo.findByPk(id);
   
       if (!anexo) {
-        return res.status(404).json({ mensaje: 'Anexo no encontrada' });
+        return res.status(404).json({ mensaje: 'Anexo no encontrado' });
       }
   
       anexo.activo = '0'; // Establecer activo en '0'
       await anexo.save();
   
-      res.json({ mensaje: 'Anexo desactivada correctamente' });
+      res.json({ mensaje: 'Anexo desactivado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }

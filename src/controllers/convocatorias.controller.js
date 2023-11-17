@@ -208,6 +208,7 @@ export const crearConvocatoria = async (req, res) => {
         estado_convocatoria,
         creado_por,
         creado_fecha,
+        id_area
     } = req.body;
 
     try {
@@ -219,7 +220,7 @@ export const crearConvocatoria = async (req, res) => {
             estado_convocatoria,
             creado_por,
             creado_fecha,
-
+            id_area
         });
 
         return res.status(201).json({ mensaje: 'Convocatoria creada con éxito', nuevaConvocatoria });
@@ -239,6 +240,7 @@ export const actualizarConvocatoria = async (req, res) => {
         estado_convocatoria,
         modificado_por,
         modificado_fecha,
+        id_area
     } = req.body;
 
     // Lógica para manejar el almacenamiento de archivos adjuntos
@@ -262,6 +264,7 @@ export const actualizarConvocatoria = async (req, res) => {
                 estado_convocatoria,
                 modificado_por,
                 modificado_fecha,
+                id_area
             },
             {
                 where: { id },
