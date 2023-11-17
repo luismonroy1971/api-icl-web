@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import multer from 'multer'; 
-import { crearCurriculo, actualizarCurriculo, leerCurriculo, leerCurriculos, eliminarCurriculo, activarCurriculo, desactivarCurriculo } from '../controllers/curriculums.controller.js'
+import { crearCurriculo, actualizarCurriculo, leerCurriculo, leerCurriculums , eliminarCurriculo, activarCurriculo, desactivarCurriculo } from '../controllers/curriculums.controller.js'
 const router = Router();
 
 const storage = multer.diskStorage({
@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage: storage });
 
-router.get('/curriculos',leerCurriculos);
+router.get('/curriculos',leerCurriculums );
 router.post('/curriculos', upload.single('pdfFile'), crearCurriculo);
 router.put('/curriculos/:id', upload.single('pdfFile'),actualizarCurriculo);
 router.delete('/curriculos/:id',eliminarCurriculo);

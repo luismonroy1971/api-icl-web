@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
 const baseUrl = process.env.BASE_URL; 
 
-export const leerCurriculos = async (req, res) =>{
+export const leerCurriculums = async (req, res) =>{
     try {
         const curriculos = await Curriculo.findAll({
             where: {
@@ -51,7 +51,7 @@ export const crearCurriculo = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('curriculos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
@@ -64,25 +64,23 @@ export const crearCurriculo = async (req, res) => {
         });
 
         // Responder con la nueva curriculo creada
-        return res.status(201).json({ mensaje: 'Curriculum creado con éxito', nuevaCurriculo });
+        return res.status(201).json({ mensaje: 'Curriculo creado con éxito', nuevaCurriculo });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear Curriculum', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear curriculo', error: error.message });
     }
 };
 
 
-
-
 export const actualizarCurriculo = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.params; // Suponiendo que el ID de la curriculo se pasa como un parámetro en la URL
     const { flag_adjunto, id_convocatoria } = req.body;
     const pdfFile = req.file;
 
     try {
         // Verificar si la curriculo con el ID dado existe
-        const curriculoExistente = await Curriculo.findByPk(id);
+        const curriculoExistente = await Curriculo.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
 
         if (!curriculoExistente) {
             return res.status(404).json({ mensaje: 'Curriculo no encontrada' });
@@ -101,7 +99,7 @@ export const actualizarCurriculo = async (req, res) => {
             if (flag_adjunto === 'URL') {
                 url_documento = await guardarArchivo('curriculos', pdfFile);
             } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path, 'binary');
+                contenido_documento = await fs.readFile(pdfFile.path);
             }
         }
 
@@ -114,25 +112,24 @@ export const actualizarCurriculo = async (req, res) => {
                 id_convocatoria
             },
             {
-                where: { id },
-                returning: true,
+                where: { id },  // Condición para actualizar el registro con el ID específico
+                returning: true,  // Para devolver el registro actualizado
             }
         );
 
         // Verificar si se actualizó alguna fila
         if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró curriculum para actualizar' });
+            return res.status(404).json({ mensaje: 'No se encontró la curriculo para actualizar' });
         }
 
         // Responder con la curriculo actualizada
-        return res.status(200).json({ mensaje: 'Curriculo actualizada con éxito', curriculoActualizada });
+        return res.status(200).json({ mensaje: 'Curriculo actualizado con éxito', curriculoActualizada });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar curriculum', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al actualizar curriculo', error: error.message });
     }
 };
-
 
 
 export const eliminarCurriculo = async (req, res) =>{
@@ -175,7 +172,7 @@ const guardarArchivo = async (entidadDir, pdfFile) => {
       curriculo.activo = '1'; // Establecer activo en '1'
       await curriculo.save();
   
-      res.json({ mensaje: 'Curriculo activada correctamente' });
+      res.json({ mensaje: 'Curriculo activado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
@@ -195,7 +192,7 @@ const guardarArchivo = async (entidadDir, pdfFile) => {
       curriculo.activo = '0'; // Establecer activo en '0'
       await curriculo.save();
   
-      res.json({ mensaje: 'Curriculo desactivada correctamente' });
+      res.json({ mensaje: 'Curriculo desactivado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
