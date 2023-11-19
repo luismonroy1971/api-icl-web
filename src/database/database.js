@@ -12,9 +12,9 @@ dotenv.config();
 //   },
 // });
 
-const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_DIALECT, PORT } = process.env;
+const { DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, PORT } = process.env;
 
 export const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST,
-  dialect: DB_DIALECT,
+  dialect: 'postgres'
 });
