@@ -49,4 +49,7 @@ export const Norma = sequelize.define('normasinstitucionales', {
         type: DataTypes.CHAR(1),
         defaultValue: '1',
     },
-}, { timestamps: false });
+}, {
+    schema: "portal_icl",
+    timestamps: false
+});

@@ -3,13 +3,10 @@ import multer from 'multer';
 import { crearImagen,actualizarImagen, eliminarImagen, leerImagen, leerImagenes } from '../controllers/noticiaimagen.controller.js'
 const router = Router();
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, 'documentos/imagenes/'); // Ruta donde se guardarán los archivos
-    },
-    filename: function (req, file, cb) {
-      cb(null, file.originalname); // Usa el nombre original del archivo
-    },
-  });
+  filename: function (req, file, cb) {
+    cb(null, file.originalname); // Usa el nombre original del archivo
+  },
+});
   
   const upload = multer({ storage: storage });
 router.get('/imagenes',leerImagenes);

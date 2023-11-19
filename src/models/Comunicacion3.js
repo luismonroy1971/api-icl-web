@@ -21,5 +21,8 @@ export const Comunicacion3 = sequelize.define('comunicacion3', {
         type: DataTypes.CHAR(1),
         defaultValue: '1',
     }
-}, { timestamps: false });
+},{
+    schema: "portal_icl",
+    timestamps: false
+});
 

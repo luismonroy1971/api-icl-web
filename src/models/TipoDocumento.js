@@ -22,7 +22,10 @@ export const TipoDocumento = sequelize.define('tipodocumento',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 TipoDocumento.beforeCreate((tipoDocumento, options) => {
     tipoDocumento.label = tipoDocumento.descripcion_tipo_documento;

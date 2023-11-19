@@ -23,5 +23,8 @@ export const Uit = sequelize.define('uits',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 

@@ -15,7 +15,10 @@ export const Provincia = sequelize.define('provincias',{
     label:{
         type: DataTypes.STRING
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Provincia.beforeCreate((provincia, options) => {
     provincia.label = provincia.provincia;

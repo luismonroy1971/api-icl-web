@@ -62,7 +62,10 @@ export const Directiva = sequelize.define('directivas', {
         type: DataTypes.CHAR(1),
         defaultValue: '1',
     }
-}, { timestamps: false });
+}, {
+    schema: "portal_icl",
+    timestamps: false
+});
 
 Directiva.beforeCreate(async (directiva, options) => {
     const area = await Area.findByPk(directiva.id_area);

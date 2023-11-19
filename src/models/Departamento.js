@@ -16,7 +16,10 @@ export const Departamento = sequelize.define('departamentos',{
     label:{
         type: DataTypes.STRING
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Departamento.beforeCreate((departamento, options) => {
     departamento.label = departamento.departamento;

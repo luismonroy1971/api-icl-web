@@ -19,7 +19,10 @@ export const Categoria = sequelize.define('categorias',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Categoria.beforeCreate((categoria, options) => {
     categoria.label = categoria.descripcion_categoria;

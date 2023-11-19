@@ -34,7 +34,9 @@ export const leerFinal = async (req, res) =>{
 }
 
 export const crearFinal = async (req, res) => {
+    
     const { flag_adjunto, id_convocatoria } = req.body;
+
     const pdfFile = req.file;
 
     try {
@@ -43,122 +45,54 @@ export const crearFinal = async (req, res) => {
             return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
         }
 
-        let url_documento = null;
         let contenido_documento = null;
 
-        // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (pdfFile) {
-            if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('finales', pdfFile);
-            } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
-            }
+        // Manejar la lógica según el tipo de adjunto (BIN)
+        if (pdfFile && pdfFile.path) {
+            contenido_documento = await fs.readFile(pdfFile.path);
+        } else {
+            // Manejar el caso en el que no se proporciona ningún archivo
+            return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo para subir.' });
         }
 
-        // Crear una nueva final en la base de datos
-        const nuevaFinal = await Final.create({
-            url_documento,
+        // Crear una nueva comunicacion1 en la base de datos
+        const nuevoFinal = await Final.create({
             contenido_documento,
             id_convocatoria,
             flag_adjunto,
         });
 
-        // Responder con la nueva final creada
-        return res.status(201).json({ mensaje: 'Resultado Final creado con éxito', nuevaFinal });
+        // Responder con la nueva comunicacion1 creada
+        return res.status(201).json({ mensaje: 'Resultado Final creado con éxito', nuevoFinal });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
-        return res.status(500).json({ mensaje: 'Error al crear resultado final', error: error.message });
+        return res.status(500).json({ mensaje: 'Error al crear Resultado final', error: error.message });
     }
 };
 
 
-export const actualizarFinal = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la final se pasa como un parámetro en la URL
-    const { flag_adjunto, id_convocatoria } = req.body;
-    const pdfFile = req.file;
+export const eliminarFinal = async (req, res) => {
+    const { id } = req.params; // Obtén el ID desde los parámetros de la URL
 
     try {
-        // Verificar si la final con el ID dado existe
-        const finalExistente = await Final.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        // Busca la comunicación1 en la base de datos por ID
+        const final = await Final.findByPk(id);
 
-        if (!finalExistente) {
-            return res.status(404).json({ mensaje: 'Resultado Final no encontrada' });
+        // Verifica si la comunicación1 existe
+        if (!final) {
+            return res.status(404).json({ mensaje: 'Resultado Final no encontrado.' });
         }
 
-        // Validar el tamaño del archivo adjunto si se proporciona uno nuevo
-        if (pdfFile && pdfFile.size > 10000000) {
-            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-        }
+        await final.destroy();
 
-        let url_documento = null;
-        let contenido_documento = null;
-
-        // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (pdfFile) {
-            if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('finales', pdfFile);
-            } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
-            }
-        }
-
-        // Actualizar la final en la base de datos
-        const [numRowsUpdated, [finalActualizada]] = await Final.update(
-            {
-                url_documento,
-                contenido_documento,
-                flag_adjunto,
-                id_convocatoria
-            },
-            {
-                where: { id },  // Condición para actualizar el registro con el ID específico
-                returning: true,  // Para devolver el registro actualizado
-            }
-        );
-
-        // Verificar si se actualizó alguna fila
-        if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró el resultado final para actualizar' });
-        }
-
-        // Responder con la final actualizada
-        return res.status(200).json({ mensaje: 'Resultado final actualizado con éxito', finalActualizada });
+        // Responde con un mensaje de éxito
+        return res.status(200).json({ mensaje: 'Resultado Final eliminado con éxito.' });
     } catch (error) {
-        // Manejar errores y responder con un mensaje de error
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar resultado final', error: error.message });
+        // Maneja errores y responde con un mensaje de error
+        return res.status(500).json({ mensaje: 'Error al eliminar Final', error: error.message });
     }
 };
-
-
-export const eliminarFinal = async (req, res) =>{
-
-    try {
-        const { id } = req.params
-        await Final.destroy({
-            where:{
-                id,
-            }
-        })
-        return res.status(204).json({ mensaje: 'Resultado Final eliminado'});
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message})
-    }
-}
-
-const guardarArchivo = async (entidadDir, pdfFile) => {
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const documentosDir = path.join(__dirname, 'documentos', entidadDir);
-    const originalFileName = pdfFile.originalname;
-    const filePath = path.join(documentosDir, originalFileName);
-  
-    await fs.mkdir(documentosDir, { recursive: true });
-    await fs.copyFile(pdfFile.path, filePath);
-  
-    return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
-  };
-  
   export const activarFinal = async (req, res) => {
     try {
       const { id } = req.params; 

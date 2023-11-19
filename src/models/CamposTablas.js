@@ -32,7 +32,10 @@ export const CamposTablas = sequelize.define('campostablas',{
     valores:{
         type:DataTypes.STRING(100)
     }
-}, { timestamps: false })
+}, {
+    schema: "portal_icl",
+    timestamps: false
+})
 
 CamposTablas.belongsTo(Menu, {
   foreignKey: 'id_menu', // Asegúrate de que este sea el nombre correcto de la clave foránea

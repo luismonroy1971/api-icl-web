@@ -132,7 +132,7 @@ const guardarArchivo = async (entidadDir, imgFile) => {
 
 export const actualizarProyecto = async (req, res) => {
   const { id } = req.params;
-  const { title, content, link, flag_adjunto, modificado_por, modificado_fecha } = req.body;
+  const { title, content, link, flag_adjunto, modificado_por, modificado_fecha, activo } = req.body;
   const imgFile = req.file;
 
   try {

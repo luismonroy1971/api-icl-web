@@ -17,7 +17,10 @@ export const Distrito = sequelize.define('distritos',{
     ubigeo:{
         type: DataTypes.STRING
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Distrito.beforeCreate((distrito, options) => {
     distrito.label = distrito.distrito;

@@ -56,7 +56,10 @@ export const Convenio = sequelize.define('convenios', {
       type: DataTypes.CHAR(1),
       defaultValue: '1',
     },
-  }, { timestamps: false });
+  }, {
+    schema: "portal_icl",
+    timestamps: false
+});
   
   // Agregar el gancho antes de guardar para calcular y almacenar los campos virtuales
   Convenio.beforeSave((convenio, options) => {

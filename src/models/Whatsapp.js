@@ -17,7 +17,10 @@ export const Whatsapp = sequelize.define('whatsapp', {
         type: DataTypes.CHAR(1),
         defaultValue: '1',
     }
-}, { timestamps: false });
+}, {
+    schema: "portal_icl",
+    timestamps: false
+});
 
 Whatsapp.beforeCreate((whatsapp, options) => {
     whatsapp.label = whatsapp.numero_whatsapp;

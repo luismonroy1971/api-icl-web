@@ -8,7 +8,10 @@ export const OpcionesUsuario = sequelize.define('opcionesusuario',{
         primaryKey: true,
         autoIncrement: true
     }
-}, { timestamps: false })
+}, {
+  schema: "portal_icl",
+  timestamps: false
+})
 
 OpcionesUsuario.belongsTo(Menu, {
   foreignKey: 'id_menu', // Asegúrate de que este sea el nombre correcto de la clave foránea

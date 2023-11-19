@@ -34,7 +34,9 @@ export const leerAnexo = async (req, res) =>{
 }
 
 export const crearAnexo = async (req, res) => {
+    
     const { flag_adjunto, id_convocatoria } = req.body;
+
     const pdfFile = req.file;
 
     try {
@@ -43,28 +45,25 @@ export const crearAnexo = async (req, res) => {
             return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
         }
 
-        let url_documento = null;
         let contenido_documento = null;
 
-        // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (pdfFile) {
-            if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('anexos', pdfFile);
-            } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
-            }
+        // Manejar la lógica según el tipo de adjunto (BIN)
+        if (pdfFile && pdfFile.path) {
+            contenido_documento = await fs.readFile(pdfFile.path);
+        } else {
+            // Manejar el caso en el que no se proporciona ningún archivo
+            return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo para subir.' });
         }
 
-        // Crear una nueva anexo en la base de datos
-        const nuevaAnexo = await Anexo.create({
-            url_documento,
+        // Crear una nueva comunicacion1 en la base de datos
+        const nuevoAnexo = await Anexo.create({
             contenido_documento,
             id_convocatoria,
             flag_adjunto,
         });
 
-        // Responder con la nueva anexo creada
-        return res.status(201).json({ mensaje: 'Anexo creado con éxito', nuevaAnexo });
+        // Responder con la nueva comunicacion1 creada
+        return res.status(201).json({ mensaje: 'Anexo creado con éxito', nuevoAnexo });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
         console.error(error);
@@ -73,91 +72,29 @@ export const crearAnexo = async (req, res) => {
 };
 
 
-export const actualizarAnexo = async (req, res) => {
-    const { id } = req.params; // Suponiendo que el ID de la anexo se pasa como un parámetro en la URL
-    const { flag_adjunto, id_convocatoria } = req.body;
-    const pdfFile = req.file;
+export const eliminarAnexo = async (req, res) => {
+    const { id } = req.params; // Obtén el ID desde los parámetros de la URL
 
     try {
-        // Verificar si la anexo con el ID dado existe
-        const anexoExistente = await Anexo.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
+        // Busca la comunicación1 en la base de datos por ID
+        const anexo = await Anexo.findByPk(id);
 
-        if (!anexoExistente) {
-            return res.status(404).json({ mensaje: 'Anexo no encontrado' });
+        // Verifica si la comunicación1 existe
+        if (!anexo) {
+            return res.status(404).json({ mensaje: 'Anexo no encontrado.' });
         }
 
-        // Validar el tamaño del archivo adjunto si se proporciona uno nuevo
-        if (pdfFile && pdfFile.size > 10000000) {
-            return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-        }
+        await anexo.destroy();
 
-        let url_documento = null;
-        let contenido_documento = null;
-
-        // Manejar la lógica según el tipo de adjunto (URL o BIN)
-        if (pdfFile) {
-            if (flag_adjunto === 'URL') {
-                url_documento = await guardarArchivo('anexos', pdfFile);
-            } else if (flag_adjunto === 'BIN') {
-                contenido_documento = await fs.readFile(pdfFile.path);
-            }
-        }
-
-        // Actualizar la anexo en la base de datos
-        const [numRowsUpdated, [anexoActualizada]] = await Anexo.update(
-            {
-                url_documento,
-                contenido_documento,
-                flag_adjunto,
-                id_convocatoria
-            },
-            {
-                where: { id },  // Condición para actualizar el registro con el ID específico
-                returning: true,  // Para devolver el registro actualizado
-            }
-        );
-
-        // Verificar si se actualizó alguna fila
-        if (numRowsUpdated === 0) {
-            return res.status(404).json({ mensaje: 'No se encontró la anexo para actualizar' });
-        }
-
-        // Responder con la anexo actualizada
-        return res.status(200).json({ mensaje: 'Anexo actualizado con éxito', anexoActualizada });
+        // Responde con un mensaje de éxito
+        return res.status(200).json({ mensaje: 'Anexo eliminado con éxito.' });
     } catch (error) {
-        // Manejar errores y responder con un mensaje de error
-        console.error(error);
-        return res.status(500).json({ mensaje: 'Error al actualizar anexo', error: error.message });
+        // Maneja errores y responde con un mensaje de error
+        return res.status(500).json({ mensaje: 'Error al eliminar Anexo', error: error.message });
     }
 };
 
 
-export const eliminarAnexo = async (req, res) =>{
-
-    try {
-        const { id } = req.params
-        await Anexo.destroy({
-            where:{
-                id,
-            }
-        })
-        return res.status(204).json({ mensaje: 'Anexo eliminado'});
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message})
-    }
-}
-
-const guardarArchivo = async (entidadDir, pdfFile) => {
-    const __dirname = path.dirname(fileURLToPath(import.meta.url));
-    const documentosDir = path.join(__dirname, 'documentos', entidadDir);
-    const originalFileName = pdfFile.originalname;
-    const filePath = path.join(documentosDir, originalFileName);
-  
-    await fs.mkdir(documentosDir, { recursive: true });
-    await fs.copyFile(pdfFile.path, filePath);
-  
-    return `${baseUrl}/documentos/${entidadDir}/${originalFileName}`;
-  };
   
   export const activarAnexo = async (req, res) => {
     try {

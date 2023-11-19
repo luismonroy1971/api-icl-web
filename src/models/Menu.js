@@ -30,7 +30,10 @@ export const Menu = sequelize.define('menus',{
     url:{
         type: DataTypes.STRING
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 const init = async () => {
   const { OpcionesUsuario } = await import('./OpcionesUsuario.js');

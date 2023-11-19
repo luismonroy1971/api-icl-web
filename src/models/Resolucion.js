@@ -62,7 +62,10 @@ export const Resolucion = sequelize.define('resoluciones',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Resolucion.beforeCreate(async (resolucion, options) => {
     const area = await Area.findByPk(resolucion.id_area);

@@ -62,7 +62,10 @@ export const Convocatoria = sequelize.define('convocatorias', {
         type: DataTypes.CHAR(1),
         defaultValue: '1',
     }
-}, { timestamps: false });
+}, {
+    schema: "portal_icl",
+    timestamps: false
+});
 
 Convocatoria.hasMany(Anexo,{
     foreignKey: 'id_convocatoria',

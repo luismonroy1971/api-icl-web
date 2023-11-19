@@ -31,7 +31,10 @@ export const Usuario = sequelize.define('usuarios', {
         type: DataTypes.CHAR(1),
         defaultValue: '1'
     },
-}, { timestamps: false });
+}, {
+    schema: "portal_icl",
+    timestamps: false
+});
 
 // Método para comparar contraseñas
 Usuario.prototype.comparePassword = function (password) {

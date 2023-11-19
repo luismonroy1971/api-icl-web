@@ -24,7 +24,10 @@ export const Area = sequelize.define('areas',{
         type:DataTypes.CHAR(1),
         defaultValue: '1'
     }
-},{timestamps: false})
+},{
+    schema: "portal_icl",
+    timestamps: false
+})
 
 Area.beforeCreate((area, options) => {
     area.label = area.descripcion_area;
