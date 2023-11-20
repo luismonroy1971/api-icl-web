@@ -1,4 +1,4 @@
-import { Sequelize } from 'sequelize';
+import { Op, Sequelize } from 'sequelize';
 import {Convocatoria} from '../models/Convocatoria.js';
 import { Anexo } from '../models/Anexo.js';
 import { Comunicacion1 } from '../models/Comunicacion1.js';
@@ -214,15 +214,19 @@ export const crearConvocatoria = async (req, res) => {
     try {
 
         const convocatoriaExistente = await Convocatoria.findOne({
-            tipo_convocatoria,
-            numero_convocatoria,
-            periodo_convocatoria
+          where: {
+              [Op.and]: [
+                  { tipo_convocatoria: tipo_convocatoria },
+                  { periodo_convocatoria: periodo_convocatoria },
+                  { numero_convocatoria: numero_convocatoria }
+              ]
+          }
         });
 
+              // Si ya existe, enviar un mensaje de error
         if (convocatoriaExistente) {
-            return res.status(400).json({ mensaje: 'Ya existe una convocatoria con estos valores' });
+          return res.status(400).json({ mensaje: 'La convocatoria ya está registrada.' });
         }
-
         const nuevaConvocatoria = await Convocatoria.create({
             descripcion_convocatoria,
             tipo_convocatoria,

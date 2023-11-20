@@ -140,7 +140,7 @@ const guardarArchivo = async (entidadDir, imgFile) => {
 
 export const actualizarCurso = async (req, res) => {
   const { id } = req.params;
-  const { flag_adjunto, video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
+  const { flag_adjunto='BIN', video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
   const imgFile = req.file;
 
   try {

@@ -79,27 +79,12 @@ export const leerVideo = async (req, res) =>{
 }
 
 export const crearVideo = async (req, res) =>{
-    const {titulo_video, descripcion_video, flag_adjunto, link_video, id_categoria_video, creado_por, creado_fecha  } = req.body;
-    const imgFile = req.file;
+    const {titulo_video, descripcion_video, link_video, id_categoria_video, creado_por, creado_fecha  } = req.body;
+
       try {
-       // Validar el tamaño del archivo adjunto
-       if (imgFile && imgFile.size > 10000000) {
-        return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-      }
-
-      let contenido_documento = null;
-
-      if (imgFile && imgFile.path) {
-        contenido_documento = await fs.readFile(imgFile.path);
-        } else {
-            // Manejar el caso en el que no se proporciona ningún archivo
-            return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo para subir.' });
-        }
         const nuevoVideo = await Video.create({
             titulo_video, 
             descripcion_video,
-            contenido_documento, 
-            flag_adjunto, 
             link_video,
             id_categoria_video,
             creado_por, 
@@ -116,7 +101,6 @@ export const actualizarVideo = async (req, res) =>{
     const { 
       titulo_video, 
       descripcion_video, 
-      flag_adjunto, 
       link_video,
       id_categoria_video,
       modificado_por, 
@@ -124,30 +108,14 @@ export const actualizarVideo = async (req, res) =>{
       activo
      } = req.body;
 
-     const imgFile = req.file;
-
       try {
-       // Validar el tamaño del archivo adjunto
-       if (imgFile && imgFile.size > 10000000) {
-        return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
-      }
-
-      let contenido_documento = null;
-
-      if (imgFile && imgFile.path) {
-        contenido_documento = await fs.readFile(imgFile.path);
-        } else {
-            // Manejar el caso en el que no se proporciona ningún archivo
-            return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo para subir.' });
-        }
 
       const video = await Video.findByPk(id);
       
       video.titulo_video = titulo_video;
       video.descripcion_video = descripcion_video;
-      video.flag_adjunto = flag_adjunto;
       video.link_video = link_video;
-      video.contenido_documento = contenido_documento;
+      video.id_categoria_video = id_categoria_video;
       video.modificado_por = modificado_por;
       video.modificado_fecha = modificado_fecha;
       video.autorizado = '0';
