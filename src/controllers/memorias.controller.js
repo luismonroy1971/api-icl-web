@@ -107,6 +107,17 @@ export const crearMemoria = async (req, res) => {
     const pdfFile = req.file;
 
     try {
+        // Validar si ya existe una memoria con el mismo periodo
+        const memoriaExistente = await Memoria.findOne({
+          where: {
+              periodo_memoria,
+          }
+        });
+
+        if (memoriaExistente) {
+          return res.status(400).json({ mensaje: 'Ya existe una memoria para este periodo' });
+        }
+
         if (!pdfFile) {
             return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });
         }
@@ -178,6 +189,18 @@ export const actualizarMemoria = async (req, res) => {
 
         if (!memoria) {
             return res.status(404).json({ mensaje: 'Memoria no encontrada' });
+        }
+
+        // Validar si ya existe otra memoria con el mismo periodo
+        const otraMemoria = await Memoria.findOne({
+          where: {
+              id: { [Op.not]: id }, // Excluir la memoria actual del chequeo
+              periodo_memoria,
+          }
+        });
+
+        if (otraMemoria) {
+            return res.status(400).json({ mensaje: 'Ya existe otra memoria para este periodo' });
         }
 
         if (pdfFile && pdfFile.size > 10000000) {

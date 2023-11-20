@@ -212,6 +212,17 @@ export const crearConvocatoria = async (req, res) => {
     } = req.body;
 
     try {
+
+        const convocatoriaExistente = await Convocatoria.findOne({
+            tipo_convocatoria,
+            numero_convocatoria,
+            periodo_convocatoria
+        });
+
+        if (convocatoriaExistente) {
+            return res.status(400).json({ mensaje: 'Ya existe una convocatoria con estos valores' });
+        }
+
         const nuevaConvocatoria = await Convocatoria.create({
             descripcion_convocatoria,
             tipo_convocatoria,
@@ -252,6 +263,20 @@ export const actualizarConvocatoria = async (req, res) => {
 
         if (!convocatoriaExistente) {
             return res.status(404).json({ mensaje: 'Convocatoria no encontrada' });
+        }
+
+        // Verificar si ya existe otra convocatoria con la misma combinación de tipo, número y periodo
+        const otraConvocatoria = await Convocatoria.findOne({
+          where: {
+              id: { [Op.not]: id }, // Excluir la convocatoria actual del chequeo
+              tipo_convocatoria,
+              numero_convocatoria,
+              periodo_convocatoria
+          }
+        });
+
+        if (otraConvocatoria) {
+          return res.status(400).json({ mensaje: 'Ya existe otra convocatoria con estos valores' });
         }
 
         // Actualizar la convocatoria en la base de datos

@@ -13,13 +13,17 @@ export const Video = sequelize.define('videos',{
     descripcion_video:{
         type: DataTypes.STRING(500)
     },
-    fecha_video:{
-        type: DataTypes.STRING
-    },
-    url_imagen_video:{
-        type: DataTypes.STRING
-    },
-    url_video:{
+    flag_adjunto:{
+        type: DataTypes.ENUM(['URL', 'BIN']),
+      },    
+      url_documento: {
+          type: DataTypes.STRING,
+      },
+      // Campo BLOB para el PDF
+      contenido_documento: {
+          type: DataTypes.BLOB('long'),
+      },
+    link_video:{
         type: DataTypes.STRING
     },
     orden:{

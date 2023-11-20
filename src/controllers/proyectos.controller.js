@@ -78,6 +78,16 @@ export const crearProyecto = async (req, res) => {
   const imgFile = req.file;
 
   try {
+      // Validar si ya existe otro proyecto con el mismo título
+        const proyectoExistente = await Proyecto.findOne({
+          where: {
+              title,
+          }
+      });
+
+      if (proyectoExistente) {
+          return res.status(400).json({ mensaje: 'Ya existe otro proyecto con este título' });
+      }
       // Validar el tamaño del archivo adjunto
       if (imgFile && imgFile.size > 10000000) {
           return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
@@ -136,6 +146,17 @@ export const actualizarProyecto = async (req, res) => {
   const imgFile = req.file;
 
   try {
+      // Validar si ya existe otro proyecto con el mismo título
+        const otroProyecto = await Proyecto.findOne({
+          where: {
+              id: { [Op.not]: id }, // Excluir el proyecto actual del chequeo
+              title,
+          }
+      });
+
+      if (otroProyecto) {
+          return res.status(400).json({ mensaje: 'Ya existe otro proyecto con este título' });
+      }
       // Validar el tamaño del archivo adjunto
       if (imgFile && imgFile.size > 10000000) {
           return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });

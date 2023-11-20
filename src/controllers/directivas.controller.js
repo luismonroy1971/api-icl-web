@@ -124,6 +124,20 @@ export const crearDirectiva = async (req, res) => {
     const pdfFile = req.file;
 
     try {
+        const directivaExistente = await Directiva.findOne({
+            where: {
+                periodo_resolucion,
+                id_area,
+                id_tipo_documento,
+                numero_resolucion,
+                adicional_resolucion,
+            }
+        });
+
+        if (directivaExistente) {
+            return res.status(400).json({ mensaje: 'Ya existe una directiva con estos valores' });
+        }
+
         let url_documento = null;
         let contenido_documento = null;
 
@@ -190,6 +204,22 @@ export const actualizarDirectiva = async (req, res) => {
 
         if (!directiva) {
             return res.status(404).json({ mensaje: 'Directiva no encontrada' });
+        }
+
+        // Validar si ya existe otra directiva con la misma combinación de valores
+        const otraDirectiva = await Directiva.findOne({
+          where: {
+              id: { [Op.not]: id }, // Excluir la directiva actual del chequeo
+              periodo_resolucion,
+              id_area,
+              id_tipo_documento,
+              numero_resolucion,
+              adicional_resolucion,
+          }
+        });
+
+        if (otraDirectiva) {
+          return res.status(400).json({ mensaje: 'Ya existe otra directiva con estos valores' });
         }
 
         if (pdfFile && pdfFile.size > 10000000) {

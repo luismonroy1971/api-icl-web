@@ -107,6 +107,17 @@ export const crearRendicion = async (req, res) => {
   const rendicionFile = req.file;
 
   try {
+
+      const rendicionExistente = await Rendicion.findOne({
+          where: {
+              periodo_rendicion,
+          }
+      });
+
+      if (rendicionExistente) {
+          return res.status(400).json({ mensaje: 'Ya existe otra rendición con este periodo' });
+      }
+
       const nuevaRendicion = await Rendicion.create({
           descripcion_rendicion,
           periodo_rendicion,
@@ -157,10 +168,25 @@ export const actualizarRendicion = async (req, res) => {
   const rendicionFile = req.file;
 
   try {
+
       const rendicion = await Rendicion.findByPk(id);
 
       if (!rendicion) {
           return res.status(404).json({ mensaje: 'Rendición no encontrada' });
+      }
+
+      // Validar si ya existe otra rendición con el mismo periodo
+      const rendicionExistente = await Rendicion.findOne({
+        where: {
+            periodo_rendicion,
+            id: {
+                [Op.not]: id // Excluir la rendición actual de la búsqueda
+            }
+        }
+      });
+
+      if (rendicionExistente) {
+        return res.status(400).json({ mensaje: 'Ya existe otra rendición con este periodo' });
       }
 
       if (rendicionFile && rendicionFile.size > 10000000) {

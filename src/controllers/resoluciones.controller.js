@@ -126,6 +126,21 @@ export const crearResolucion = async (req, res) => {
     const pdfFile = req.file;
 
     try {
+
+        const resolucionExistente = await Resolucion.findOne({
+            where: {
+                periodo_resolucion,
+                id_area,
+                id_tipo_documento,
+                numero_resolucion,
+                adicional_resolucion,
+            }
+        });
+
+        if (resolucionExistente) {
+            return res.status(400).json({ mensaje: 'Ya existe una Resolución con estos valores' });
+        }
+
         if (!pdfFile) {
             return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });
         }
@@ -205,6 +220,22 @@ export const actualizarResolucion = async (req, res) => {
         if (!resolucion) {
             return res.status(404).json({ mensaje: 'Resolución no encontrada' });
         }
+
+        const otraResolucion = await Resolucion.findOne({
+          where: {
+              id: { [Op.not]: id }, // Excluir la resolución actual del chequeo
+              periodo_resolucion,
+              id_area,
+              id_tipo_documento,
+              numero_resolucion,
+              adicional_resolucion,
+          }
+        });
+
+        if (otraResolucion) {
+          return res.status(400).json({ mensaje: 'Ya existe otra resolución con estos valores' });
+        }
+
 
         resolucion.periodo_resolucion = periodo_resolucion;
         resolucion.id_area = id_area;

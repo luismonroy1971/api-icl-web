@@ -36,13 +36,23 @@ export const crearUit = async (req, res) =>{
     const {periodo_uit,  moneda_uit, valor_uit, base_legal } = req.body;
     console.log( periodo_uit, moneda_uit, valor_uit, base_legal)
     try {
+       // Validar que el campo periodo_uit esté presente
+       if (!periodo_uit) {
+          return res.status(400).json({ mensaje: 'El campo periodo_uit es obligatorio' });
+        }
+        const existeUit = await Uit.findOne({ where: { periodo_uit } });
+
+        if (existeUit) {
+            return res.status(400).json({ mensaje: 'Ya existe una UIT para el periodo proporcionado' });
+        }
         const nuevaUit = await Uit.create({
             periodo_uit,  
             moneda_uit, 
             valor_uit, 
             base_legal
         })
-        res.status(201).json({ message: 'UIT registrada con éxito' })
+
+        res.status(201).json({ message: 'UIT registrada con éxito', nuevaUit })
     } catch (error) {
         return res.status(500).json({ mensaje: error.message })
     }
