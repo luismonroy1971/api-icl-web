@@ -90,7 +90,7 @@ export const crearVideo = async (req, res) =>{
       let contenido_documento = null;
 
       if (imgFile && imgFile.path) {
-        contenido_documento = await fs.readFile(pdfFile.path);
+        contenido_documento = await fs.readFile(imgFile.path);
         } else {
             // Manejar el caso en el que no se proporciona ningún archivo
             return res.status(400).json({ mensaje: 'No se proporcionó ningún archivo para subir.' });
