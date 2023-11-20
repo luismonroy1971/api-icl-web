@@ -86,18 +86,7 @@ export const crearNorma = async (req, res) => {
 
   try {
 
-      // Validar si ya existe una norma con la misma combinación de valores
-      const normaExistente = await Norma.findOne({
-        where: {
-              tipo_norma,
-              denominacion_norma,
-              }
-      });
-
-      if (normaExistente) {
-          return res.status(400).json({ mensaje: 'Ya existe una norma con estos valores' });
-      }
-      // Crear una instancia de Norma con las propiedades proporcionadas
+            // Crear una instancia de Norma con las propiedades proporcionadas
       const nuevaNorma = await Norma.create({
           tipo_norma,
           denominacion_norma,

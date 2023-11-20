@@ -107,16 +107,7 @@ export const crearMemoria = async (req, res) => {
     const pdfFile = req.file;
 
     try {
-        // Validar si ya existe una memoria con el mismo periodo
-        const memoriaExistente = await Memoria.findOne({
-          where: {
-              periodo_memoria,
-          }
-        });
 
-        if (memoriaExistente) {
-          return res.status(400).json({ mensaje: 'Ya existe una memoria para este periodo' });
-        }
 
         if (!pdfFile) {
             return res.status(400).json({ mensaje: 'No se ha proporcionado un archivo PDF' });

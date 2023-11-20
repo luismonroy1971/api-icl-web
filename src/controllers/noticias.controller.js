@@ -124,17 +124,7 @@ export const crearNoticia = async (req, res) => {
 
   try {
 
-        // Validar si ya existe otra noticia con la misma descripción
-        const noticiaExistente = await Noticia.findOne({
-            where: {
-                descripcion_noticia,
-            }
-        });
-
-        if (noticiaExistente) {
-            return res.status(400).json({ mensaje: 'Ya existe otra noticia con esta descripción' });
-        }
-      // Validar el tamaño del archivo adjunto
+       // Validar el tamaño del archivo adjunto
       if (imgFile && imgFile.size > 10000000) {
           return res.status(400).json({ message: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.' });
       }
@@ -198,18 +188,7 @@ export const actualizarNoticia = async (req, res) => {
     const imgFile = req.file;
 
     try {
-        // Verificar si ya existe otra noticia con la misma descripción
-        const otraNoticia = await Noticia.findOne({
-            where: {
-                id: { [Op.not]: id }, // Excluir la noticia actual del chequeo
-                descripcion_noticia,
-            }
-        });
-
-        if (otraNoticia) {
-            return res.status(400).json({ mensaje: 'Ya existe otra noticia con esta descripción' });
-        }
-
+        
         // Verificar si la noticia con el ID dado existe
         const noticiaExistente = await Noticia.findByPk(id);  // Utiliza findByPk para buscar por clave primaria en Sequelize
 

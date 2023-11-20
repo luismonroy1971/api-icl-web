@@ -36,18 +36,7 @@ export const crearTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario } = req.body;
 
   try {
-      // Verificar si ya existe un tipo de documento con la misma descripción
-      const tipoDocumentoExistente = await TipoDocumento.findOne({
-          where: {
-              descripcion_tipo_documento: descripcion_tipo_documento,
-          },
-      });
-
-      // Si ya existe, enviar un mensaje de error
-      if (tipoDocumentoExistente) {
-          return res.status(400).json({ mensaje: 'El tipo de documento ya existe.' });
-      }
-
+      
       // Si no existe y el código de trámite documentario no está en blanco, verificar su existencia
       if (codigo_tramite_documentario !== '') {
           const codigoTramiteExistente = await TipoDocumento.findOne({
@@ -81,19 +70,7 @@ export const actualizarTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario, activo } = req.body;
 
   try {
-      // Verificar si ya existe otro tipo de documento con la misma descripción
-      const tipoDocumentoExistente = await TipoDocumento.findOne({
-          where: {
-              descripcion_tipo_documento: descripcion_tipo_documento,
-              id: { [Op.not]: id }, // Excluir el tipo de documento actual en la búsqueda
-          },
-      });
-
-      // Si ya existe, enviar un mensaje de error
-      if (tipoDocumentoExistente) {
-          return res.status(400).json({ mensaje: 'Otro tipo de documento ya tiene esta descripción.' });
-      }
-
+     
       // Verificar si ya existe otro tipo de documento con el mismo código de trámite documentario (si tiene información)
       if (codigo_tramite_documentario) {
           const codigoTramiteExistente = await TipoDocumento.findOne({
