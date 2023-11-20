@@ -47,7 +47,6 @@ export const buscarFuncionarios = async (req, res) => {
       }
 
       const funcionarios = await Funcionario.findAll({
-          attributes: ['id','name', 'position', 'link', 'flag_adjunto', 'url_documento', 'contenido_documento'],
           where: Object.keys(whereClause).length === 0 ? {} : whereClause,
           order: [['id', 'ASC']]
       });
