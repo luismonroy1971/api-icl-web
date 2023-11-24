@@ -17,6 +17,9 @@ export const Resolucion = sequelize.define('resoluciones',{
     adicional_resolucion:{
         type: DataTypes.CHAR(1)
     },
+    codigoResolucion: {
+        type: DataTypes.STRING
+    },
     sumilla_resolucion:{
         type: DataTypes.STRING(1500)
     },
@@ -76,5 +79,32 @@ Resolucion.beforeUpdate(async (resolucion, options) => {
     if (resolucion.changed('id_area')) {
         const area = await Area.findByPk(resolucion.id_area);
         resolucion.abreviacion_area = area ? area.abreviacion_area : null;
+    }
+});
+
+function generateCodigoResolucion(resolucion) {
+    return new Promise(async (resolve) => {
+        // Generate codigo_resolucion without spaces on the sides
+        const numeroResolucion = resolucion.numero_resolucion.toString().trim();
+        const periodoResolucion = resolucion.periodo_resolucion.toString().trim();
+        // Fetch the area if not already available
+        if (!resolucion.abreviacion_area && resolucion.id_area) {
+            const area = await Area.findByPk(resolucion.id_area);
+            resolucion.abreviacion_area = area ? area.abreviacion_area : null;
+        }
+        const abreviacionArea = resolucion.abreviacion_area ? resolucion.abreviacion_area.trim() : '';
+        // Adjust the format as needed
+        const codigoResolucion = `${numeroResolucion}-${periodoResolucion}-${abreviacionArea}-ICL/MML`;
+        resolve(codigoResolucion);
+    });
+}
+
+Resolucion.beforeCreate(async (resolucion, options) => {
+    resolucion.codigo_resolucion = await generateCodigoResolucion(resolucion);
+});
+
+Resolucion.beforeUpdate(async (resolucion, options) => {
+    if (resolucion.changed('id_area')) {
+        resolucion.codigo_resolucion = await generateCodigoResolucion(resolucion);
     }
 });

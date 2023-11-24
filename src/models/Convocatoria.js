@@ -30,6 +30,9 @@ export const Convocatoria = sequelize.define('convocatorias', {
     periodo_convocatoria: {
         type: DataTypes.INTEGER,
     },
+    codigo_convocatoria: {
+        type: DataTypes.STRING,
+    },
     flag_adjunto:{
       type: DataTypes.ENUM(['URL', 'BIN']),
     },   
@@ -64,7 +67,17 @@ export const Convocatoria = sequelize.define('convocatorias', {
     }
 }, {
     schema: "portal_icl",
-    timestamps: false
+    timestamps: false,
+    hooks: {
+        beforeCreate: (convocatoria, options) => {
+            // Generate codigo_convocatoria when creating a new record
+            convocatoria.codigo_convocatoria = generateCodigoConvocatoria(convocatoria);
+        },
+        beforeUpdate: (convocatoria, options) => {
+            // Generate codigo_convocatoria when updating a record
+            convocatoria.codigo_convocatoria = generateCodigoConvocatoria(convocatoria);
+        },
+    },
 });
 
 Convocatoria.hasMany(Anexo,{
@@ -118,3 +131,13 @@ Convocatoria.hasMany(Final,{
     foreignKey: 'id_convocatoria',
     sourceKey: 'id'
 })
+
+function generateCodigoConvocatoria(convocatoria) {
+    // Generate codigo_convocatoria without spaces on the sides
+    const tipoConvocatoria = convocatoria.tipo_convocatoria.trim();
+    const periodoConvocatoria = convocatoria.periodo_convocatoria.toString().trim();
+    const numeroConvocatoria = convocatoria.numero_convocatoria.toString().trim();
+
+    // Adjust the format as needed
+    return `${tipoConvocatoria} N° ${numeroConvocatoria}-${periodoConvocatoria}`;
+}

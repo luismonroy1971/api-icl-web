@@ -17,6 +17,9 @@ export const Directiva = sequelize.define('directivas', {
     adicional_resolucion: {
         type: DataTypes.CHAR(1),
     },
+    codigo_directiva: {
+        type: DataTypes.STRING(30),
+    },
     sumilla_resolucion: {
         type: DataTypes.STRING(1500),
     },
@@ -76,5 +79,38 @@ Directiva.beforeUpdate(async (directiva, options) => {
     if (directiva.changed('id_area')) {
         const area = await Area.findByPk(directiva.id_area);
         directiva.abreviacion_area = area ? area.abreviacion_area : null;
+    }
+});
+
+function generateCodigoDirectiva(directiva) {
+    return new Promise(async (resolve) => {
+        // Generate codigo_directiva without spaces on the sides
+        const numeroResolucion = directiva.numero_resolucion.toString().trim();
+        console.log(numeroResolucion);
+        const periodoResolucion = directiva.periodo_resolucion.toString().trim();
+        console.log(periodoResolucion);
+
+        // Fetch the area if not already available
+        if (!directiva.abreviacion_area && directiva.id_area) {
+            const area = await Area.findByPk(directiva.id_area);
+            directiva.abreviacion_area = area ? area.abreviacion_area : null;
+        }
+
+        const abreviacionArea = directiva.abreviacion_area ? directiva.abreviacion_area.trim() : '';
+        console.log(abreviacionArea);
+
+        // Adjust the format as needed
+        const codigoDirectiva = `${numeroResolucion}-${periodoResolucion}-${abreviacionArea}-ICL/MML`;
+        resolve(codigoDirectiva);
+    });
+}
+
+Directiva.beforeCreate(async (directiva, options) => {
+    directiva.codigo_directiva = await generateCodigoDirectiva(directiva);
+});
+
+Directiva.beforeUpdate(async (directiva, options) => {
+    if (directiva.changed('id_area')) {
+        directiva.codigo_directiva = await generateCodigoDirectiva(directiva);
     }
 });

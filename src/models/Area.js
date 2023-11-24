@@ -15,7 +15,7 @@ export const Area = sequelize.define('areas',{
         type: DataTypes.STRING
     },
     abreviacion_area:{
-        type: DataTypes.CHAR(2)
+        type: DataTypes.CHAR(8)
     }, 
     label:{
         type: DataTypes.STRING
