@@ -17,7 +17,7 @@ export const Resolucion = sequelize.define('resoluciones',{
     adicional_resolucion:{
         type: DataTypes.CHAR(1)
     },
-    codigoResolucion: {
+    codigo_resolucion: {
         type: DataTypes.STRING
     },
     sumilla_resolucion:{

@@ -31,7 +31,7 @@ export const obtenerPeriodos = async (req, res) => {
 };
 
 export const buscarConvocatorias = async (req, res) => {
-  const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado, activo } = req.query;
+  const { tipo_convocatoria, numero_convocatoria, periodo_convocatoria, estado_convocatoria, descripcion_convocatoria, id_area, autorizado, codigo_convocatoria, activo } = req.query;
 
   try {
     const whereClause = {};
@@ -63,6 +63,12 @@ export const buscarConvocatorias = async (req, res) => {
     if (descripcion_convocatoria) {
       whereClause.descripcion_convocatoria = {
         [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
+      };
+    }
+
+    if (codigo_convocatoria) {
+      whereClause.codigo_convocatoria = {
+        [Sequelize.Op.like]: `%${codigo_convocatoria}%`
       };
     }
 

@@ -42,7 +42,7 @@ export const leerResoluciones = async (req, res) =>{
 }
 
 export const buscarResoluciones = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, activo } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, codigo_resolucion, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -73,6 +73,12 @@ export const buscarResoluciones = async (req, res) => {
         };
       }
   
+      if (codigo_resolucion) {
+        whereClause.codigo_resolucion = {
+          [Sequelize.Op.like]: `%${codigo_resolucion}%`
+        };
+      }
+
       if (activo) {
         whereClause.activo = activo;
       }

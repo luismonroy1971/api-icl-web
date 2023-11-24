@@ -42,7 +42,7 @@ export const leerDirectivas = async (req, res) =>{
 }
 
 export const buscarDirectivas = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, activo } = req.query;
+    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, codigo_directiva, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -72,6 +72,12 @@ export const buscarDirectivas = async (req, res) => {
           [Sequelize.Op.like]: `%${sumilla_resolucion}%`
         };
       }
+
+     if (codigo_directiva) {
+      whereClause.codigo_directiva = {
+        [Sequelize.Op.like]: `%${codigo_directiva}%`
+      };
+    }
 
       if (activo) {
         whereClause.activo = activo;
