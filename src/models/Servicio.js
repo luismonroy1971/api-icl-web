@@ -10,23 +10,8 @@ export const Servicio = sequelize.define('servicios',{
     tipo_servicio:{
         type: DataTypes.ENUM(['TUPA','TUSNE'])
     },
-    flag_construccion:{
-        type: DataTypes.CHAR(2)
-    },
-    flag_calculo:{
-        type: DataTypes.CHAR(1)
-    },
     requisitos_servicio:{
         type: DataTypes.STRING
-    },
-    flag_metraje:{
-        type: DataTypes.CHAR(2)
-    },
-    metraje_inicial:{
-        type: DataTypes.DECIMAL
-    },
-    metraje_final:{
-        type: DataTypes.DECIMAL
     },
     periodo_servicio:{
         type: DataTypes.INTEGER
@@ -36,10 +21,6 @@ export const Servicio = sequelize.define('servicios',{
     },
     sub_nivel_servicio:{
         type: DataTypes.SMALLINT
-    },
-    flag_seleccion:{
-        type: DataTypes.CHAR(1),
-        defaultValue: '0'
     },
     denominacion_servicio:{
         type: DataTypes.STRING

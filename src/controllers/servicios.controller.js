@@ -17,7 +17,7 @@ export const leerServicios = async (req, res) =>{
 }
 
 export const buscarServicios = async (req, res) => {
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado, flag_seleccion, activo } = req.query;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado, activo } = req.query;
   
     try {
       const whereClause = {};
@@ -50,9 +50,6 @@ export const buscarServicios = async (req, res) => {
 
       if (activo) {
         whereClause.activo = activo;
-      }
-      if (flag_seleccion) {
-        whereClause.flag_seleccion = flag_seleccion;
       }
   
       const servicios = await Servicio.findAll({
@@ -87,14 +84,13 @@ export const leerServicio = async (req, res) =>{
 }
 
 export const crearServicio = async (req, res) =>{
-    const {tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, creado_por, creado_fecha } = req.body;
+    const {tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, por_uit, monto_soles, monto_uit, creado_por, creado_fecha } = req.body;
     try {
         const nuevoServicio = await Servicio.create({
             tipo_servicio, 
             periodo_servicio, 
             numero_servicio, 
             sub_nivel_servicio, 
-            flag_seleccion, 
             denominacion_servicio, 
             por_uit, 
             monto_soles, 
@@ -110,7 +106,7 @@ export const crearServicio = async (req, res) =>{
 
 export const actualizarServicio = async (req, res) =>{
     const { id } = req.params;
-    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, flag_seleccion, denominacion_servicio, por_uit, monto_soles, monto_uit, modificado_por, modificado_fecha, activo } = req.body;
+    const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, por_uit, monto_soles, monto_uit, modificado_por, modificado_fecha, activo } = req.body;
 
     try {
         const servicio = await Servicio.findByPk(id);
@@ -118,7 +114,6 @@ export const actualizarServicio = async (req, res) =>{
         servicio.periodo_servicio = periodo_servicio;
         servicio.numero_servicio = numero_servicio;
         servicio.sub_nivel_servicio = sub_nivel_servicio;
-        servicio.flag_seleccion = flag_seleccion;
         servicio.denominacion_servicio = denominacion_servicio;
         servicio.por_uit = por_uit;
         servicio.monto_soles = monto_soles;
@@ -212,86 +207,60 @@ export const desactivarServicio = async (req, res) => {
 
 export const obtenerValorDeServicio = async (req, res) => {
   try {
-    const { tipo_servicio, numero_servicio, metraje, flag_construccion, sub_nivel_servicio, periodo_servicio } = req.query;
+    const { tipo_servicio, numero_servicio, sub_nivel_servicio } = req.query;
 
-    if (!tipo_servicio || !numero_servicio || !metraje || !flag_construccion) {
-      if (res && res.status && res.json) {
-        // Devuelve una respuesta JSON válida en caso de error
-        return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "flag_construccion" y "metraje" son obligatorios.' });
-      } else {
-        // Si 'res' no está definido, devuelve un objeto con un mensaje de error
-        console.error('Error: res no es una respuesta HTTP válida.');
-        return { error: 'Error en el servidor.' };
-      }
+    if (!tipo_servicio || !numero_servicio || !sub_nivel_servicio) {
+        if (res && res.status && res.json) {
+          // Devuelve una respuesta JSON válida en caso de error
+            return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "sub_nivel_servicio" son obligatorios' });
+        } else {
+          // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+            console.error('Error: res no es una respuesta HTTP válida.');
+            return { error: 'Error en el servidor.' };
+        }
     }
 
     // Define las condiciones iniciales para la búsqueda
-    let condiciones;
-    if (sub_nivel_servicio && periodo_servicio === '0') {
-      condiciones = {
-        tipo_servicio,
-        numero_servicio,
-        flag_calculo: '1',
-      };
-    } else {
-      condiciones = {
-        tipo_servicio,
-        numero_servicio,
-        sub_nivel_servicio,
-      };
-    }
+      let condiciones;
+        condiciones = {
+          tipo_servicio,
+          numero_servicio,
+          sub_nivel_servicio
+        };
+    
 
-    const servicios = await Servicio.findAll({
-      where: condiciones,
-      attributes: ['flag_construccion', 'sub_nivel_servicio', 'flag_metraje', 'metraje_inicial', 'metraje_final', 'monto_soles'],
-    });
+      const servicios = await Servicio.findAll({
+        where: condiciones,
+        attributes: ['tipo_servicio', 'numero_servicio', 'sub_nivel_servicio', 'denominacion_servicio', 'monto_soles'],
+       });
 
+      console.log(servicios);
     let valorServicio = null;
+    let denominacionServicio = null;
 
-    // Itera sobre los servicios para encontrar el valor correcto
-    for (const servicio of servicios) {
-      if (sub_nivel_servicio === '0' && periodo_servicio !== '0') {
-        valorServicio = parseFloat(servicio.monto_soles);
-        break;
-      }
-      if (servicio.flag_metraje === 'NO' && periodo_servicio !== '0') {
-        valorServicio = parseFloat(servicio.monto_soles);
-        break;
-      } else {
-        const metrajeInicial = parseFloat(servicio.metraje_inicial);
-        const metrajeFinal = parseFloat(servicio.metraje_final);
-        if (numero_servicio > 6) {
-          if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
+        // Itera sobre los servicios para encontrar el valor correcto
+        for (const servicio of servicios) {
             valorServicio = parseFloat(servicio.monto_soles);
+            denominacionServicio = servicio.denominacion_servicio;
             break;
-          }
-        } else if (servicio.flag_construccion === flag_construccion) {
-          if (metrajeInicial <= metraje && metraje <= metrajeFinal) {
-            valorServicio = parseFloat(servicio.monto_soles);
-            break;
-          }
+       }
+        if (res && res.status && res.json) {
+          // Devuelve una respuesta JSON válida en todos los casos
+          return res.status(200).json({ denominacion_servicio: denominacionServicio, valor_servicio: valorServicio || 0 });
+          console.error('Error: res no es una respuesta HTTP válida.');
+          // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+          return { error: 'Error en el servidor.' };
         }
+    
+    } catch (error) {
+      console.error(error);
+      if (res && res.status && res.json) {
+        return res.status(500).json({ error: 'Error en el servidor.' });
+      } else {
+        return { error: 'Error en el servidor.' };
       }
     }
-
-    if (res && res.status && res.json) {
-      // Devuelve una respuesta JSON válida en todos los casos
-      return res.status(200).json({ valor_servicio: valorServicio || 0, message: valorServicio !== null ? 'Valor encontrado' : 'No se encontró ningún valor para los parámetros proporcionados.' });
-    } else {
-      console.error('Error: res no es una respuesta HTTP válida.');
-      // Si 'res' no está definido, devuelve un objeto con un mensaje de error
-      return { error: 'Error en el servidor.' };
-    }
-  } catch (error) {
-    console.error(error);
-    if (res && res.status && res.json) {
-      return res.status(500).json({ error: 'Error en el servidor.' });
-    } else {
-      return { error: 'Error en el servidor.' };
-    }
-  }
-};
-
+  };
 
 
 export const acumularValoresDeServicio = async (req, res) => {
@@ -311,8 +280,6 @@ export const acumularValoresDeServicio = async (req, res) => {
         query: {
           tipo_servicio,
           numero_servicio, // Usa el valor parseado
-          metraje,
-          flag_construccion,
           sub_nivel_servicio,
           periodo_servicio,
         },
