@@ -4,7 +4,6 @@ import { Popup } from '../models/Popup.js';
 const baseUrl = process.env.BASE_URL; // Obtener la variable de entorno BASE_URL
 
 export const crearPopup = async (req, res) => {
-  console.log('Solicitud recibida:', req);
   const {
     descripcion_popup,
     fecha_inicial,

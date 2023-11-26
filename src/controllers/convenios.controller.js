@@ -59,9 +59,7 @@ export const buscarConvenios = async (req, res) => {
     const whereClause = {};
 
     if (descripcion_convenio) {
-      whereClause.descripcion_convenio = {
-        [Sequelize.Op.like]: `%${descripcion_convenio}%`,
-      };
+         whereClause.descripcion_convenio = Sequelize.literal(`unaccent(LOWER(descripcion_convenio)) ILIKE unaccent(LOWER('%${descripcion_convenio}%'))`);
     }
 
     if (autorizado) {
@@ -209,8 +207,6 @@ export const crearConvenio = async (req, res) => {
 
 export const actualizarConvenio = async (req, res) => {
   const { id } = req.params;
-  console.log(`Updating Convenio with ID: ${id}`);
-
   const {
     descripcion_convenio,
     fecha_convenio,
@@ -231,7 +227,6 @@ export const actualizarConvenio = async (req, res) => {
 
     // Verificar si el convenio existe
     if (!convenio) {
-      console.log(`Convenio with ID ${id} not found`);
       return res.status(404).json({ mensaje: 'Convenio no encontrado' });
     }
 

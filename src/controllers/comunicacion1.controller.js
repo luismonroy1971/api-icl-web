@@ -74,7 +74,6 @@ export const crearComunicacion1 = async (req, res) => {
 
 export const eliminarComunicacion1 = async (req, res) => {
     const { id } = req.params; // Obtén el ID desde los parámetros de la URL
-    console.log(id);
     try {
         // Busca la comunicación1 en la base de datos por ID
         const comunicacion1 = await Comunicacion1.findByPk(id);

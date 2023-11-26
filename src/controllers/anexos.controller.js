@@ -66,7 +66,6 @@ export const crearAnexo = async (req, res) => {
         return res.status(201).json({ mensaje: 'Anexo creado con éxito', nuevoAnexo });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
-        console.error(error);
         return res.status(500).json({ mensaje: 'Error al crear anexo', error: error.message });
     }
 };

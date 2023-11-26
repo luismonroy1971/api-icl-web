@@ -34,7 +34,6 @@ export const leerUit = async (req, res) =>{
 
 export const crearUit = async (req, res) =>{
     const {periodo_uit,  moneda_uit, valor_uit, base_legal } = req.body;
-    console.log( periodo_uit, moneda_uit, valor_uit, base_legal)
     try {
        // Validar que el campo periodo_uit esté presente
        if (!periodo_uit) {

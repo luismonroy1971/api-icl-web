@@ -234,7 +234,7 @@ export const obtenerValorDeServicio = async (req, res) => {
         attributes: ['tipo_servicio', 'numero_servicio', 'sub_nivel_servicio', 'denominacion_servicio', 'monto_soles'],
        });
 
-      console.log(servicios);
+ 
     let valorServicio = null;
     let denominacionServicio = null;
 

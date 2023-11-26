@@ -66,7 +66,6 @@ export const crearAviso = async (req, res) => {
         return res.status(201).json({ mensaje: 'Aviso creado con éxito', nuevoAviso });
     } catch (error) {
         // Manejar errores y responder con un mensaje de error
-        console.error(error);
         return res.status(500).json({ mensaje: 'Error al crear aviso', error: error.message });
     }
 };

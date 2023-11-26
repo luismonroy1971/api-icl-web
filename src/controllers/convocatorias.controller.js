@@ -61,9 +61,7 @@ export const buscarConvocatorias = async (req, res) => {
     }
 
     if (descripcion_convocatoria) {
-      whereClause.descripcion_convocatoria = {
-        [Sequelize.Op.like]: `%${descripcion_convocatoria}%`
-      };
+      whereClause.descripcion_convocatoria = Sequelize.literal(`unaccent(LOWER(descripcion_convocatoria)) ILIKE unaccent(LOWER('%${descripcion_convocatoria}%'))`);
     }
 
     if (codigo_convocatoria) {

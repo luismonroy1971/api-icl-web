@@ -36,30 +36,29 @@ export const crearTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario } = req.body;
 
   try {
-      
-      // Si no existe y el código de trámite documentario no está en blanco, verificar su existencia
-      if (codigo_tramite_documentario !== '') {
-          const codigoTramiteExistente = await TipoDocumento.findOne({
-              where: {
-                  codigo_tramite_documentario: codigo_tramite_documentario,
-              },
-          });
-
-          // Si ya existe, enviar un mensaje de error
-          if (codigoTramiteExistente) {
-              return res.status(400).json({ mensaje: 'El código de trámite documentario ya está registrado.' });
-          }
-      }
-
-      // Si no hay problemas, crear el nuevo tipo de documento
-      const nuevoTipoDocumento = await TipoDocumento.create({
-          descripcion_tipo_documento,
-          codigo_tramite_documentario,
+    if (codigo_tramite_documentario !== '') {
+      // Verificar existencia solo si se proporciona el código_tramite_documentario
+      const codigoTramiteExistente = await TipoDocumento.findOne({
+        where: {
+          codigo_tramite_documentario: codigo_tramite_documentario,
+        },
       });
 
-      res.json({ mensaje: 'Creación de tipo de documento satisfactoria', nuevoTipoDocumento });
+      // Si ya existe, enviar un mensaje de error
+      if (codigoTramiteExistente) {
+        return res.status(400).json({ mensaje: 'El código de trámite documentario ya está registrado.' });
+      }
+    }
+
+    // Crear el nuevo tipo de documento
+    const nuevoTipoDocumento = await TipoDocumento.create({
+      descripcion_tipo_documento,
+      codigo_tramite_documentario,
+    });
+
+    res.json({ mensaje: 'Creación de tipo de documento satisfactoria', nuevoTipoDocumento });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({ mensaje: error.message });
   }
 };
 
@@ -70,32 +69,31 @@ export const actualizarTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario, activo } = req.body;
 
   try {
-     
-      // Verificar si ya existe otro tipo de documento con el mismo código de trámite documentario (si tiene información)
-      if (codigo_tramite_documentario) {
-          const codigoTramiteExistente = await TipoDocumento.findOne({
-              where: {
-                  codigo_tramite_documentario: codigo_tramite_documentario,
-                  id: { [Op.not]: id }, // Excluir el tipo de documento actual en la búsqueda
-              },
-          });
+    // Verificar si ya existe otro tipo de documento con el mismo código de trámite documentario (si tiene información)
+    if (codigo_tramite_documentario !== '') {
+      const codigoTramiteExistente = await TipoDocumento.findOne({
+        where: {
+          codigo_tramite_documentario: codigo_tramite_documentario,
+          id: { [Op.not]: id }, // Excluir el tipo de documento actual en la búsqueda
+        },
+      });
 
-          // Si ya existe, enviar un mensaje de error
-          if (codigoTramiteExistente) {
-              return res.status(400).json({ mensaje: 'Otro tipo de documento ya tiene este código de trámite documentario.' });
-          }
+      // Si ya existe, enviar un mensaje de error
+      if (codigoTramiteExistente) {
+        return res.status(400).json({ mensaje: 'Otro tipo de documento ya tiene este código de trámite documentario.' });
       }
+    }
 
-      // Si no hay problemas, actualizar el tipo de documento
-      const tipodocumento = await TipoDocumento.findByPk(id);
-      tipodocumento.descripcion_tipo_documento = descripcion_tipo_documento;
-      tipodocumento.codigo_tramite_documentario = codigo_tramite_documentario;
-      tipodocumento.activo = activo;
-      await tipodocumento.save();
+    // Si no hay problemas, actualizar el tipo de documento
+    const tipoDocumento = await TipoDocumento.findByPk(id);
+    tipoDocumento.descripcion_tipo_documento = descripcion_tipo_documento;
+    tipoDocumento.codigo_tramite_documentario = codigo_tramite_documentario;
+    tipoDocumento.activo = activo;
+    await tipoDocumento.save();
 
-      res.json({ mensaje: 'Tipo de documento actualizado con éxito' });
+    res.json({ mensaje: 'Tipo de documento actualizado con éxito' });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({ mensaje: error.message });
   }
 };
 
