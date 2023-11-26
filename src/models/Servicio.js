@@ -10,6 +10,9 @@ export const Servicio = sequelize.define('servicios',{
     tipo_servicio:{
         type: DataTypes.ENUM(['TUPA','TUSNE'])
     },
+    flag_seleccion: {
+        type: DataTypes.SMALLINT
+    },
     requisitos_servicio:{
         type: DataTypes.STRING
     },
