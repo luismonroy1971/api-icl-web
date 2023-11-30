@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import {Departamento} from '../models/Departamento.js';
-import {Convenio} from '../models/Convenio.js'
+import { Convenio } from '../models/Convenio.js'
+import { Op } from 'sequelize';
 
 export const leerDepartamentos = async (req, res) =>{
     try {
@@ -12,34 +13,46 @@ export const leerDepartamentos = async (req, res) =>{
 
 }
 
-export const departamentosConvenio = async (req, res) => {
-    try {
-        const countConvenios = await Convenio.count();
+// export const departamentosConvenio = async (req, res) => {
+//   try {
+//     const countConvenios = await Convenio.count();
 
-        if (countConvenios === 0) {
-            // Manejar el caso en el que no hay convenios disponibles
-            return res.status(404).json({ mensaje: 'No hay convenios disponibles.' });
-        }
-      
-        const departamentosConConvenio = await Departamento.findAll({
-            include: [
-              {
-                model: Convenio,
-                attributes: [],
-              },
-            ],
-            attributes: [
-              'id',
-              'departamento',
-            ],
-            where: Sequelize.literal('(SELECT COUNT(*) FROM "convenios" WHERE "convenios"."id_departamento" = "departamentos"."id") > 0'),
-          });
-      
-          res.json(departamentosConConvenio);
-        } catch (error) {
-          return res.status(500).json({ mensaje: error.message });
-        }
-  };
+//     if (countConvenios === 0) {
+//       return res.status(404).json({ mensaje: 'No hay convenios disponibles.' });
+//     }
+
+//     const departamentosConConvenio = await Departamento.findAll({
+//       attributes: ['id', 'departamento'],
+//       include: [
+//         {
+//           model: Convenio,
+//           attributes: [],
+//         },
+//       ],
+//       where: Sequelize.literal(
+//         '(SELECT COUNT(*) FROM "convenios" WHERE "convenios"."id_departamento" = "departamentos"."id") > 0'
+//       ),
+//     });
+
+//     res.json(departamentosConConvenio);
+//   } catch (error) {
+//     return res.status(500).json({ mensaje: error.message });
+//   }
+// };
+
+
+export const departamentosConvenio = async (req, res) => {
+  try {
+    const departamentos = await Departamento.findAll({
+      attributes: ['id', 'departamento'],
+    });
+
+    res.json(departamentos);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
   
 
 export const leerDepartamento = async (req, res) =>{
