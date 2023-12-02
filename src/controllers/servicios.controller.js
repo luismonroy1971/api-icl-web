@@ -1,20 +1,35 @@
 import { Sequelize } from 'sequelize';
 import {Servicio} from '../models/Servicio.js';
 
-export const leerServicios = async (req, res) =>{
-    try {
-        const servicios = await Servicio.findAll({
-            where: {
-              activo: '1', 
-              autorizado: '1'
-            },
-          });
-        res.json(servicios);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
+const convertirDecimalANumero = (decimal) => {
+  // Convierte Sequelize.Decimal a un número
+  return decimal ? Number(decimal.toString()) : null;
+};
 
-}
+export const leerServicios = async (req, res) => {
+  try {
+      const servicios = await Servicio.findAll({
+          where: {
+              activo: '1',
+              autorizado: '1'
+          },
+      });
+
+      // Formatear monto_soles en la respuesta
+      const serviciosFormateados = servicios.map(servicio => {
+          const servicioJSON = servicio.toJSON();
+          servicioJSON.monto_soles = convertirDecimalANumero(servicioJSON.monto_soles);
+          return {
+              ...servicioJSON,
+              monto_soles: servicioJSON.monto_soles ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null
+          };
+      });
+
+      res.json(serviciosFormateados);
+  } catch (error) {
+      return res.status(500).json({ mensaje: error.message });
+  }
+};
 
 export const buscarServicios = async (req, res) => {
     const { tipo_servicio, periodo_servicio, numero_servicio, sub_nivel_servicio, denominacion_servicio, autorizado, activo } = req.query;
@@ -52,16 +67,25 @@ export const buscarServicios = async (req, res) => {
         whereClause.activo = activo;
       }
   
-      const servicios = await Servicio.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['tipo_servicio', 'ASC'],
-          ['numero_servicio', 'ASC'],
-          ['sub_nivel_servicio', 'ASC']
-        ]
+        
+        const servicios = await Servicio.findAll({
+          where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+          order: [
+              ['tipo_servicio', 'ASC'],
+              ['numero_servicio', 'ASC'],
+              ['sub_nivel_servicio', 'ASC']
+          ]
       });
-  
-      res.json(servicios);
+        const serviciosFormateados = servicios.map(servicio => {
+          const servicioJSON = servicio.toJSON();
+          servicioJSON.monto_soles = convertirDecimalANumero(servicioJSON.monto_soles);
+          return {
+              ...servicioJSON,
+              monto_soles: servicioJSON.monto_soles ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null
+          };
+      });
+
+      res.json(serviciosFormateados);
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }

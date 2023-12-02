@@ -3780,6 +3780,7 @@ insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_c
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','sub_nivel_servicio','Sub nivel servicio','number','',10,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','denominacion_servicio','Denominación de servicio','string','',255,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','requisitos_servicio','Requisitos del servicio','string','',255,'');
+insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','flag_seleccion','Es seleccionable','array','',5,'[Si,No]');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','por_uit','Porcentaje de UIT','decimal','',10,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (22,'servicio','/servicios','monto_uit','Monto de UIT','decimal','',10,'');
 insert into campostablas (id_menu, tabla, endpoint_tabla, nombre_campo, titulo_campo, tipo, backend, ancho, valores) values (7,'uit','/uits','periodo_uit','Periodo UIT','number','',4,'');
