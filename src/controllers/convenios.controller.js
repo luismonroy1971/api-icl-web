@@ -101,7 +101,7 @@ export const buscarConvenios = async (req, res) => {
       id_distrito: convenio.id_distrito,
       url_documento: convenio.url_documento,
       contenido_documento: convenio.contenido_documento,
-      fecha_convenio: convenio.fecha_convenio,
+      fecha_convenio: new Intl.DateTimeFormat('es-PE').format(new Date(convenio.fecha_convenio)),
       periodo_convenio: convenio.periodo_convenio,
       periodo_mes: convenio.periodo_mes,
       creado_por: convenio.creado_por,

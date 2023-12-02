@@ -1,7 +1,7 @@
 import { Sequelize } from 'sequelize';
 import { ImagenNoticia } from '../models/ImagenNoticia.js';
 import {Noticia} from '../models/Noticia.js';
-
+import moment from 'moment';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs/promises';
@@ -76,11 +76,13 @@ export const buscarNoticias = async (req, res) => {
         // Mapear los resultados para agregar el campo virtual 'url_imagen_portada'
         const noticiasConUrlImagenPortada = noticias.map((noticia) => {
             const { url_documento, contenido_documento } = noticia;
+            // Formatear la fecha
+            const fechaFormateada = moment(fecha_noticia).format('DD/MM/YYYY');
 
             // Asegurarse de que contenido_documento no sea null antes de acceder a 'toString'
             const url_imagen_portada = contenido_documento ? `data:image/png;base64,${contenido_documento.toString('base64')}` : url_documento;
 
-            return { ...noticia.toJSON(), url_imagen_portada };
+            return { ...noticia.toJSON(), fecha_noticia: fechaFormateada, url_imagen_portada };
         });
 
         res.json(noticiasConUrlImagenPortada);

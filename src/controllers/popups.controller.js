@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Popup } from '../models/Popup.js';
+import moment from 'moment';
 
 const baseUrl = process.env.BASE_URL; // Obtener la variable de entorno BASE_URL
 
@@ -14,12 +15,14 @@ export const crearPopup = async (req, res) => {
   } = req.body;
 
   const imgFile = req.file; // Acceder al archivo cargado
+  console.log(imgFile);
 
   try {
     let nuevoPopup = {
       fecha_inicial,
       fecha_final,
       descripcion_popup,
+      flag_adjunto,
       creado_por,
       creado_fecha
     };
@@ -35,6 +38,7 @@ export const crearPopup = async (req, res) => {
     nuevoPopup = await Popup.create(nuevoPopup);
     res.json({ mensaje: 'Popup creado correctamente', nuevoPopup });
   } catch (error) {
+    console.error(error);
     return res.status(500).json({ mensaje: error.message });
   }
 };
@@ -135,7 +139,18 @@ export const buscarPopups = async (req, res) => {
       ],
     });
 
-    res.json(popups);
+    // Mapear los resultados para agregar el campo virtual 'fechas_formateadas'
+    const popupsConFechasFormateadas = popups.map((popup) => {
+      const { fecha_inicial, fecha_final } = popup;
+
+      // Formatear las fechas usando moment
+      const fechaInicialFormateada = moment(fecha_inicial).format('DD/MM/YYYY');
+      const fechaFinalFormateada = moment(fecha_final).format('DD/MM/YYYY');
+
+      return { ...popup.toJSON(), fecha_inicial: fechaInicialFormateada, fecha_final: fechaFinalFormateada };
+    });
+
+    res.json(popupsConFechasFormateadas);
   } catch (error) {
     return res.status(500).json({ mensaje: error.message });
   }
