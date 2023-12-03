@@ -36,15 +36,31 @@ export const crearTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario } = req.body;
 
   try {
-    if (codigo_tramite_documentario !== '') {
-      // Verificar existencia solo si se proporciona el código_tramite_documentario
+    // Validación de la descripción del tipo de documento
+    if (!/^[a-zA-Z\s]+$/.test(descripcion_tipo_documento) || descripcion_tipo_documento.length <= 5) {
+      return res.status(400).json({ mensaje: 'La descripción del tipo de documento debe contener solo letras y tener más de 5 caracteres.' });
+    }
+
+    // Verificar si la descripción del tipo de documento ya existe
+    const descripcionExistente = await TipoDocumento.findOne({
+      where: { descripcion_tipo_documento },
+    });
+
+    if (descripcionExistente) {
+      return res.status(400).json({ mensaje: 'La descripción del tipo de documento ya está registrada.' });
+    }
+
+    // Validación del código de trámite documentario
+    if (codigo_tramite_documentario && (!/^[a-zA-Z0-9]+$/.test(codigo_tramite_documentario) || codigo_tramite_documentario.length <= 4)) {
+      return res.status(400).json({ mensaje: 'El código de trámite documentario debe ser alfanumérico y tener más de 4 caracteres.' });
+    }
+
+    // Verificar existencia del código de trámite documentario, si se proporciona
+    if (codigo_tramite_documentario) {
       const codigoTramiteExistente = await TipoDocumento.findOne({
-        where: {
-          codigo_tramite_documentario: codigo_tramite_documentario,
-        },
+        where: { codigo_tramite_documentario },
       });
 
-      // Si ya existe, enviar un mensaje de error
       if (codigoTramiteExistente) {
         return res.status(400).json({ mensaje: 'El código de trámite documentario ya está registrado.' });
       }
@@ -58,7 +74,9 @@ export const crearTipoDocumento = async (req, res) => {
 
     res.json({ mensaje: 'Creación de tipo de documento satisfactoria', nuevoTipoDocumento });
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    // Mensaje de error específico basado en el tipo de error
+    const errorMessage = error.name === 'SequelizeValidationError' ? 'Error de validación de datos.' : error.message;
+    return res.status(500).json({ mensaje: errorMessage });
   }
 };
 
@@ -69,8 +87,20 @@ export const actualizarTipoDocumento = async (req, res) => {
   const { descripcion_tipo_documento, codigo_tramite_documentario, activo } = req.body;
 
   try {
-    // Verificar si ya existe otro tipo de documento con el mismo código de trámite documentario (si tiene información)
-    if (codigo_tramite_documentario !== '') {
+    // Validar descripcion_tipo_documento si está presente
+    if (descripcion_tipo_documento !== undefined && descripcion_tipo_documento !== '') {
+      if (!/^[a-zA-Z\s]+$/.test(descripcion_tipo_documento) || descripcion_tipo_documento.length <= 5) {
+        return res.status(400).json({ mensaje: 'La descripción del tipo de documento debe contener solo letras y tener más de 5 caracteres.' });
+      }
+    }
+
+    // Validar codigo_tramite_documentario solo si se proporciona y no está vacío
+    if (codigo_tramite_documentario !== undefined && codigo_tramite_documentario !== '') {
+      if (codigo_tramite_documentario.length <= 4) {
+        return res.status(400).json({ mensaje: 'El código de trámite documentario debe tener más de 4 caracteres.' });
+      }
+
+      // Verificar si ya existe otro tipo de documento con el mismo código de trámite documentario
       const codigoTramiteExistente = await TipoDocumento.findOne({
         where: {
           codigo_tramite_documentario: codigo_tramite_documentario,
@@ -78,16 +108,19 @@ export const actualizarTipoDocumento = async (req, res) => {
         },
       });
 
-      // Si ya existe, enviar un mensaje de error
       if (codigoTramiteExistente) {
         return res.status(400).json({ mensaje: 'Otro tipo de documento ya tiene este código de trámite documentario.' });
       }
     }
 
-    // Si no hay problemas, actualizar el tipo de documento
+    // Actualizar el tipo de documento
     const tipoDocumento = await TipoDocumento.findByPk(id);
-    tipoDocumento.descripcion_tipo_documento = descripcion_tipo_documento;
-    tipoDocumento.codigo_tramite_documentario = codigo_tramite_documentario;
+    if (descripcion_tipo_documento !== undefined) {
+      tipoDocumento.descripcion_tipo_documento = descripcion_tipo_documento;
+    }
+    if (codigo_tramite_documentario !== undefined) {
+      tipoDocumento.codigo_tramite_documentario = codigo_tramite_documentario;
+    }
     tipoDocumento.activo = activo;
     await tipoDocumento.save();
 
@@ -96,6 +129,8 @@ export const actualizarTipoDocumento = async (req, res) => {
     return res.status(500).json({ mensaje: error.message });
   }
 };
+
+
 
 
 export const eliminarTipoDocumento = async (req, res) =>{
