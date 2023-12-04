@@ -22,39 +22,50 @@ export const leerNormas = async (req, res) =>{
 
 }
 
+import { format } from 'date-fns';
+
 export const buscarNormas = async (req, res) => {
-    const { tipo_norma, denominacion_norma, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (tipo_norma) {
-        whereClause.tipo_norma = tipo_norma;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  const { tipo_norma, denominacion_norma, autorizado, activo } = req.query;
 
-      if (denominacion_norma) {
-        whereClause.denominacion_norma = {
-          [Sequelize.Op.like]: `%${denominacion_norma}%`
-        };
-      }
+  try {
+    const whereClause = {};
 
-      if (activo) {
-        whereClause.activo = activo;
-      }
-  
-      const normas = await Norma.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
-      });
-  
-      res.json(normas);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+    if (tipo_norma) {
+      whereClause.tipo_norma = tipo_norma;
     }
-  };
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (denominacion_norma) {
+      whereClause.denominacion_norma = {
+        [Sequelize.Op.like]: `%${denominacion_norma}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const normas = await Norma.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const normasFormateadas = normas.map(norma => {
+      return {
+        ...norma.dataValues,
+        creado_fecha: norma.creado_fecha ? format(norma.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(normasFormateadas);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
   
 
 export const leerNorma = async (req, res) =>{

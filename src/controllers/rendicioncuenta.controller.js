@@ -41,43 +41,53 @@ export const leerRendiciones = async (req, res) =>{
 
 }
 
+import { format } from 'date-fns';
+
 export const buscarRendiciones = async (req, res) => {
-    const { periodo_rendicion, descripcion_rendicion, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (periodo_rendicion) {
-        whereClause.periodo_rendicion = periodo_rendicion;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  const { periodo_rendicion, descripcion_rendicion, autorizado, activo } = req.query;
 
-      if (descripcion_rendicion) {
-        whereClause.descripcion_rendicion = {
-          [Sequelize.Op.like]: `%${descripcion_rendicion}%`
-        };
-      }
+  try {
+    const whereClause = {};
 
-      if (activo) {
-        whereClause.activo = activo;
-      }
-  
-      const rendiciones = await Rendicion.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['periodo_rendicion', 'DESC']
-        ]
-      });
-  
-      res.json(rendiciones);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+    if (periodo_rendicion) {
+      whereClause.periodo_rendicion = periodo_rendicion;
     }
-  };
-  
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (descripcion_rendicion) {
+      whereClause.descripcion_rendicion = {
+        [Sequelize.Op.like]: `%${descripcion_rendicion}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const rendiciones = await Rendicion.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['periodo_rendicion', 'DESC']
+      ]
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const rendicionesFormateadas = rendiciones.map(rendicion => {
+      return {
+        ...rendicion.dataValues,
+        creado_fecha: rendicion.creado_fecha ? format(rendicion.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(rendicionesFormateadas);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 export const leerRendicion = async (req, res) =>{
     const { id } = req.params;

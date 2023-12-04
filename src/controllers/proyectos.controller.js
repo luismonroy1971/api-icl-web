@@ -19,43 +19,53 @@ export const leerProyectos = async (req, res) =>{
 
 }
 
-export const buscarProyectos = async (req, res) => {
-    const { title, content, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (title) {
-        whereClause.title = title;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+import { format } from 'date-fns';
 
-      if (content) {
-        whereClause.content = {
-          [Sequelize.Op.like]: `%${content}%`
-        };
-      }
-  
-      if (activo) {
-        whereClause.activo = activo;
-      }
-      
-      const proyectos = await Proyecto.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['id', 'ASC'],
-        ]
-      });
-  
-      res.json(proyectos);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+export const buscarProyectos = async (req, res) => {
+  const { title, content, autorizado, activo } = req.query;
+
+  try {
+    const whereClause = {};
+
+    if (title) {
+      whereClause.title = title;
     }
-  };
-  
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (content) {
+      whereClause.content = {
+        [Sequelize.Op.like]: `%${content}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+    
+    const proyectos = await Proyecto.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['id', 'ASC'],
+      ]
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const proyectosFormateados = proyectos.map(proyecto => {
+      return {
+        ...proyecto.dataValues,
+        creado_fecha: proyecto.creado_fecha ? format(proyecto.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(proyectosFormateados);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 export const leerProyecto = async (req, res) =>{
     const { id } = req.params;

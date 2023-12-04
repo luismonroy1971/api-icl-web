@@ -42,41 +42,53 @@ export const leerMemorias = async (req, res) =>{
 
 }
 
+import { format } from 'date-fns';
+
 export const buscarMemorias = async (req, res) => {
-    const { periodo_memoria, descripcion_memoria, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (periodo_memoria) {
-        whereClause.periodo_memoria = periodo_memoria;
-      }
+  const { periodo_memoria, descripcion_memoria, autorizado, activo } = req.query;
 
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  try {
+    const whereClause = {};
 
-      if (descripcion_memoria) {
-        whereClause.descripcion_memoria = {
-          [Sequelize.Op.like]: `%${descripcion_memoria}%`
-        };
-      }
-  
-      if (activo) {
-        whereClause.activo = activo;
-      }
-      
-      const memorias = await Memoria.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,order: [
-          ['periodo_memoria', 'DESC'],
-        ]
-      });
-  
-      res.json(memorias);
-    } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    if (periodo_memoria) {
+      whereClause.periodo_memoria = periodo_memoria;
     }
-  };
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (descripcion_memoria) {
+      whereClause.descripcion_memoria = {
+        [Sequelize.Op.like]: `%${descripcion_memoria}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+    
+    const memorias = await Memoria.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['periodo_memoria', 'DESC'],
+      ]
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const memoriasFormateadas = memorias.map(memoria => {
+      return {
+        ...memoria.dataValues,
+        creado_fecha: memoria.creado_fecha ? format(memoria.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(memoriasFormateadas);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
   
 
 export const leerMemoria = async (req, res) =>{

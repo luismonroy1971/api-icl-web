@@ -41,62 +41,73 @@ export const leerResoluciones = async (req, res) =>{
 
 }
 
+import { format } from 'date-fns';
+
 export const buscarResoluciones = async (req, res) => {
-    const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, codigo_resolucion, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (periodo_resolucion) {
-        whereClause.periodo_resolucion = periodo_resolucion;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  const { periodo_resolucion, id_area, id_tipo_documento, numero_resolucion, sumilla_resolucion, autorizado, codigo_resolucion, activo } = req.query;
 
-      if (id_area) {
-        whereClause.id_area = id_area;
-      }
-  
-      if (id_tipo_documento) {
-        whereClause.id_tipo_documento = id_tipo_documento;
-      }
-  
-      if (numero_resolucion) {
-        whereClause.numero_resolucion = numero_resolucion;
-      }
-  
-      if (sumilla_resolucion) {
-        whereClause.sumilla_resolucion = {
-          [Sequelize.Op.like]: `%${sumilla_resolucion}%`
-        };
-      }
-  
-      if (codigo_resolucion) {
-        whereClause.codigo_resolucion = {
-          [Sequelize.Op.like]: `%${codigo_resolucion}%`
-        };
-      }
+  try {
+    const whereClause = {};
 
-      if (activo) {
-        whereClause.activo = activo;
-      }
-      
-      const resoluciones = await Resolucion.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['periodo_resolucion', 'DESC'],
-          ['id_area', 'DESC'],
-          ['numero_resolucion', 'DESC']
-        ]
-      });
-  
-      res.json(resoluciones);
-    } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    if (periodo_resolucion) {
+      whereClause.periodo_resolucion = periodo_resolucion;
     }
-  };
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (id_area) {
+      whereClause.id_area = id_area;
+    }
+
+    if (id_tipo_documento) {
+      whereClause.id_tipo_documento = id_tipo_documento;
+    }
+
+    if (numero_resolucion) {
+      whereClause.numero_resolucion = numero_resolucion;
+    }
+
+    if (sumilla_resolucion) {
+      whereClause.sumilla_resolucion = {
+        [Sequelize.Op.like]: `%${sumilla_resolucion}%`
+      };
+    }
+
+    if (codigo_resolucion) {
+      whereClause.codigo_resolucion = {
+        [Sequelize.Op.like]: `%${codigo_resolucion}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const resoluciones = await Resolucion.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['periodo_resolucion', 'DESC'],
+        ['id_area', 'DESC'],
+        ['numero_resolucion', 'DESC']
+      ]
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const resolucionesFormateadas = resoluciones.map(resolucion => {
+      return {
+        ...resolucion.dataValues,
+        creado_fecha: resolucion.creado_fecha ? format(resolucion.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(resolucionesFormateadas);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
   
 
 export const leerResolucion = async (req, res) =>{

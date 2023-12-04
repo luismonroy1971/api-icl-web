@@ -23,42 +23,53 @@ export const leerCursos = async (req, res) =>{
 
 }
 
-export const buscarCursos = async (req, res) => {
-    const { title, content, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (title) {
-        whereClause.title = title;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+import { format } from 'date-fns';
 
-      if (content) {
-        whereClause.content = {
-          [Sequelize.Op.like]: `%${content}%`
-        };
-      }
-  
-      if (activo) {
-        whereClause.activo = activo;
-      }
-      
-      const cursos = await Curso.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['id', 'ASC'],
-        ]
-      });
-  
-      res.json(cursos);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
+export const buscarCursos = async (req, res) => {
+  const { title, content, autorizado, activo } = req.query;
+
+  try {
+    const whereClause = {};
+
+    if (title) {
+      whereClause.title = title;
     }
-  };
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (content) {
+      whereClause.content = {
+        [Sequelize.Op.like]: `%${content}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const cursos = await Curso.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['id', 'ASC'],
+      ]
+    });
+
+    // Formatear el campo creado_fecha antes de enviar la respuesta
+    const cursosFormateados = cursos.map(curso => {
+      return {
+        ...curso.dataValues,
+        creado_fecha: curso.creado_fecha ? format(curso.creado_fecha, 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(cursosFormateados);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
   
 
 export const leerCurso = async (req, res) =>{
