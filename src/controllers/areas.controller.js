@@ -59,7 +59,7 @@ export const crearArea = async (req, res) => {
       });
 
       // Enviar mensaje de éxito
-      res.json({ mensaje: 'Área creada correctamente', nuevaArea });
+      res.status(201).json({ mensaje: 'Área creada correctamente', nuevaArea });
   } catch (error) {
       return res.status(500).json({ mensaje: error.message });
   }
@@ -106,7 +106,7 @@ export const actualizarArea = async (req, res) => {
 
       await area.save();
 
-      return res.json({ mensaje: 'Área actualizada con éxito' });
+      return res.status(200).json({ mensaje: 'Área actualizada con éxito' });
   } catch (error) {
       return res.status(500).json({ mensaje: error.message });
   }
