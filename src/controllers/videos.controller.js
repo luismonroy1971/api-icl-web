@@ -16,52 +16,63 @@ export const leerVideos = async (req, res) =>{
 
 }
 
+import { format } from 'date-fns';
+
 export const buscarVideos = async (req, res) => {
-    const { fecha_video, id_categoria_video, titulo_video, descripcion_video, autorizado, activo } = req.query;
-  
-    try {
-      const whereClause = {};
-  
-      if (fecha_video) {
-        whereClause.fecha_video = fecha_video;
-      }
-  
-      if (autorizado) {
-        whereClause.autorizado = autorizado;
-      }
+  const { fecha_video, id_categoria_video, titulo_video, descripcion_video, autorizado, activo } = req.query;
 
-      if (id_categoria_video) {
-        whereClause.id_categoria_video = id_categoria_video;
-      }
-  
-      if (titulo_video) {
-        whereClause.titulo_video = {
-          [Sequelize.Op.like]: `%${titulo_video}%`
-        };
-      }
-  
-      if (descripcion_video) {
-        whereClause.descripcion_video = {
-          [Sequelize.Op.like]: `%${descripcion_video}%`
-        };
-      }
+  try {
+    const whereClause = {};
 
-      if (activo) {
-        whereClause.activo = activo;
-      }
-  
-      const videos = await Video.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
-        order: [
-          ['orden', 'DESC'],
-        ]
-      });
-  
-      res.json(videos);
-    } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    if (fecha_video) {
+      whereClause.fecha_video = fecha_video;
     }
-  };
+
+    if (autorizado) {
+      whereClause.autorizado = autorizado;
+    }
+
+    if (id_categoria_video) {
+      whereClause.id_categoria_video = id_categoria_video;
+    }
+
+    if (titulo_video) {
+      whereClause.titulo_video = {
+        [Sequelize.Op.like]: `%${titulo_video}%`
+      };
+    }
+
+    if (descripcion_video) {
+      whereClause.descripcion_video = {
+        [Sequelize.Op.like]: `%${descripcion_video}%`
+      };
+    }
+
+    if (activo) {
+      whereClause.activo = activo;
+    }
+
+    const videos = await Video.findAll({
+      where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+      order: [
+        ['orden', 'DESC'],
+      ]
+    });
+
+    const videosFormateados = videos.map(video => {
+      const videoJSON = video.toJSON();
+      return {
+        ...videoJSON,
+        creado_fecha: videoJSON.creado_fecha ? format(new Date(videoJSON.creado_fecha), 'dd/MM/yyyy') : null,
+      };
+    });
+
+    res.json(videosFormateados);
+  } catch (error) {
+    return res.status(500).json({ mensaje: error.message });
+  }
+};
+
 
 export const leerVideo = async (req, res) =>{
     const { id } = req.params;
