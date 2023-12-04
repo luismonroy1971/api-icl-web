@@ -163,7 +163,7 @@ export const activarTipoDocumento = async (req, res) => {
       tipodocumento.activo = '1'; // Establecer activo en '1'
       await tipodocumento.save();
   
-      res.json({ mensaje: 'TipoDocumento activada correctamente' });
+      res.json({ mensaje: 'Tipo de Documento activado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
@@ -177,13 +177,13 @@ export const activarTipoDocumento = async (req, res) => {
       const tipodocumento = await TipoDocumento.findByPk(id);
   
       if (!tipodocumento) {
-        return res.status(404).json({ mensaje: 'TipoDocumento no encontrada' });
+        return res.status(404).json({ mensaje: 'Tipo de Documento no encontrado' });
       }
   
       tipodocumento.activo = '0'; // Establecer activo en '0'
       await tipodocumento.save();
   
-      res.json({ mensaje: 'TipoDocumento desactivada correctamente' });
+      res.json({ mensaje: 'Tipo de Documento desactivado correctamente' });
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
