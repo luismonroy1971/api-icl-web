@@ -72,7 +72,8 @@ export const crearTipoDocumento = async (req, res) => {
       codigo_tramite_documentario,
     });
 
-    res.json({ mensaje: 'Creación de tipo de documento satisfactoria', nuevoTipoDocumento });
+    return res.status(201).json({ mensaje: 'Tipo de documento creado correctamente', nuevoTipoDocumento });
+    
   } catch (error) {
     // Mensaje de error específico basado en el tipo de error
     const errorMessage = error.name === 'SequelizeValidationError' ? 'Error de validación de datos.' : error.message;
@@ -124,7 +125,8 @@ export const actualizarTipoDocumento = async (req, res) => {
     tipoDocumento.activo = activo;
     await tipoDocumento.save();
 
-    res.json({ mensaje: 'Tipo de documento actualizado con éxito' });
+    return res.status(200).json({ mensaje: 'Tipo de documento actualizado correctamente', tipoDocumento });
+
   } catch (error) {
     return res.status(500).json({ mensaje: error.message });
   }
