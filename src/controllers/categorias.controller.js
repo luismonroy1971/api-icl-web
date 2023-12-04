@@ -37,29 +37,30 @@ export const crearCategoria = async (req, res) => {
   const { descripcion_categoria } = req.body;
 
   try {
-      // Verificar si ya existe una categoría con la misma descripción
-      const categoriaExistente = await Categoria.findOne({
-          where: {
-              descripcion_categoria: descripcion_categoria
-          }
-      });
-
-      // Si ya existe, enviar un mensaje de error
-      if (categoriaExistente) {
-          return res.status(400).json({ mensaje: 'La descripción de la categoría ya está registrada.' });
+    // Verificar si ya existe una categoría con la misma descripción
+    const categoriaExistente = await Categoria.findOne({
+      where: {
+        descripcion_categoria: descripcion_categoria
       }
+    });
 
-      // Si no existe, crear la nueva categoría
-      const nuevaCategoria = await Categoria.create({
-          descripcion_categoria
-      });
+    // Si ya existe, enviar un mensaje de error
+    if (categoriaExistente) {
+      return res.status(400).json({ codigo: 400, mensaje: 'La descripción de la categoría ya está registrada.' });
+    }
 
-      // Enviar mensaje de éxito
-      res.json({ mensaje: 'Categoría creada correctamente', nuevaCategoria });
+    // Si no existe, crear la nueva categoría
+    const nuevaCategoria = await Categoria.create({
+      descripcion_categoria
+    });
+
+    // Enviar código de éxito (código 201) junto con el mensaje de éxito y los datos de la nueva categoría
+    return res.status(201).json({ mensaje: 'Categoría creada correctamente', nuevaCategoria });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({ codigo: 500, mensaje: error.message });
   }
 };
+
 
 
 export const actualizarCategoria = async (req, res) => {
@@ -95,7 +96,7 @@ export const actualizarCategoria = async (req, res) => {
 
       await categoria.save();
 
-      return res.json({ mensaje: 'Categoría actualizada con éxito' });
+      return res.status(200).json({ mensaje: 'Categoría actualizada correctamente', nuevaCategoria });
   } catch (error) {
       return res.status(500).json({ mensaje: error.message });
   }

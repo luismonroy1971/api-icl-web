@@ -70,7 +70,7 @@ export const actualizarUit = async (req, res) =>{
     uit.base_legal = base_legal;
     uit.activo = activo;
     await uit.save(); 
-     res.json({ mensaje: 'UIT actualizada con éxito' });
+    res.status(200).json({ message: 'UIT actualizada con éxito', nuevaUit })
     }
         catch(error){
         return res.status(500).json({ mensaje: error.message })
