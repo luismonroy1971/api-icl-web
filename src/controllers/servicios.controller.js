@@ -234,57 +234,63 @@ export const obtenerValorDeServicio = async (req, res) => {
     const { tipo_servicio, numero_servicio, sub_nivel_servicio } = req.query;
 
     if (!tipo_servicio || !numero_servicio || !sub_nivel_servicio) {
-        if (res && res.status && res.json) {
-          // Devuelve una respuesta JSON válida en caso de error
-            return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "sub_nivel_servicio" son obligatorios' });
-        } else {
-          // Si 'res' no está definido, devuelve un objeto con un mensaje de error
-            console.error('Error: res no es una respuesta HTTP válida.');
-            return { error: 'Error en el servidor.' };
-        }
-    }
-
-    // Define las condiciones iniciales para la búsqueda
-      let condiciones;
-        condiciones = {
-          tipo_servicio,
-          numero_servicio,
-          sub_nivel_servicio
-        };
-    
-
-      const servicios = await Servicio.findAll({
-        where: condiciones,
-        attributes: ['tipo_servicio', 'numero_servicio', 'sub_nivel_servicio', 'denominacion_servicio', 'monto_soles'],
-       });
-
- 
-    let valorServicio = null;
-    let denominacionServicio = null;
-
-        // Itera sobre los servicios para encontrar el valor correcto
-        for (const servicio of servicios) {
-            valorServicio = parseFloat(servicio.monto_soles);
-            denominacionServicio = servicio.denominacion_servicio;
-            break;
-       }
-        if (res && res.status && res.json) {
-          // Devuelve una respuesta JSON válida en todos los casos
-          return res.status(200).json({ denominacion_servicio: denominacionServicio, valor_servicio: valorServicio || 0 });
-          console.error('Error: res no es una respuesta HTTP válida.');
-          // Si 'res' no está definido, devuelve un objeto con un mensaje de error
-          return { error: 'Error en el servidor.' };
-        }
-    
-    } catch (error) {
-      console.error(error);
       if (res && res.status && res.json) {
-        return res.status(500).json({ error: 'Error en el servidor.' });
+        // Devuelve una respuesta JSON válida en caso de error
+        return res.status(400).json({ error: 'Los parámetros "tipo_servicio", "numero_servicio", "sub_nivel_servicio" son obligatorios' });
       } else {
+        // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+        console.error('Error: res no es una respuesta HTTP válida.');
         return { error: 'Error en el servidor.' };
       }
     }
-  };
+
+    // Define las condiciones iniciales para la búsqueda
+    let condiciones;
+    condiciones = {
+      tipo_servicio,
+      numero_servicio,
+      sub_nivel_servicio
+    };
+
+    const servicios = await Servicio.findAll({
+      where: condiciones,
+      attributes: ['tipo_servicio', 'numero_servicio', 'sub_nivel_servicio', 'denominacion_servicio', 'monto_soles'],
+    });
+
+    let valorServicio = null;
+    let denominacionServicio = null;
+
+    // Itera sobre los servicios para encontrar el valor correcto
+    for (const servicio of servicios) {
+      valorServicio = parseFloat(servicio.monto_soles);
+      denominacionServicio = servicio.denominacion_servicio;
+      break;
+    }
+    
+    if (!isNaN(valorServicio)) {
+      valorServicio = (valorServicio * 100) / 100; // Formatea a dos decimales
+    } else {
+      valorServicio = 0;
+    }
+
+    if (res && res.status && res.json) {
+      // Devuelve una respuesta JSON válida en todos los casos
+      return res.status(200).json({ denominacion_servicio: denominacionServicio, valor_servicio: Number(valorServicio.toFixed(2)) });
+    } else {
+      console.error('Error: res no es una respuesta HTTP válida.');
+      // Si 'res' no está definido, devuelve un objeto con un mensaje de error
+      return { error: 'Error en el servidor.' };
+    }
+
+  } catch (error) {
+    console.error(error);
+    if (res && res.status && res.json) {
+      return res.status(500).json({ error: 'Error en el servidor.' });
+    } else {
+      return { error: 'Error en el servidor.' };
+    }
+  }
+};
 
 
 export const acumularValoresDeServicio = async (req, res) => {
