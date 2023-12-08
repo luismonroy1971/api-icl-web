@@ -8,6 +8,6 @@ router.post('/documentostipo/', passport.authenticate("jwt", { session: false })
 router.put('/documentostipo/:id', passport.authenticate("jwt", { session: false }), actualizarTipoDocumento);
 router.delete('/documentostipo/:id', passport.authenticate("jwt", { session: false }), eliminarTipoDocumento);
 router.get('/documentostipo/:id', leerTipoDocumento);
-router.put('/activartipodedocumento/:id', passport.authenticate("jwt", { session: false }),  activarTipoDocumento);
-router.put('/desactivartipodedocumento/:id', passport.authenticate("jwt", { session: false }),  desactivarTipoDocumento);
+router.put('/activardocumentostipo/:id', passport.authenticate("jwt", { session: false }),  activarTipoDocumento);
+router.put('/desactivardocumentostipo/:id', passport.authenticate("jwt", { session: false }),  desactivarTipoDocumento);
 export default router
