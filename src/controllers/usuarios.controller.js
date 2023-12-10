@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { Usuario } from '../models/Usuario.js';
 import { OpcionesUsuario } from '../models/OpcionesUsuario.js';
+import { Menu } from '../models/Menu.js';
+import { Sequelize } from 'sequelize';
+
 
 export const registrarUsuario = async (req, res) => {
   const t = await Usuario.sequelize.transaction();
@@ -41,8 +44,6 @@ export const registrarUsuario = async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
-
-
 
 
 // Función para iniciar sesión y generar un token JWT
@@ -97,27 +98,39 @@ export const obtenerUsuarioPorId = async (req, res) => {
   try {
     const usuarioId = req.params.id;
 
-    // Utiliza el método `findByPk` para buscar el usuario por ID
     const usuario = await Usuario.findByPk(usuarioId, {
       include: [
         {
           model: OpcionesUsuario,
-          attributes: ['id_menu'], // Incluye los campos id_menu e id_usuario
+          include: [{
+            model: Menu,
+            attributes: ['nombre_menu', 'etiqueta_menu', 'descripcion_menu', 'tipo_menu', 'url']
+          }]
         },
       ],
-      attributes: { exclude: ['password'] }, // Excluye la propiedad 'password' del usuario
+      attributes: {
+        exclude: ['password'],
+        include: [[Sequelize.literal(`'{"label": "' || profile || '"}'`), 'profileObj']]
+      }
     });
 
     if (!usuario) {
       return res.status(404).json({ message: 'Usuario no encontrado' });
     }
 
-    res.status(200).json(usuario);
+    // Convertir 'profileObj' de string a objeto JSON
+    const usuarioConProfile = {
+      ...usuario.get({ plain: true }),
+      profile: JSON.parse(usuario.getDataValue('profileObj'))
+    };
+
+    res.status(200).json(usuarioConProfile);
   } catch (error) {
     console.error('Error al obtener usuario por ID:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
+
 
 export const actualizarUsuario = async (req, res) => {
   try {
