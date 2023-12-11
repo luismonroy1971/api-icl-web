@@ -2,11 +2,20 @@ import { Sequelize } from 'sequelize';
 import {Menu} from '../models/Menu.js';
 
 export const buscarMenus = async (req, res) => {
-    const { primer_nivel, segundo_nivel, nombre_menu, tipo_menu } = req.query;
-  
-    try {
+  const { primer_nivel, segundo_nivel, nombre_menu, tipo_menu } = req.query;
+
+  try {
+    // Verificar si tipo_menu es "ADMINISTRADOR"
+    if (tipo_menu && tipo_menu.toUpperCase() === "ADMINISTRADOR") {
+      // Si es "ADMINISTRADOR", retornar todas las opciones sin filtrar
+      const menus = await Menu.findAll({
+        order: [['primer_nivel'], ['segundo_nivel']]
+      });
+      res.json(menus);
+    } else {
+      // Si no es "ADMINISTRADOR", aplicar los filtros normales
       const whereClause = {};
-  
+
       if (primer_nivel) {
         whereClause.primer_nivel = primer_nivel;
       }
@@ -26,15 +35,17 @@ export const buscarMenus = async (req, res) => {
       }
 
       const menus = await Menu.findAll({
-        where: Object.keys(whereClause).length === 0 ? {} : whereClause
+        where: Object.keys(whereClause).length === 0 ? {} : whereClause,
+        order: [['primer_nivel'], ['segundo_nivel']]
       });
-  
+
       res.json(menus);
-    } catch (error) {
-      return res.status(500).json({ message: error.message });
     }
-  };
-  
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 
 export const leerMenu = async (req, res) =>{
     const { id } = req.params;
