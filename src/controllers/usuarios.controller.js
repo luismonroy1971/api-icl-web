@@ -5,7 +5,6 @@ import { OpcionesUsuario } from '../models/OpcionesUsuario.js';
 import { Menu } from '../models/Menu.js';
 import { Sequelize } from 'sequelize';
 
-
 export const registrarUsuario = async (req, res) => {
   const t = await Usuario.sequelize.transaction();
 
@@ -18,18 +17,26 @@ export const registrarUsuario = async (req, res) => {
     }
 
     // Registrar el usuario
-    const nuevoUsuario = await Usuario.create({ name, email, password, profile }, { transaction: t });
+    const nuevoUsuario = await Usuario.create(
+      { name, email, password, profile },
+      { transaction: t }
+    );
 
     if (opcionesusuarios && opcionesusuarios.length > 0) {
       // Crear instancias de OpcionesUsuario relacionadas con el nuevo usuario
       await OpcionesUsuario.bulkCreate(
-        opcionesusuarios.map((opcion) => ({ id_usuario: nuevoUsuario.id, ...opcion })),
+        opcionesusuarios.map((opcion) => ({
+          id_usuario: nuevoUsuario.id,
+          ...opcion,
+        })),
         { transaction: t }
       );
     } else {
       // Si no se proporcionan opcionesusuarios, revertir la transacción y devolver un mensaje de error
       await t.rollback();
-      return res.status(400).json({ message: 'Debe proporcionar al menos una opción de usuario' });
+      return res
+        .status(400)
+        .json({ message: 'Debe proporcionar al menos una opción de usuario' });
     }
 
     // Confirmar la transacción
@@ -45,53 +52,72 @@ export const registrarUsuario = async (req, res) => {
   }
 };
 
-
 // Función para iniciar sesión y generar un token JWT
 export const iniciarSesion = async (req, res) => {
-    try {
-      const { email, password } = req.body;
-  
-      const usuario = await Usuario.findOne({ where: { email } });
-  
-      if (!usuario) {
-        return res.status(401).json({ message: 'Usuario no existe' });
-      }
-  
-      // Utiliza el método comparePassword para verificar la contraseña
-      const contrasenaValida = usuario.comparePassword(password);
-  
-      if (!contrasenaValida) {
-        return res.status(401).json({ message: 'Clave incorrecta' });
-      }
-  
-      const token = generarTokenJWT(usuario);
-  
-      res.status(200).json({ token, usuario });
-    } catch (error) {
-      console.error('Error al iniciar sesión:', error);
-      res.status(500).json({ message: 'Error en el servidor' , error });
+  try {
+    const { email, password } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { email } });
+
+    if (!usuario) {
+      return res.status(401).json({ message: 'Usuario no existe' });
     }
-  };
+
+    // Utiliza el método comparePassword para verificar la contraseña
+    const contrasenaValida = usuario.comparePassword(password);
+
+    if (!contrasenaValida) {
+      return res.status(401).json({ message: 'Clave incorrecta' });
+    }
+
+    const token = generarTokenJWT(usuario);
+
+    res.status(200).json({ token, usuario });
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    res.status(500).json({ message: 'Error en el servidor', error });
+  }
+};
 
 export const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({
-      attributes: { exclude: ['password'] }, // Excluye la propiedad 'password' del modelo Usuario
+      attributes: { exclude: ['password'] },
       include: [
         {
           model: OpcionesUsuario,
-          attributes: ['id_menu'], // Incluye solo los campos deseados del modelo OpcionesUsuario
+          attributes: ['id_menu'],
+          include: {
+            model: Menu,
+            attributes: ['nombre_menu'],
+          },
         },
       ],
     });
 
-    res.status(200).json(usuarios);
+    const usuariosConOpcionesFormato = usuarios.map((usuario) => {
+      const opcionesFormato = usuario.opcionesusuarios
+        ? usuario.opcionesusuarios
+            .map((opcion) => {
+              return opcion.menu
+                ? { value: opcion.id_menu, label: opcion.menu.nombre_menu }
+                : null;
+            })
+            .filter((opcion) => opcion !== null) // Filter out null values
+        : [];
+
+      return {
+        ...usuario.get({ plain: true }),
+        opcionesusuarios: opcionesFormato,
+      };
+    });
+
+    res.status(200).json(usuariosConOpcionesFormato);
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
-
 
 // Función para obtener un usuario por su ID
 export const obtenerUsuarioPorId = async (req, res) => {
@@ -102,16 +128,26 @@ export const obtenerUsuarioPorId = async (req, res) => {
       include: [
         {
           model: OpcionesUsuario,
-          include: [{
-            model: Menu,
-            attributes: ['nombre_menu', 'etiqueta_menu', 'descripcion_menu', 'tipo_menu', 'url']
-          }]
+          include: [
+            {
+              model: Menu,
+              attributes: [
+                'nombre_menu',
+                'etiqueta_menu',
+                'descripcion_menu',
+                'tipo_menu',
+                'url',
+              ],
+            },
+          ],
         },
       ],
       attributes: {
         exclude: ['password'],
-        include: [[Sequelize.literal(`'{"label": "' || profile || '"}'`), 'profileObj']]
-      }
+        include: [
+          [Sequelize.literal(`'{"label": "' || profile || '"}'`), 'profileObj'],
+        ],
+      },
     });
 
     if (!usuario) {
@@ -121,7 +157,7 @@ export const obtenerUsuarioPorId = async (req, res) => {
     // Convertir 'profileObj' de string a objeto JSON
     const usuarioConProfile = {
       ...usuario.get({ plain: true }),
-      profile: JSON.parse(usuario.getDataValue('profileObj'))
+      profile: JSON.parse(usuario.getDataValue('profileObj')),
     };
 
     res.status(200).json(usuarioConProfile);
@@ -130,7 +166,6 @@ export const obtenerUsuarioPorId = async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
-
 
 export const actualizarUsuario = async (req, res) => {
   try {
@@ -164,7 +199,10 @@ export const actualizarUsuario = async (req, res) => {
 
       // Crea instancias de OpcionesUsuario relacionadas con el usuario
       await OpcionesUsuario.bulkCreate(
-        opcionesusuarios.map((opcion) => ({ id_usuario: usuario.id, ...opcion }))
+        opcionesusuarios.map((opcion) => ({
+          id_usuario: usuario.id,
+          ...opcion,
+        }))
       );
     }
 
@@ -174,7 +212,6 @@ export const actualizarUsuario = async (req, res) => {
     res.status(500).json({ message: 'Error en el servidor' });
   }
 };
-
 
 // Función para generar un token JWT
 const generarTokenJWT = (usuario) => {
@@ -190,10 +227,9 @@ const generarTokenJWT = (usuario) => {
   return token;
 };
 
-
 export const activarUsuario = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     const usuario = await Usuario.findByPk(id);
 
@@ -210,10 +246,9 @@ export const activarUsuario = async (req, res) => {
   }
 };
 
-
 export const desactivarUsuario = async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
 
     const usuario = await Usuario.findByPk(id);
 
