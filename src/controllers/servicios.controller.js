@@ -3,7 +3,8 @@ import {Servicio} from '../models/Servicio.js';
 
 const convertirDecimalANumero = (decimal) => {
   // Convierte Sequelize.Decimal a un número
-  return decimal ? Number(decimal.toString()) : null;
+
+  return decimal ? Number(decimal.toString()) : 0.00;
 };
 
 export const leerServicios = async (req, res) => {
@@ -19,9 +20,10 @@ export const leerServicios = async (req, res) => {
       const serviciosFormateados = servicios.map(servicio => {
           const servicioJSON = servicio.toJSON();
           servicioJSON.monto_soles = convertirDecimalANumero(servicioJSON.monto_soles);
+
           return {
               ...servicioJSON,
-              monto_soles: servicioJSON.monto_soles ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null
+              monto_soles: servicioJSON.monto_soles !== null ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'
           };
       });
 
@@ -76,16 +78,15 @@ export const buscarServicios = async (req, res) => {
               ['sub_nivel_servicio', 'ASC']
           ]
       });
-        const serviciosFormateados = servicios.map(servicio => {
-          const servicioJSON = servicio.toJSON();
-          servicioJSON.monto_soles = convertirDecimalANumero(servicioJSON.monto_soles);
-          return {
-              ...servicioJSON,
-              monto_soles: servicioJSON.monto_soles ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : null
-          };
+      const serviciosFormateados = servicios.map(servicio => {
+        const servicioJSON = servicio.toJSON();
+        servicioJSON.monto_soles = convertirDecimalANumero(servicioJSON.monto_soles);
+        return {
+          ...servicioJSON,
+          monto_soles: servicioJSON.monto_soles !== null ? servicioJSON.monto_soles.toLocaleString('es-PE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '0.00'
+        };
       });
-
-      res.json(serviciosFormateados);
+            res.json(serviciosFormateados);
     } catch (error) {
       return res.status(500).json({ mensaje: error.message });
     }
@@ -257,8 +258,8 @@ export const obtenerValorDeServicio = async (req, res) => {
       attributes: ['tipo_servicio', 'numero_servicio', 'sub_nivel_servicio', 'denominacion_servicio', 'monto_soles'],
     });
 
-    let valorServicio = null;
-    let denominacionServicio = null;
+    let valorServicio = 0;
+    let denominacionServicio = '';
 
     // Itera sobre los servicios para encontrar el valor correcto
     for (const servicio of servicios) {
