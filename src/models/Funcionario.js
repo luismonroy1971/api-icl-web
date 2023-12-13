@@ -7,7 +7,7 @@ export const Funcionario = sequelize.define('funcionarios',{
         primaryKey: true,
         autoIncrement: true
     },
-    name:{
+    name_funcionario:{
         type: DataTypes.STRING
     },
     position:{

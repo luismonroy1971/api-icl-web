@@ -17,7 +17,7 @@ export const Curso = sequelize.define('cursos',{
       contenido_documento: {
           type: DataTypes.BLOB('long'),
       },
-    video:{
+    video_curso:{
         type: DataTypes.STRING
     },
     title:{
