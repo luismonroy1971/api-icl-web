@@ -23,7 +23,7 @@ export const leerFuncionarios = async (req, res) =>{
 
 
 export const buscarFuncionarios = async (req, res) => {
-  const { name, position, autorizado, activo } = req.query;
+  const { name_funcionario, position, autorizado, activo } = req.query;
 
   try {
       const whereClause = {};
@@ -32,8 +32,8 @@ export const buscarFuncionarios = async (req, res) => {
           whereClause.autorizado = autorizado;
       }
 
-      if (name) {
-          whereClause.name = name;
+      if (name_funcionario) {
+          whereClause.name_funcionario = name_funcionario;
       }
 
       if (position) {
@@ -86,7 +86,7 @@ export const leerFuncionario = async (req, res) =>{
 }
 
 export const crearFuncionario = async (req, res) => {
-    const { name, position, flag_adjunto, link, creado_por, creado_fecha } = req.body;
+    const { name_funcionario, position, flag_adjunto, link, creado_por, creado_fecha } = req.body;
     const imgFile = req.file;
 
     try {
@@ -116,7 +116,7 @@ export const crearFuncionario = async (req, res) => {
 
         // Crear un nuevo funcionario en la base de datos
         const nuevoFuncionario = await Funcionario.create({
-            name,
+            name_funcionario,
             position,
             flag_adjunto,
             url_documento,
@@ -138,7 +138,7 @@ export const crearFuncionario = async (req, res) => {
 
 export const actualizarFuncionario = async (req, res) => {
     const { id } = req.params;
-    const { name, position, flag_adjunto, image, link, modificado_por, modificado_fecha, activo } = req.body;
+    const { name_funcionario, position, flag_adjunto, image, link, modificado_por, modificado_fecha, activo } = req.body;
     const imgFile = req.file;
 
     try {
@@ -156,7 +156,7 @@ export const actualizarFuncionario = async (req, res) => {
         }
 
         // Actualizar las propiedades del funcionario
-        funcionario.name = name;
+        funcionario.name_funcionario = name_funcionario;
         funcionario.position = position;
         funcionario.modificado_por = modificado_por;
         funcionario.modificado_fecha = modificado_fecha;

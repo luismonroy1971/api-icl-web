@@ -88,7 +88,7 @@ export const leerCurso = async (req, res) =>{
 }
 
 export const crearCurso = async (req, res) => {
-    const { flag_adjunto, video, title, content, link, creado_por,creado_fecha, activo} = req.body;
+    const { flag_adjunto, video_curso, title, content, link, creado_por,creado_fecha, activo} = req.body;
     const imgFile = req.file;
 
     try {
@@ -114,7 +114,7 @@ export const crearCurso = async (req, res) => {
             flag_adjunto,
             url_documento,
             contenido_documento,
-            video,
+            video_curso,
             title,
             content,
             link,
@@ -151,7 +151,7 @@ const guardarArchivo = async (entidadDir, imgFile) => {
 
 export const actualizarCurso = async (req, res) => {
   const { id } = req.params;
-  const { flag_adjunto='BIN', video, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
+  const { flag_adjunto='BIN', video_curso, title, content, link, modificado_por, modificado_fecha, activo } = req.body;
   const imgFile = req.file;
 
   try {
@@ -177,7 +177,7 @@ export const actualizarCurso = async (req, res) => {
           flag_adjunto,
           url_documento,
           contenido_documento,
-          video,
+          video_curso,
           title,
           content,
           link,
