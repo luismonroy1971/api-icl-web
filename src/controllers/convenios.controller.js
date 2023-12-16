@@ -92,27 +92,44 @@ export const buscarConvenios = async (req, res) => {
     });
 
     // Transformar los resultados para cambiar el orden de los campos
-    const resultadoTransformado = convenios.map((convenio) => ({
-      id: convenio.id,
-      descripcion_convenio: convenio.descripcion_convenio,
-      flag_adjunto: convenio.flag_adjunto,
-      id_departamento: convenio.id_departamento,
-      id_provincia: convenio.id_provincia,
-      id_distrito: convenio.id_distrito,
-      url_documento: convenio.url_documento,
-      contenido_documento: convenio.contenido_documento,
-      fecha_convenio: new Intl.DateTimeFormat('es-PE').format(new Date(convenio.fecha_convenio)),
-      periodo_convenio: convenio.periodo_convenio,
-      periodo_mes: convenio.periodo_mes,
-      creado_por: convenio.creado_por,
-      creado_fecha: convenio.creado_fecha,
-      modificado_por: convenio.modificado_por,
-      modificado_fecha: convenio.modificado_fecha,
-      autorizado: convenio.autorizado,
-      autorizado_por: convenio.autorizado_por,
-      autorizado_fecha: convenio.autorizado_fecha,
-      activo: convenio.activo,
-    }));
+    const resultadoTransformado = convenios.map((convenio) => {
+      let fechaFormateada;
+
+      if (convenio.fecha_convenio instanceof Date) {
+        // Formatear manualmente para 'dd/mm/yyyy'
+        const dia = convenio.fecha_convenio.getDate().toString().padStart(2, '0');
+        const mes = (convenio.fecha_convenio.getMonth() + 1).toString().padStart(2, '0'); // getMonth() devuelve un índice basado en 0
+        const año = convenio.fecha_convenio.getFullYear();
+        fechaFormateada = `${dia}/${mes}/${año}`;
+      } else {
+        // Asumiendo que es una cadena en formato 'yyyy-mm-dd'
+        const fechaPartes = convenio.fecha_convenio.split(' ')[0].split('-');
+        fechaFormateada = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`;
+      }
+
+      return {
+        id: convenio.id,
+        descripcion_convenio: convenio.descripcion_convenio,
+        flag_adjunto: convenio.flag_adjunto,
+        id_departamento: convenio.id_departamento,
+        id_provincia: convenio.id_provincia,
+        id_distrito: convenio.id_distrito,
+        url_documento: convenio.url_documento,
+        contenido_documento: convenio.contenido_documento,
+        fecha_convenio: fechaFormateada, // Usar la fecha formateada
+        periodo_convenio: convenio.periodo_convenio,
+        periodo_mes: convenio.periodo_mes,
+        creado_por: convenio.creado_por,
+        creado_fecha: convenio.creado_fecha,
+        modificado_por: convenio.modificado_por,
+        modificado_fecha: convenio.modificado_fecha,
+        autorizado: convenio.autorizado,
+        autorizado_por: convenio.autorizado_por,
+        autorizado_fecha: convenio.autorizado_fecha,
+        activo: convenio.activo,
+      };
+    });
+    
 
     res.json(resultadoTransformado);
   } catch (error) {
@@ -245,8 +262,12 @@ export const actualizarConvenio = async (req, res) => {
     convenio.descripcion_convenio = descripcion_convenio;
     convenio.fecha_convenio = fecha_convenio;
     convenio.id_departamento = id_departamento;
-    convenio.id_provincia = id_provincia || null;
-    convenio.id_distrito = id_distrito || null;
+    if (id_provincia !== null && id_provincia !== undefined) {
+      convenio.id_provincia = id_provincia;
+  }
+    if (id_distrito !== null && id_distrito !== undefined) {
+      convenio.id_distrito = id_distrito;
+    }
     convenio.modificado_por = modificado_por;
     convenio.modificado_fecha = modificado_fecha;
     convenio.activo = activo;
