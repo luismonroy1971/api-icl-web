@@ -15,7 +15,7 @@ export const crearPopup = async (req, res) => {
   } = req.body;
 
   const imgFile = req.file; // Acceder al archivo cargado
-  console.log(imgFile);
+
 
   try {
     let nuevoPopup = {
