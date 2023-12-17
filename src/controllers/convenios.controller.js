@@ -1,7 +1,13 @@
-import { Sequelize } from 'sequelize';
-import { Convenio } from '../models/Convenio.js';
+import {
+  Sequelize
+} from 'sequelize';
+import {
+  Convenio
+} from '../models/Convenio.js';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import {
+  fileURLToPath
+} from 'url';
 import fs from 'fs/promises';
 
 import dotenv from 'dotenv';
@@ -17,7 +23,9 @@ export const obtenerPeriodos = async (req, res) => {
           'periodo_convenio',
         ],
       ],
-      order: [[Sequelize.col('periodo_convenio'), 'DESC']],
+      order: [
+        [Sequelize.col('periodo_convenio'), 'DESC']
+      ],
     });
 
     // Extraer los valores de aniosUnicos
@@ -26,7 +34,9 @@ export const obtenerPeriodos = async (req, res) => {
     res.json(anios);
   } catch (error) {
     console.error('Error al obtener años únicos de convenios:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
+    res.status(500).json({
+      error: 'Error interno del servidor'
+    });
   }
 };
 
@@ -39,7 +49,9 @@ export const leerConvenios = async (req, res) => {
     });
     res.json(convenios);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message
+    });
   }
 };
 
@@ -59,7 +71,7 @@ export const buscarConvenios = async (req, res) => {
     const whereClause = {};
 
     if (descripcion_convenio) {
-         whereClause.descripcion_convenio = Sequelize.literal(`unaccent(LOWER(descripcion_convenio)) ILIKE unaccent(LOWER('%${descripcion_convenio}%'))`);
+      whereClause.descripcion_convenio = Sequelize.literal(`unaccent(LOWER(descripcion_convenio)) ILIKE unaccent(LOWER('%${descripcion_convenio}%'))`);
     }
 
     if (autorizado) {
@@ -88,24 +100,22 @@ export const buscarConvenios = async (req, res) => {
 
     const convenios = await Convenio.findAll({
       where: whereClause,
-      order: [['fecha_convenio', 'DESC']],
+      order: [
+        ['fecha_convenio', 'DESC']
+      ],
     });
 
     // Transformar los resultados para cambiar el orden de los campos
     const resultadoTransformado = convenios.map((convenio) => {
       let fechaFormateada;
 
-      if (convenio.fecha_convenio instanceof Date) {
-        // Formatear manualmente para 'dd/mm/yyyy'
-        const dia = convenio.fecha_convenio.getDate().toString().padStart(2, '0');
-        const mes = (convenio.fecha_convenio.getMonth() + 1).toString().padStart(2, '0'); // getMonth() devuelve un índice basado en 0
-        const año = convenio.fecha_convenio.getFullYear();
-        fechaFormateada = `${dia}/${mes}/${año}`;
-      } else {
-        // Asumiendo que es una cadena en formato 'yyyy-mm-dd'
-        const fechaPartes = convenio.fecha_convenio.split(' ')[0].split('-');
-        fechaFormateada = `${fechaPartes[2]}/${fechaPartes[1]}/${fechaPartes[0]}`;
-      }
+      // Formatear manualmente para 'dd/mm/yyyy' (considerando UTC)
+      const dia = convenio.fecha_convenio.getUTCDate().toString().padStart(2, '0');
+      const mes = (convenio.fecha_convenio.getUTCMonth() + 1).toString().padStart(2, '0'); // getMonth() devuelve un índice basado en 0
+      const año = convenio.fecha_convenio.getUTCFullYear();
+      fechaFormateada = `${dia}/${mes}/${año}`;
+
+
 
       return {
         id: convenio.id,
@@ -129,16 +139,20 @@ export const buscarConvenios = async (req, res) => {
         activo: convenio.activo,
       };
     });
-    
+
 
     res.json(resultadoTransformado);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message
+    });
   }
 };
 
 export const leerConvenio = async (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
   try {
     const convenio = await Convenio.findOne({
       where: {
@@ -147,7 +161,9 @@ export const leerConvenio = async (req, res) => {
     });
     res.json(convenio);
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    return res.status(500).json({
+      message: error.message
+    });
   }
 };
 
@@ -174,20 +190,22 @@ export const crearConvenio = async (req, res) => {
       return res
         .status(400)
         .json({
-          mensaje:
-            'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.',
+          mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.',
         });
     }
 
     // Manejar la lógica según el tipo de adjunto (URL o BIN)
     if (flag_adjunto === 'URL' && pdfFile) {
-      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      const __dirname = path.dirname(fileURLToPath(
+        import.meta.url));
       const documentosDir = path.join(__dirname, 'documentos', 'convenios');
       const originalFileName = pdfFile.originalname;
       const filePath = path.join(documentosDir, originalFileName);
 
       // Crear el directorio si no existe y copiar el archivo
-      await fs.mkdir(documentosDir, { recursive: true });
+      await fs.mkdir(documentosDir, {
+        recursive: true
+      });
       await fs.copyFile(pdfFile.path, filePath);
       url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
     } else if (flag_adjunto === 'BIN' && pdfFile) {
@@ -212,23 +230,33 @@ export const crearConvenio = async (req, res) => {
     // Responder con el nuevo convenio creado
     return res
       .status(201)
-      .json({ mensaje: 'Convenio creado con éxito', nuevoConvenio });
+      .json({
+        mensaje: 'Convenio creado con éxito',
+        nuevoConvenio
+      });
   } catch (error) {
     // Manejar errores y responder con un mensaje de error
     console.error(error);
     return res
       .status(500)
-      .json({ mensaje: 'Error al crear convenio', error: error.message });
+      .json({
+        mensaje: 'Error al crear convenio',
+        error: error.message
+      });
   }
 };
 
 export const actualizarConvenio = async (req, res) => {
-  const { id } = req.params;
+  const {
+    id
+  } = req.params;
+
+
   const {
     descripcion_convenio,
     fecha_convenio,
     id_departamento,
-    id_provincia,
+    id_provincia = 0,
     id_distrito,
     modificado_por,
     modificado_fecha,
@@ -244,7 +272,9 @@ export const actualizarConvenio = async (req, res) => {
 
     // Verificar si el convenio existe
     if (!convenio) {
-      return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+      return res.status(404).json({
+        mensaje: 'Convenio no encontrado'
+      });
     }
 
     // Validar el tamaño del archivo adjunto
@@ -253,8 +283,7 @@ export const actualizarConvenio = async (req, res) => {
       return res
         .status(400)
         .json({
-          mensaje:
-            'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.',
+          mensaje: 'El archivo es demasiado grande. El tamaño máximo permitido es de 10 MB.',
         });
     }
 
@@ -264,17 +293,22 @@ export const actualizarConvenio = async (req, res) => {
     convenio.id_departamento = id_departamento;
     if (id_provincia !== null && id_provincia !== undefined) {
       convenio.id_provincia = id_provincia;
-  }
-    if (id_distrito !== null && id_distrito !== undefined) {
-      convenio.id_distrito = id_distrito;
     }
+    // Check if id_distrito is a valid number before parsing
+    if (id_distrito !== null && id_distrito !== undefined && id_distrito.trim() !== '' && !isNaN(id_distrito)) {
+      convenio.id_distrito = parseInt(id_distrito, 10);
+    } else {
+      convenio.id_distrito = null;
+    }
+
     convenio.modificado_por = modificado_por;
     convenio.modificado_fecha = modificado_fecha;
     convenio.activo = activo;
 
     // Manejar la lógica según el tipo de adjunto (URL o BIN)
     if (pdfFile) {
-      const __dirname = path.dirname(fileURLToPath(import.meta.url));
+      const __dirname = path.dirname(fileURLToPath(
+        import.meta.url));
       const documentosDir = path.join(
         __dirname,
         'documentos',
@@ -285,7 +319,9 @@ export const actualizarConvenio = async (req, res) => {
 
       if (flag_adjunto === 'URL') {
         // Crear el directorio si no existe y copiar el archivo
-        await fs.mkdir(documentosDir, { recursive: true });
+        await fs.mkdir(documentosDir, {
+          recursive: true
+        });
         await fs.copyFile(pdfFile.path, filePath);
         convenio.url_documento = `${baseUrl}/documentos/convenios/${originalFileName}`;
         convenio.contenido_documento = null;
@@ -304,19 +340,31 @@ export const actualizarConvenio = async (req, res) => {
     // Responder con un mensaje de éxito
     return res
       .status(200)
-      .json({ mensaje: 'Convenio actualizado correctamente', convenio });
+      .json({
+        mensaje: 'Convenio actualizado correctamente',
+        convenio
+      });
   } catch (error) {
     // Manejar errores y responder con un mensaje de error
     console.error(error);
     return res
       .status(500)
-      .json({ mensaje: 'Error al modificar convenio', error: error.message });
+      .json({
+        mensaje: 'Error al modificar convenio',
+        error: error.message
+      });
   }
 };
 
 export const autorizarConvenio = async (req, res) => {
-  const { id } = req.params;
-  const { autorizado, autorizado_por, autorizado_fecha } = req.body;
+  const {
+    id
+  } = req.params;
+  const {
+    autorizado,
+    autorizado_por,
+    autorizado_fecha
+  } = req.body;
 
   try {
     const convenio = await Convenio.findByPk(id);
@@ -327,58 +375,82 @@ export const autorizarConvenio = async (req, res) => {
     await convenio.save();
     res.send('Convenio autorizado/desautorizado');
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 };
 
 export const eliminarConvenio = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {
+      id
+    } = req.params;
     await Convenio.destroy({
       where: {
         id,
       },
     });
-    res.status(204).json({ mensaje: 'Convenio eliminado correctamente' });
+    res.status(204).json({
+      mensaje: 'Convenio eliminado correctamente'
+    });
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 };
 
 export const activarConvenio = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {
+      id
+    } = req.params;
 
     const convenio = await Convenio.findByPk(id);
 
     if (!convenio) {
-      return res.status(404).json({ mensaje: 'Convenio no encontrada' });
+      return res.status(404).json({
+        mensaje: 'Convenio no encontrada'
+      });
     }
 
     convenio.activo = '1'; // Establecer activo en '1'
     await convenio.save();
 
-    res.json({ mensaje: 'Convenio activado correctamente' });
+    res.json({
+      mensaje: 'Convenio activado correctamente'
+    });
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 };
 
 export const desactivarConvenio = async (req, res) => {
   try {
-    const { id } = req.params;
+    const {
+      id
+    } = req.params;
 
     const convenio = await Convenio.findByPk(id);
 
     if (!convenio) {
-      return res.status(404).json({ mensaje: 'Convenio no encontrado' });
+      return res.status(404).json({
+        mensaje: 'Convenio no encontrado'
+      });
     }
 
     convenio.activo = '0'; // Establecer activo en '0'
     await convenio.save();
 
-    res.json({ mensaje: 'Convenio desactivado correctamente' });
+    res.json({
+      mensaje: 'Convenio desactivado correctamente'
+    });
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 };
