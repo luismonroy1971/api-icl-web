@@ -185,9 +185,10 @@ export const actualizarUsuario = async (req, res) => {
     usuario.profile = profile;
 
     if (password) {
-      const saltRounds = 10;
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-      usuario.password = hashedPassword;
+      usuario.password = password;
+      // const saltRounds = 10;
+      // const hashedPassword = await bcrypt.hash(password, saltRounds);
+      // usuario.password = hashedPassword;
     }
 
     await usuario.save(); // Guarda los cambios en la base de datos

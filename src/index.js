@@ -13,7 +13,7 @@ async function main() {
     const port = process.env.PORT || 4000;
 
     await sequelize.sync({
-      force: true
+      force: false
     });
     app.listen(port, () => {
       console.log('Servidor está levantado en el puerto', port);
