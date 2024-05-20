@@ -1,40 +1,58 @@
-import {Categoria} from '../models/Categoria.js';
-import { Op } from 'sequelize';
+import {
+  Categoria
+} from '../models/Categoria.js';
+import {
+  Op
+} from 'sequelize';
 
 export const leerCategorias = async (req, res) => {
   try {
-    const { activo } = req.params;
-    const whereClause = activo ? { activo } : {};
+    const {
+      activo
+    } = req.params;
+    const whereClause = activo ? {
+      activo
+    } : {};
 
     const categorias = await Categoria.findAll({
       where: whereClause,
-      order: [['id', 'ASC']],
+      order: [
+        ['id', 'ASC']
+      ],
     });
 
     res.json(categorias);
   } catch (error) {
-    return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 }
 
 
-export const leerCategoria = async (req, res) =>{
-    const { id } = req.params;
-    try {
-        const categoria = await Categoria.findOne({
-            where:{
-                id
-            }
-        })
-        res.json(categoria);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message })
-    }
+export const leerCategoria = async (req, res) => {
+  const {
+    id
+  } = req.params;
+  try {
+    const categoria = await Categoria.findOne({
+      where: {
+        id
+      }
+    })
+    res.json(categoria);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: error.message
+    })
+  }
 
 }
 
 export const crearCategoria = async (req, res) => {
-  const { descripcion_categoria } = req.body;
+  const {
+    descripcion_categoria
+  } = req.body;
 
   try {
     // Verificar si ya existe una categoría con la misma descripción
@@ -46,7 +64,10 @@ export const crearCategoria = async (req, res) => {
 
     // Si ya existe, enviar un mensaje de error
     if (categoriaExistente) {
-      return res.status(400).json({ codigo: 400, mensaje: 'La descripción de la categoría ya está registrada.' });
+      return res.status(400).json({
+        codigo: 400,
+        mensaje: 'La descripción de la categoría ya está registrada.'
+      });
     }
 
     // Si no existe, crear la nueva categoría
@@ -55,104 +76,149 @@ export const crearCategoria = async (req, res) => {
     });
 
     // Enviar código de éxito (código 201) junto con el mensaje de éxito y los datos de la nueva categoría
-    return res.status(201).json({ mensaje: 'Categoría creada correctamente', nuevaCategoria });
+    return res.status(201).json({
+      mensaje: 'Categoría creada correctamente',
+      nuevaCategoria
+    });
   } catch (error) {
-    return res.status(500).json({ codigo: 500, mensaje: error.message });
+    return res.status(500).json({
+      codigo: 500,
+      mensaje: error.message
+    });
   }
 };
 
 
 
 export const actualizarCategoria = async (req, res) => {
-  const { id } = req.params;
-  const { descripcion_categoria, activo } = req.body;
+  const {
+    id
+  } = req.params;
+  const {
+    descripcion_categoria,
+    activo
+  } = req.body;
 
   try {
-      // Buscar la categoría por su ID
-      const categoria = await Categoria.findByPk(id);
+    // Buscar la categoría por su ID
+    const categoria = await Categoria.findByPk(id);
 
-      if (!categoria) {
-          return res.status(404).json({ mensaje: 'Categoría no encontrada' });
-      }
-
-      // Verificar si ya existe otra categoría con la misma descripción
-      const categoriaExistente = await Categoria.findOne({
-          where: {
-              [Op.and]: [
-                  { [Op.not]: { id: categoria.id } }, // Excluir la categoría actual
-                  { descripcion_categoria: descripcion_categoria }
-              ]
-          }
+    if (!categoria) {
+      return res.status(404).json({
+        mensaje: 'Categoría no encontrada'
       });
+    }
 
-      // Si se encuentra otra categoría existente, enviar un mensaje de error
-      if (categoriaExistente) {
-          return res.status(400).json({ mensaje: 'La descripción de la categoría ya está registrada.' });
+    // Verificar si ya existe otra categoría con la misma descripción
+    const categoriaExistente = await Categoria.findOne({
+      where: {
+        [Op.and]: [{
+            [Op.not]: {
+              id: categoria.id
+            }
+          }, // Excluir la categoría actual
+          {
+            descripcion_categoria: descripcion_categoria
+          }
+        ]
       }
+    });
 
-      // Actualizar la categoría si no hay conflictos
-      categoria.descripcion_categoria = descripcion_categoria;
-      categoria.activo = activo;
+    // Si se encuentra otra categoría existente, enviar un mensaje de error
+    if (categoriaExistente) {
+      return res.status(400).json({
+        mensaje: 'La descripción de la categoría ya está registrada.'
+      });
+    }
 
-      await categoria.save();
+    // Actualizar la categoría si no hay conflictos
+    categoria.descripcion_categoria = descripcion_categoria;
+    categoria.activo = activo;
 
-      return res.status(200).json({ mensaje: 'Categoría actualizada correctamente', nuevaCategoria });
+    await categoria.save();
+
+    return res.status(200).json({
+      mensaje: 'Categoría actualizada correctamente',
+      categoria
+    });
   } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    return res.status(500).json({
+      mensaje: error.message
+    });
   }
 };
 
 
 
-export const eliminarCategoria = async (req, res) =>{
-    try {
-        const { id } = req.params
-        await Categoria.destroy({
-            where:{
-                id,
-            }
-        })
-        res.sendStatus(204);
-    } catch (error) {
-        return res.status(500).json({ mensaje: error.message})
-    }
+export const eliminarCategoria = async (req, res) => {
+  try {
+    const {
+      id
+    } = req.params
+    await Categoria.destroy({
+      where: {
+        id,
+      }
+    })
+    res.sendStatus(204);
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: error.message
+    })
+  }
 }
 
 export const activarCategoria = async (req, res) => {
-    try {
-      const { id } = req.params; 
-  
-      const categoria = await Categoria.findByPk(id);
-  
-      if (!categoria) {
-        return res.status(404).json({ mensaje: 'Categoría no encontrada' });
-      }
-  
-      categoria.activo = '1'; // Establecer activo en '1'
-      await categoria.save();
-  
-      res.json({ mensaje: 'Categoría activada correctamente' });
-    } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
-    }
-  };
-  
+  try {
+    const {
+      id
+    } = req.params;
 
-  export const desactivarCategoria = async (req, res) => {
-    try {
-      const { id } = req.params; 
-  
-      const categoria = await Categoria.findByPk(id);
-  
-      if (!categoria) {
-        return res.status(404).json({ mensaje: 'Categoría no encontrada' });
-      }
-  
-      categoria.activo = '0'; // Establecer activo en '0'
-      await categoria.save();
-  
-      res.json({ mensaje: 'Categoría desactivada correctamente' });
-    } catch (error) {
-      return res.status(500).json({ mensaje: error.message });
+    const categoria = await Categoria.findByPk(id);
+
+    if (!categoria) {
+      return res.status(404).json({
+        mensaje: 'Categoría no encontrada'
+      });
     }
-  };
+
+    categoria.activo = '1'; // Establecer activo en '1'
+    await categoria.save();
+
+    res.json({
+      mensaje: 'Categoría activada correctamente'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: error.message
+    });
+  }
+};
+
+
+export const desactivarCategoria = async (req, res) => {
+  try {
+    const {
+      id
+    } = req.params;
+
+    const categoria = await Categoria.findByPk(id);
+
+    if (!categoria) {
+      return res.status(404).json({
+        mensaje: 'Categoría no encontrada'
+      });
+    }
+
+    categoria.activo = '0'; // Establecer activo en '0'
+    await categoria.save();
+
+    res.json({
+      mensaje: 'Categoría desactivada correctamente'
+    });
+  } catch (error) {
+    return res.status(500).json({
+      mensaje: error.message
+    });
+  }
+};
